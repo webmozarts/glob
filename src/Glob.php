@@ -60,19 +60,6 @@ class Glob
     }
 
     /**
-     * Returns whether a string is a glob.
-     *
-     * @param string $string The tested string.
-     *
-     * @return bool Returns `true` if the string is a glob, `false`
-     *              otherwise.
-     */
-    public static function isGlob($string)
-    {
-        return false !== strpos($string, '*');
-    }
-
-    /**
      * Converts a glob to a regular expression.
      *
      * @param string $glob A path glob in canonical form.
