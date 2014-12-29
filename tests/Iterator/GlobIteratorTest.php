@@ -27,7 +27,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->fixturesDir = __DIR__.'/Fixtures';
-        $this->tempFile = tempnam(sys_get_temp_dir(), 'puli-GlobIteratorTest');
+        $this->tempFile = tempnam(sys_get_temp_dir(), 'webmozart_GlobIteratorTest');
     }
 
     protected function tearDown()
@@ -39,7 +39,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
     {
         $iterator = new GlobIterator($this->fixturesDir.'/*.css');
 
-        $this->assertSame(array(
+        $this->assertSameAfterSorting(array(
             $this->fixturesDir.'/base.css',
             $this->fixturesDir.'/css/reset.css',
             $this->fixturesDir.'/css/style.css',
@@ -77,7 +77,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
     {
         $iterator = new GlobIterator($this->fixturesDir.'/*css');
 
-        $this->assertSame(array(
+        $this->assertSameAfterSorting(array(
             $this->fixturesDir.'/base.css',
             $this->fixturesDir.'/css',
             $this->fixturesDir.'/css/reset.css',
@@ -89,13 +89,13 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
     {
         $iterator = new GlobIterator($this->fixturesDir.'/*');
 
-        $this->assertSame(array(
-            $this->fixturesDir.'/js',
-            $this->fixturesDir.'/js/script.js',
+        $this->assertSameAfterSorting(array(
             $this->fixturesDir.'/base.css',
             $this->fixturesDir.'/css',
             $this->fixturesDir.'/css/reset.css',
             $this->fixturesDir.'/css/style.css',
+            $this->fixturesDir.'/js',
+            $this->fixturesDir.'/js/script.js',
         ), iterator_to_array($iterator));
     }
 
@@ -111,5 +111,24 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
         $iterator = new GlobIterator($this->fixturesDir.'/foo/*');
 
         $this->assertSame(array(), iterator_to_array($iterator));
+    }
+
+    /**
+     * Compares that an array is the same as another after sorting.
+     *
+     * This is necessary since RecursiveDirectoryIterator is not guaranteed to
+     * return sorted results on all filesystems.
+     *
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $message
+     */
+    private function assertSameAfterSorting($expected, $actual, $message = '')
+    {
+        if (is_array($actual)) {
+            sort($actual);
+        }
+
+        $this->assertSame($expected, $actual, $message);
     }
 }
