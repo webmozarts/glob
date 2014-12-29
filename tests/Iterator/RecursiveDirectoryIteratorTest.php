@@ -102,22 +102,39 @@ class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
     public function testSeek()
     {
         $iterator = new RecursiveDirectoryIterator($this->tempDir, RecursiveDirectoryIterator::CURRENT_AS_FILE);
+        $keys = $values = array();
 
         $iterator->seek(0);
-        $this->assertSame($this->tempDir.'/base.css', $iterator->key());
-        $this->assertSame('base.css', $iterator->current());
+        $keys[0] = $iterator->key();
+        $values[0] = $iterator->current();
 
         $iterator->seek(1);
-        $this->assertSame($this->tempDir.'/css', $iterator->key());
-        $this->assertSame('css', $iterator->current());
+        $keys[1] = $iterator->key();
+        $values[1] = $iterator->current();
 
         $iterator->seek(2);
-        $this->assertSame($this->tempDir.'/js', $iterator->key());
-        $this->assertSame('js', $iterator->current());
+        $keys[2] = $iterator->key();
+        $values[2] = $iterator->current();
 
         $iterator->seek(0);
-        $this->assertSame($this->tempDir.'/base.css', $iterator->key());
-        $this->assertSame('base.css', $iterator->current());
+        $this->assertSame($keys[0], $iterator->key());
+        $this->assertSame($values[0], $iterator->current());
+
+        // The iterator returns a different order on different systems
+        sort($keys);
+        sort($values);
+
+        $this->assertSame(array(
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css',
+            $this->tempDir.'/js',
+        ), $keys);
+
+        $this->assertSame(array(
+            'base.css',
+            'css',
+            'js',
+        ), $values);
     }
 
     public function testIterateWithConcurrentDeletions()
