@@ -49,6 +49,11 @@ class RegexFilterIterator extends FilterIterator
     private $cursor = 0;
 
     /**
+     * @var int
+     */
+    private $mode;
+
+    /**
      * Creates a new iterator.
      *
      * @param string   $regExp        The regular expression to filter by.
