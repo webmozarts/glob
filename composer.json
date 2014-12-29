@@ -1,0 +1,32 @@
+{
+    "name": "webmozart/glob",
+    "description": "A PHP implementation of Git's glob.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bernhard Schussek",
+            "email": "bschussek@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+        "symfony/filesystem": "~2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webmozart\\Glob\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webmozart\\Glob\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
