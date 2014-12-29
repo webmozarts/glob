@@ -12,9 +12,9 @@
 namespace Webmozart\Glob\Tests\Iterator;
 
 use PHPUnit_Framework_TestCase;
-use Webmozart\Glob\Iterator\RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\Glob\Iterator\RecursiveDirectoryIterator;
 
 /**
  * @since  1.0

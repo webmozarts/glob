@@ -11,7 +11,6 @@
 
 namespace Webmozart\Glob\Iterator;
 
-use Assert\Assertion;
 use InvalidArgumentException;
 use RecursiveIterator;
 use SeekableIterator;
