@@ -72,6 +72,16 @@ class RegexFilterIterator extends FilterIterator
     }
 
     /**
+     * Rewind the iterator to the first position.
+     */
+    public function rewind()
+    {
+        parent::rewind();
+
+        $this->cursor = 0;
+    }
+
+    /**
      * Returns the current position.
      *
      * @return int The current position.
