@@ -141,19 +141,48 @@ class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
     {
         $iterator = new RecursiveDirectoryIterator($this->tempDir);
         $iterator->rewind();
+        $keys = $values = array();
 
         $this->assertTrue($iterator->valid());
-        $this->assertSame($this->tempDir.'/base.css', $iterator->key());
-        $this->assertSame($this->tempDir.'/base.css', $iterator->current());
+        $keys[] = $iterator->key();
+        $values[] = $iterator->current();
 
         $filesystem = new Filesystem();
-        $filesystem->remove($this->tempDir.'/css');
 
-        $iterator->next();
+        // We don't know which key was returned first
+        if ($values[0] === $this->tempDir.'/css') {
+            $filesystem->remove($this->tempDir.'/js');
 
-        $this->assertTrue($iterator->valid());
-        $this->assertSame($this->tempDir.'/js', $iterator->key());
-        $this->assertSame($this->tempDir.'/js', $iterator->current());
+            $iterator->next();
+
+            $this->assertTrue($iterator->valid());
+            $keys[] = $iterator->key();
+            $values[] = $iterator->current();
+
+            sort($keys);
+            sort($values);
+
+            $this->assertSame(array(
+                $this->tempDir.'/base.css',
+                $this->tempDir.'/css',
+            ), $keys);
+        } else {
+            $filesystem->remove($this->tempDir.'/css');
+
+            $iterator->next();
+
+            $this->assertTrue($iterator->valid());
+            $keys[] = $iterator->key();
+            $values[] = $iterator->current();
+
+            sort($keys);
+            sort($values);
+
+            $this->assertSame(array(
+                $this->tempDir.'/base.css',
+                $this->tempDir.'/js',
+            ), $keys);
+        }
 
         $iterator->next();
 
