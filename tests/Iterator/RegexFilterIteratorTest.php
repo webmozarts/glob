@@ -70,4 +70,28 @@ class RegexFilterIteratorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, iterator_to_array($iterator));
         $this->assertSame($expected, iterator_to_array($iterator));
     }
+
+    public function testIterateKeyAsKey()
+    {
+        $values = array(
+            'a' => '/foo',
+            'b' => '/foo/bar',
+            'c' => '/foo/bar/baz',
+            'd' => '/foo/baz',
+            'e' => '/bar',
+        );
+
+        $expected = array(
+            'a' => '/foo',
+            'b' => '/foo/bar',
+            'd' => '/foo/baz',
+        );
+
+        $this->assertSame($expected, iterator_to_array(new RegexFilterIterator(
+            '~^/foo(/[^/]+)?$~',
+            '/foo',
+            new ArrayIterator($values),
+            RegexFilterIterator::KEY_AS_KEY
+        )));
+    }
 }

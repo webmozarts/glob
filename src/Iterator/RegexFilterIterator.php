@@ -34,6 +34,16 @@ class RegexFilterIterator extends FilterIterator
     const FILTER_KEY = 2;
 
     /**
+     * Mode: Return incrementing numbers as keys.
+     */
+    const CURSOR_AS_KEY = 16;
+
+    /**
+     * Mode: Return the original keys as keys.
+     */
+    const KEY_AS_KEY = 32;
+
+    /**
      * @var string
      */
     private $regExp;
@@ -62,9 +72,17 @@ class RegexFilterIterator extends FilterIterator
      * @param Iterator $innerIterator The filtered iterator.
      * @param int      $mode          A bitwise combination of the mode constants.
      */
-    public function __construct($regExp, $staticPrefix, Iterator $innerIterator, $mode = self::FILTER_VALUE)
+    public function __construct($regExp, $staticPrefix, Iterator $innerIterator, $mode = null)
     {
         parent::__construct($innerIterator);
+
+        if (!($mode & (self::FILTER_KEY | self::FILTER_VALUE))) {
+            $mode |= self::FILTER_VALUE;
+        }
+
+        if (!($mode & (self::CURSOR_AS_KEY | self::KEY_AS_KEY))) {
+            $mode |= self::CURSOR_AS_KEY;
+        }
 
         $this->regExp = $regExp;
         $this->staticPrefix = $staticPrefix;
@@ -88,6 +106,10 @@ class RegexFilterIterator extends FilterIterator
      */
     public function key()
     {
+        if ($this->mode & self::KEY_AS_KEY) {
+            return parent::key();
+        }
+
         return $this->cursor;
     }
 
