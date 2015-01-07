@@ -106,6 +106,10 @@ class RegexFilterIterator extends FilterIterator
      */
     public function key()
     {
+        if (!$this->valid()) {
+            return null;
+        }
+
         if ($this->mode & self::KEY_AS_KEY) {
             return parent::key();
         }
@@ -120,9 +124,10 @@ class RegexFilterIterator extends FilterIterator
      */
     public function next()
     {
-        parent::next();
-
-        ++$this->cursor;
+        if ($this->valid()) {
+            parent::next();
+            ++$this->cursor;
+        }
     }
 
     /**

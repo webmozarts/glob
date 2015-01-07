@@ -37,11 +37,17 @@ class RegexFilterIteratorTest extends PHPUnit_Framework_TestCase
             '/foo/baz',
         );
 
-        $this->assertSame($expected, iterator_to_array(new RegexFilterIterator(
+        $iterator = new RegexFilterIterator(
             '~^/foo(/[^/]+)?$~',
             '/foo',
             new ArrayIterator($values)
-        )));
+        );
+
+        $this->assertSame($expected, iterator_to_array($iterator));
+
+        $this->assertFalse($iterator->valid());
+        $this->assertNull($iterator->key());
+        $this->assertNull($iterator->current());
     }
 
     public function testIterateTwice()
@@ -66,9 +72,13 @@ class RegexFilterIteratorTest extends PHPUnit_Framework_TestCase
             new ArrayIterator($values)
         );
 
-        // Make sure everything is rewinded correctly
+        // Make sure everything is rewound correctly
         $this->assertSame($expected, iterator_to_array($iterator));
         $this->assertSame($expected, iterator_to_array($iterator));
+
+        $this->assertFalse($iterator->valid());
+        $this->assertNull($iterator->key());
+        $this->assertNull($iterator->current());
     }
 
     public function testIterateKeyAsKey()
@@ -87,11 +97,17 @@ class RegexFilterIteratorTest extends PHPUnit_Framework_TestCase
             'd' => '/foo/baz',
         );
 
-        $this->assertSame($expected, iterator_to_array(new RegexFilterIterator(
+        $iterator = new RegexFilterIterator(
             '~^/foo(/[^/]+)?$~',
             '/foo',
             new ArrayIterator($values),
             RegexFilterIterator::KEY_AS_KEY
-        )));
+        );
+
+        $this->assertSame($expected, iterator_to_array($iterator));
+
+        $this->assertFalse($iterator->valid());
+        $this->assertNull($iterator->key());
+        $this->assertNull($iterator->current());
     }
 }
