@@ -8,7 +8,7 @@ Webmozart Glob
 [![Total Downloads](https://poser.pugx.org/webmozart/glob/downloads.svg)](https://packagist.org/packages/webmozart/glob)
 [![Dependency Status](https://www.versioneye.com/php/webmozart:glob/1.0.0/badge.svg)](https://www.versioneye.com/php/webmozart:glob/1.0.0)
 
-Latest release: none
+Latest release: [1.0.0-beta](https://packagist.org/packages/webmozart/glob#1.0.0-beta)
 
 A utility implementing Git-like globbing. Wildcards in the glob match any
 number of characters (zero or more), *including* directory separators.
