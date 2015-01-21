@@ -288,21 +288,33 @@ class Glob
 
         // This method does the following replacements:
 
-        // Normal wildcards:    "*"  => ".*" (regex match any)
-        // Escaped wildcards:   "\*" => "\*" (regex star)
-        // Escaped backslashes: "\\" => "\\" (regex backslash)
+        // Normal wildcards:    "*"  => "[^/]*" (regex match any except separator)
+        // Double wildcards:    "**" => ".*"    (regex match any)
+        // Escaped wildcards:   "\*" => "\*"    (regex star)
+        // Escaped backslashes: "\\" => "\\"    (regex backslash)
 
         // Other characters are escaped as usual for regular expressions.
 
         // Quote regex characters
-        $quoted = preg_quote($glob, '~');
+        $regEx = preg_quote($glob, '~');
 
-        // Replace "*" by ".*", as long as preceded by an even number of backslashes
-        $regEx = preg_replace(
-            '~(?<!'.self::E_BACKSLASH.')(('.self::E_BACKSLASH.self::E_BACKSLASH.')*)'.self::E_STAR.'~',
-            '$1.*',
-            $quoted
-        );
+        // Replace "**" by ".*", as long as preceded by an even number of backslashes
+        if (false !== strpos($regEx, self::STAR.self::STAR)) {
+            $regEx = preg_replace(
+                '~(?<!'.self::E_BACKSLASH.')(('.self::E_BACKSLASH.self::E_BACKSLASH.')*)'.self::E_STAR.self::E_STAR.'~',
+                '$1.*',
+                $regEx
+            );
+        }
+
+        // Replace "*" by "[^/]*", as long as preceded by an even number of backslashes
+        if (false !== strpos($regEx, self::STAR)) {
+            $regEx = preg_replace(
+                '~(?<!'.self::E_BACKSLASH.')(('.self::E_BACKSLASH.self::E_BACKSLASH.')*)'.self::E_STAR.'~',
+                '$1[^/]*',
+                $regEx
+            );
+        }
 
         // Replace "\*" by "*"
         $regEx = str_replace(self::BACKSLASH.self::STAR, self::STAR, $regEx);

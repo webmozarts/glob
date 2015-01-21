@@ -26,16 +26,30 @@ class GlobTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(array(
             $fixturesDir.'/base.css',
+        ), Glob::glob($fixturesDir.'/*.css'));
+
+        $this->assertSame(array(
+            $fixturesDir.'/base.css',
+            $fixturesDir.'/css',
+        ), Glob::glob($fixturesDir.'/*css*'));
+
+        $this->assertSame(array(
+            $fixturesDir.'/base.css',
             $fixturesDir.'/css/reset.css',
             $fixturesDir.'/css/style.css',
-        ), Glob::glob($fixturesDir.'/*.css'));
+        ), Glob::glob($fixturesDir.'/**.css'));
+
+        $this->assertSame(array(
+            $fixturesDir.'/css/reset.css',
+            $fixturesDir.'/css/style.css',
+        ), Glob::glob($fixturesDir.'/**/*.css'));
 
         $this->assertSame(array(
             $fixturesDir.'/base.css',
             $fixturesDir.'/css',
             $fixturesDir.'/css/reset.css',
             $fixturesDir.'/css/style.css',
-        ), Glob::glob($fixturesDir.'/*css*'));
+        ), Glob::glob($fixturesDir.'/**css**'));
 
         $this->assertSame(array(), Glob::glob($fixturesDir.'/*foo*'));
     }
@@ -44,7 +58,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
      */
     public function testToRegEx($path, $isMatch)
     {
-        $regExp = Glob::toRegEx('/foo/*.js~');
+        $regExp = Glob::toRegEx('/foo/**.js~');
 
         $this->assertSame($isMatch, preg_match($regExp, $path));
     }
@@ -91,6 +105,14 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $regExp = Glob::toRegEx('/foo/\\*.js~');
 
         $this->assertSame(1, preg_match($regExp, '/foo/*.js~'));
+    }
+
+    public function testMatchEscapedDoubleWildcard()
+    {
+        // evaluates to "\*\*"
+        $regExp = Glob::toRegEx('/foo/\\*\\*.js~');
+
+        $this->assertSame(1, preg_match($regExp, '/foo/**.js~'));
     }
 
     public function testMatchWildcardWithLeadingBackslash()
@@ -197,7 +219,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
      */
     public function testMatch($path, $isMatch)
     {
-        $this->assertSame((bool) $isMatch, Glob::match($path, '/foo/*.js~'));
+        $this->assertSame((bool) $isMatch, Glob::match($path, '/foo/**.js~'));
     }
 
     public function testMatchPathWithoutWildcard()
@@ -224,7 +246,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
             ++$i;
         }
 
-        $this->assertSame($filtered, Glob::filter($paths, '/foo/*.js~'));
+        $this->assertSame($filtered, Glob::filter($paths, '/foo/**.js~'));
     }
 
     public function testFilterWithoutWildcard()
