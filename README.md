@@ -34,5 +34,5 @@ The documentation is licensed under the [MIT license].
 [Webmozart Glob]: https://github.com/webmozart/glob
 [GitHub Pages]: https://pages.github.com
 [issue tracker]: https://github.com/webmozart/glob/issues
-[@webmozart]: https://twitter.com/PuliPHP
+[@webmozart]: https://twitter.com/webmozart
 [MIT license]: LICENSE
