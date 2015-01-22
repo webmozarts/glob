@@ -90,6 +90,7 @@ $paths = Glob::glob(Path::makeAbsolute($glob, getcwd());
 ### Windows Compatibility
 
 Globs need to be passed in [canonical form] with forward slashes only.
+Returned paths contain forward slashes only.
 
 Authors
 -------
