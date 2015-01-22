@@ -14,6 +14,8 @@ A utility implementing Ant-like globbing. Wildcards (`*`) in the glob match any
 number of characters (zero or more), except directory separators (`/`). Double
 wildcards (`**`) in the glob match directory separators too.
 
+[API Documentation]
+
 Usage
 -----
 
@@ -146,6 +148,7 @@ License
 
 All contents of this package are licensed under the [MIT license].
 
+[API Documentation]: https://webmozart.github.io/glob/api/latest
 [Composer]: https://getcomposer.org
 [Bernhard Schussek]: http://webmozarts.com
 [The Community Contributors]: https://github.com/webmozart/glob/graphs/contributors
@@ -155,6 +158,6 @@ All contents of this package are licensed under the [MIT license].
 [MIT license]: LICENSE
 [Webmozart Path Utility]: https://github.com/webmozart/path-util
 [canonical form]: https://webmozart.github.io/path-util/api/latest/class-Webmozart.PathUtil.Path.html#_canonicalize
-[`Glob`]: src/Glob.php
-[`GlobIterator`]: src/Iterator/GlobIterator.php
-[`GlobFilterIterator`]: src/Iterator/GlobFilterIterator.php
+[`Glob`]: https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Glob.html
+[`GlobIterator`]: https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.GlobIterator.html
+[`GlobFilterIterator`]: https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.GlobFilterIterator.html
