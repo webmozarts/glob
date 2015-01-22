@@ -92,6 +92,26 @@ $paths = Glob::glob(Path::makeAbsolute($glob, getcwd());
 Globs need to be passed in [canonical form] with forward slashes only.
 Returned paths contain forward slashes only.
 
+### Escaping
+
+The `Glob` class supports a mode where you can match files that actually
+contain a `*` in their filename. To enable the escape mode, pass the
+`Glob::ESCAPE` flag to any of the methods in `Glob`.
+
+```php
+$paths = Glob::glob('/path/to/backup\\*/css/*.css');
+```
+
+In the previous example, the glob matches all CSS files in the `backup*`
+directory rather than all directories starting with `backup`. Due to PHP's own
+escaping in strings, the backslash character `\` needs to be typed twice to
+produce a single `\` in the string.
+
+The following escape sequences are available:
+
+* `\\*`: match a `*` in the path
+* `\\\\`: match a `\` in the path
+
 Authors
 -------
 
