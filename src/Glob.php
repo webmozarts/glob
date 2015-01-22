@@ -11,7 +11,9 @@
 
 namespace Webmozart\Glob;
 
+use InvalidArgumentException;
 use Webmozart\Glob\Iterator\GlobIterator;
+use Webmozart\PathUtil\Path;
 
 /**
  * Searches and matches file paths using Ant-like globs.
@@ -274,6 +276,12 @@ class Glob
      */
     public static function toRegEx($glob, $flags = 0)
     {
+        if (!Path::isAbsolute($glob)) {
+            throw new InvalidArgumentException(sprintf(
+                'The glob "%s" is not absolute.',
+                $glob
+            ));
+        }
 
         // From the PHP manual: To specify a literal single quote, escape it
         // with a backslash (\). To specify a literal backslash, double it (\\).
@@ -320,6 +328,13 @@ class Glob
      */
     public static function getStaticPrefix($glob, $flags = 0)
     {
+        if (!Path::isAbsolute($glob)) {
+            throw new InvalidArgumentException(sprintf(
+                'The glob "%s" is not absolute.',
+                $glob
+            ));
+        }
+
         $prefix = $glob;
 
         if ($flags & self::ESCAPE) {

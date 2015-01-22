@@ -69,6 +69,15 @@ class GlobTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage *.css
+     */
+    public function testGlobFailsIfNotAbsolute()
+    {
+        Glob::glob('*.css');
+    }
+
+    /**
      * @dataProvider provideWildcardMatches
      */
     public function testToRegEx($path, $isMatch)
@@ -231,6 +240,15 @@ class GlobTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage *.css
+     */
+    public function testToRegexFailsIfNotAbsolute()
+    {
+        Glob::toRegEx('*.css');
+    }
+
+    /**
      * @dataProvider provideStaticPrefixes
      */
     public function testGetStaticPrefix($glob, $prefix, $flags = 0)
@@ -255,6 +273,15 @@ class GlobTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage *.css
+     */
+    public function testGetStaticPrefixFailsIfNotAbsolute()
+    {
+        Glob::getStaticPrefix('*.css');
+    }
+
+    /**
      * @dataProvider provideBasePaths
      */
     public function testGetBasePath($glob, $basePath, $flags = 0)
@@ -272,9 +299,6 @@ class GlobTest extends PHPUnit_Framework_TestCase
             array('/foo/baz*', '/foo'),
             array('/foo*', '/'),
             array('/*', '/'),
-            array('foo*/baz/bar', ''),
-            array('foo*', ''),
-            array('*', ''),
             array('/foo/baz*/bar', '/foo'),
             array('/foo/baz\\*/bar', '/foo'),
             array('/foo/baz\\\\*/bar', '/foo'),
@@ -284,6 +308,15 @@ class GlobTest extends PHPUnit_Framework_TestCase
             array('/foo/baz\\\\*/bar', '/foo', Glob::ESCAPE),
             array('/foo/baz\\\\\\*/bar', '/foo/baz\\*', Glob::ESCAPE),
         );
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage *.css
+     */
+    public function testGetBasePathFailsIfNotAbsolute()
+    {
+        Glob::getBasePath('*.css');
     }
 
     /**
@@ -311,6 +344,15 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(Glob::match('/foo/bar*.js~', '/foo/bar\\\\*.js~', Glob::ESCAPE));
         $this->assertTrue(Glob::match('/foo/bar\\*.js~', '/foo/bar\\\\*.js~', Glob::ESCAPE));
         $this->assertTrue(Glob::match('/foo/bar\\baz.js~', '/foo/bar\\\\*.js~', Glob::ESCAPE));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage *.css
+     */
+    public function testMatchFailsIfNotAbsolute()
+    {
+        Glob::match('/foo/bar.css', '*.css');
     }
 
     public function testFilter()
@@ -378,5 +420,14 @@ class GlobTest extends PHPUnit_Framework_TestCase
             4 => '/foo/bar\\*.js',
             5 => '/foo/bar\\baz.js',
         ), Glob::filter($paths, '/**\\*.js'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage *.css
+     */
+    public function testFilterFailsIfNotAbsolute()
+    {
+        Glob::filter(array('/foo/bar.css'), '*.css');
     }
 }

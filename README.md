@@ -14,6 +14,9 @@ A utility implementing Ant-like globbing. Wildcards (`*`) in the glob match any
 number of characters (zero or more), except directory separators (`/`). Double
 wildcards (`**`) in the glob match directory separators too.
 
+Usage
+-----
+
 The main class of the package is [`Glob`]. Use `Glob::glob()` to glob the 
 filesystem:
 
@@ -35,6 +38,9 @@ foreach ($iterator as $path) {
     // ...
 }
 ```
+
+Path Matching
+~~~~~~~~~~~~~
 
 The package also provides utility methods for comparing paths against globs.
 Use `Glob::match()` to match a path against a glob:
@@ -63,7 +69,28 @@ foreach ($iterator as $path) {
 }
 ```
 
-**Note about Windows Compatibility**
+Relative Globs
+~~~~~~~~~~~~~~
+
+Relative globs such as `*.css` are not supported. Usually, such globs refer to
+paths relative to the current working directory. This utility, however, does not
+want to make such assumptions. Hence you should always pass absolute globs.
+
+If you want to allow users to pass relative globs, I recommend to turn the globs
+into absolute globs using the [Webmozart Path Utility]:
+
+```php
+use Webmozart\Glob\Glob;
+use Webmozart\PathUtil\Path;
+
+// If $glob is absolute, that glob is used without modification.
+// If $glob is relative, it is turned into an absolute path based on the current
+// working directory.
+$paths = Glob::glob(Path::makeAbsolute($glob, getcwd());
+```
+
+Windows Compatibility
+~~~~~~~~~~~~~~~~~~~~~
 
 Globs need to be passed in [canonical form] with forward slashes only.
 
@@ -108,6 +135,7 @@ All contents of this package are licensed under the [MIT license].
 [Git repository]: https://github.com/webmozart/glob
 [@webmozart]: https://twitter.com/webmozart
 [MIT license]: LICENSE
+[Webmozart Path Utility]: https://github.com/webmozart/path-util
 [canonical form]: https://webmozart.github.io/path-util/api/latest/class-Webmozart.PathUtil.Path.html#_canonicalize
 [`Glob`]: src/Glob.php
 [`GlobIterator`]: src/Iterator/GlobIterator.php

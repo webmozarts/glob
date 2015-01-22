@@ -7,6 +7,8 @@ Changelog
    anymore, but "**" does
  * escaping must now be explicitly enabled by passing the flag `Glob::ESCAPE`
    to any of the `Glob` methods
+ * fixed: replaced fatal error by `InvalidArgumentException` when globs are
+   not absolute
 
 * 1.0.0-beta (2015-01-12)
 
