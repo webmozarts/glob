@@ -63,6 +63,10 @@ foreach ($iterator as $path) {
 }
 ```
 
+**Note about Windows Compatibility**
+
+Globs need to be passed in [canonical form] with forward slashes only.
+
 Authors
 -------
 
@@ -104,6 +108,7 @@ All contents of this package are licensed under the [MIT license].
 [Git repository]: https://github.com/webmozart/glob
 [@webmozart]: https://twitter.com/webmozart
 [MIT license]: LICENSE
+[canonical form]: https://webmozart.github.io/path-util/api/latest/class-Webmozart.PathUtil.Path.html#_canonicalize
 [`Glob`]: src/Glob.php
 [`GlobIterator`]: src/Iterator/GlobIterator.php
 [`GlobFilterIterator`]: src/Iterator/GlobFilterIterator.php
