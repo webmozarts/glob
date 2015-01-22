@@ -8,7 +8,7 @@ Webmozart Glob
 [![Total Downloads](https://poser.pugx.org/webmozart/glob/downloads.svg)](https://packagist.org/packages/webmozart/glob)
 [![Dependency Status](https://www.versioneye.com/php/webmozart:glob/1.0.0/badge.svg)](https://www.versioneye.com/php/webmozart:glob/1.0.0)
 
-Latest release: [1.0.0-beta](https://packagist.org/packages/webmozart/glob#1.0.0-beta)
+Latest release: [1.0.0-beta2](https://packagist.org/packages/webmozart/glob#1.0.0-beta2)
 
 A utility implementing Ant-like globbing. Wildcards (`*`) in the glob match any
 number of characters (zero or more), except directory separators (`/`). Double
