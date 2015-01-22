@@ -11,7 +11,7 @@ Webmozart Glob
 Latest release: [1.0.0-beta](https://packagist.org/packages/webmozart/glob#1.0.0-beta)
 
 A utility implementing Ant-like globbing. Wildcards (`*`) in the glob match any
-number of characters (zero or more), except directory separators. Double 
+number of characters (zero or more), except directory separators (`/`). Double
 wildcards (`**`) in the glob match directory separators too.
 
 The main class of the package is [`Glob`]. Use `Glob::glob()` to glob the 

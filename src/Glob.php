@@ -14,16 +14,17 @@ namespace Webmozart\Glob;
 use Webmozart\Glob\Iterator\GlobIterator;
 
 /**
- * Utility methods for handling globs.
+ * Searches and matches file paths using Ant-like globs.
  *
- * This class implements a Git-lik version of PHP's `glob()` function. The
- * wildcard "*" matches any number of characters, *including* directory
- * separators.
+ * This class implements an Ant-like version of PHP's `glob()` function. The
+ * wildcard "*" matches any number of characters except directory separators.
+ * The double wildcard "**" matches any number of characters, including
+ * directory separators.
  *
  * Use {@link glob()} to glob the filesystem for paths:
  *
  * ```php
- * foreach (Glob::glob('/project/*.twig') as $path) {
+ * foreach (Glob::glob('/project/**.twig') as $path) {
  *     // do something...
  * }
  * ```
@@ -31,7 +32,7 @@ use Webmozart\Glob\Iterator\GlobIterator;
  * Use {@link match()} to match a file path against a glob:
  *
  * ```php
- * if (Glob::match('/project/views/index.html.twig', '/project/*.twig')) {
+ * if (Glob::match('/project/views/index.html.twig', '/project/**.twig')) {
  *     // path matches
  * }
  * ```
@@ -40,7 +41,7 @@ use Webmozart\Glob\Iterator\GlobIterator;
  * {@link filter()}:
  *
  * ```php
- * $filteredPaths = Glob::filter($paths, '/project/*.twig');
+ * $filteredPaths = Glob::filter($paths, '/project/**.twig');
  * ```
  *
  * Internally, the methods described above convert the glob into a regular
@@ -49,8 +50,8 @@ use Webmozart\Glob\Iterator\GlobIterator;
  * and use {@link preg_match()} to test the paths:
  *
  * ```php
- * $staticPrefix = Glob::getStaticPrefix('/project/*.twig');
- * $regEx = Glob::toRegEx('/project/*.twig');
+ * $staticPrefix = Glob::getStaticPrefix('/project/**.twig');
+ * $regEx = Glob::toRegEx('/project/**.twig');
  *
  * if (0 !== strpos($path, $staticPrefix)) {
  *     // no match
@@ -71,26 +72,9 @@ use Webmozart\Glob\Iterator\GlobIterator;
 class Glob
 {
     /**
-     * Represents a literal "\" in a regular expression.
+     * Flag: Enable escaping of special characters with leading backslashes.
      */
-    const BACKSLASH = '\\\\';
-
-    /**
-     * Represents a literal "*" in a regular expression.
-     */
-    const STAR = '\\*';
-
-    /**
-     * Matches a literal "\" when running a regular expression against another
-     * regular expression.
-     */
-    const E_BACKSLASH = '\\\\\\\\';
-
-    /**
-     * Matches a literal "*" when running a regular expression against another
-     * regular expression.
-     */
-    const E_STAR = '\\\\\\*';
+    const ESCAPE = 1;
 
     /**
      * Globs the file system paths matching the glob.
@@ -99,23 +83,25 @@ class Glob
      * of characters, *including* directory separators.
      *
      * ```php
-     * foreach (Glob::glob('/project/*.twig') as $path) {
+     * foreach (Glob::glob('/project/**.twig') as $path) {
      *     // do something...
      * }
      * ```
      *
-     * @param string $glob The canonical glob. The glob should contain forward
-     *                     slashes as directory separators only. It must not
-     *                     contain any "." or ".." segments. Use the
-     *                     "webmozart/path-util" utility to canonicalize globs
-     *                     prior to calling this method.
+     * @param string $glob  The canonical glob. The glob should contain forward
+     *                      slashes as directory separators only. It must not
+     *                      contain any "." or ".." segments. Use the
+     *                      "webmozart/path-util" utility to canonicalize globs
+     *                      prior to calling this method.
+     * @param int    $flags A bitwise combination of the flag constants in this
+     *                      class.
      *
      * @return string[] The matching paths. The keys of the array are
      *                  incrementing integers.
      */
-    public static function glob($glob)
+    public static function glob($glob, $flags = 0)
     {
-        $results = iterator_to_array(new GlobIterator($glob));
+        $results = iterator_to_array(new GlobIterator($glob, $flags));
 
         sort($results);
 
@@ -126,31 +112,33 @@ class Glob
      * Matches a path against a glob.
      *
      * ```php
-     * if (Glob::match('/project/views/index.html.twig', '/project/*.twig')) {
+     * if (Glob::match('/project/views/index.html.twig', '/project/**.twig')) {
      *     // path matches
      * }
      * ```
      *
-     * @param string $path The path to match.
-     * @param string $glob The canonical glob. The glob should contain forward
-     *                     slashes as directory separators only. It must not
-     *                     contain any "." or ".." segments. Use the
-     *                     "webmozart/path-util" utility to canonicalize globs
-     *                     prior to calling this method.
+     * @param string $path  The path to match.
+     * @param string $glob  The canonical glob. The glob should contain forward
+     *                      slashes as directory separators only. It must not
+     *                      contain any "." or ".." segments. Use the
+     *                      "webmozart/path-util" utility to canonicalize globs
+     *                      prior to calling this method.
+     * @param int    $flags A bitwise combination of the flag constants in
+     *                      this class.
      *
      * @return bool Returns `true` if the path is matched by the glob.
      */
-    public static function match($path, $glob)
+    public static function match($path, $glob, $flags = 0)
     {
         if (false === strpos($glob, '*')) {
             return $glob === $path;
         }
 
-        if (0 !== strpos($path, self::getStaticPrefix($glob))) {
+        if (0 !== strpos($path, self::getStaticPrefix($glob, $flags))) {
             return false;
         }
 
-        if (!preg_match(self::toRegEx($glob), $path)) {
+        if (!preg_match(self::toRegEx($glob, $flags), $path)) {
             return false;
         }
 
@@ -164,7 +152,7 @@ class Glob
      * passed array.
      *
      * ```php
-     * $filteredPaths = Glob::filter($paths, '/project/*.twig');
+     * $filteredPaths = Glob::filter($paths, '/project/**.twig');
      * ```
      *
      * @param string[] $paths A list of paths.
@@ -173,18 +161,24 @@ class Glob
      *                        must not contain any "." or ".." segments. Use the
      *                        "webmozart/path-util" utility to canonicalize
      *                        globs prior to calling this method.
+     * @param int    $flags   A bitwise combination of the flag constants in
+     *                        this class.
      *
      * @return string[] The paths matching the glob indexed by their original
      *                  keys.
      */
-    public static function filter(array $paths, $glob)
+    public static function filter(array $paths, $glob, $flags = 0)
     {
         if (false === strpos($glob, '*')) {
-            return in_array($glob, $paths) ? array($glob) : array();
+            if (false !== $key = array_search($glob, $paths)) {
+                return array($key => $glob);
+            }
+
+            return array();
         }
 
-        $staticPrefix = self::getStaticPrefix($glob);
-        $regExp = self::toRegEx($glob);
+        $staticPrefix = self::getStaticPrefix($glob, $flags);
+        $regExp = self::toRegEx($glob, $flags);
 
         return array_filter($paths, function ($path) use ($staticPrefix, $regExp) {
             return 0 === strpos($path, $staticPrefix) && preg_match($regExp, $path);
@@ -216,33 +210,29 @@ class Glob
      * // => /
      * ```
      *
-     * @param string $glob The canonical glob. The glob should contain forward
-     *                     slashes as directory separators only. It must not
-     *                     contain any "." or ".." segments. Use the
-     *                     "webmozart/path-util" utility to canonicalize globs
-     *                     prior to calling this method.
+     * @param string $glob  The canonical glob. The glob should contain forward
+     *                      slashes as directory separators only. It must not
+     *                      contain any "." or ".." segments. Use the
+     *                      "webmozart/path-util" utility to canonicalize globs
+     *                      prior to calling this method.
+     * @param int    $flags A bitwise combination of the flag constants in this
+     *                      class.
      *
      * @return string The base path of the glob.
      */
-    public static function getBasePath($glob)
+    public static function getBasePath($glob, $flags = 0)
     {
-        // Start searching for a "/" at the last character
-        $offset = -1;
+        // Search the static prefix for the last "/"
+        $staticPrefix = self::getStaticPrefix($glob, $flags);
 
-        // If the glob contains a wildcard "*", start searching for the
-        // "/" on the left of the wildcard
-        if (false !== ($pos = strpos($glob, '*'))) {
-            $offset = $pos - strlen($glob);
-        }
-
-        if (false !== ($pos = strrpos($glob, '/', $offset))) {
+        if (false !== ($pos = strrpos($staticPrefix, '/'))) {
             // Special case: Return "/" if the only slash is at the beginning
             // of the glob
             if (0 === $pos) {
                 return '/';
             }
 
-            return substr($glob, 0, $pos);
+            return substr($staticPrefix, 0, $pos);
         }
 
         // Glob contains no slashes on the left of the wildcard
@@ -256,8 +246,8 @@ class Glob
      * Use this method if you need to match many paths against a glob:
      *
      * ```php
-     * $staticPrefix = Glob::getStaticPrefix('/project/*.twig');
-     * $regEx = Glob::toRegEx('/project/*.twig');
+     * $staticPrefix = Glob::getStaticPrefix('/project/**.twig');
+     * $regEx = Glob::toRegEx('/project/**.twig');
      *
      * if (0 !== strpos($path, $staticPrefix)) {
      *     // no match
@@ -272,16 +262,19 @@ class Glob
      * glob returned by {@link getStaticPrefix()} to reduce the number of calls
      * to the expensive {@link preg_match()}.
      *
-     * @param string $glob The canonical glob. The glob should contain forward
-     *                     slashes as directory separators only. It must not
-     *                     contain any "." or ".." segments. Use the
-     *                     "webmozart/path-util" utility to canonicalize globs
-     *                     prior to calling this method.
+     * @param string $glob  The canonical glob. The glob should contain forward
+     *                      slashes as directory separators only. It must not
+     *                      contain any "." or ".." segments. Use the
+     *                      "webmozart/path-util" utility to canonicalize globs
+     *                      prior to calling this method.
+     * @param int    $flags A bitwise combination of the flag constants in this
+     *                      class.
      *
      * @return string The regular expression for matching the glob.
      */
-    public static function toRegEx($glob)
+    public static function toRegEx($glob, $flags = 0)
     {
+
         // From the PHP manual: To specify a literal single quote, escape it
         // with a backslash (\). To specify a literal backslash, double it (\\).
         // All other instances of backslash will be treated as a literal backslash.
@@ -290,38 +283,21 @@ class Glob
 
         // Normal wildcards:    "*"  => "[^/]*" (regex match any except separator)
         // Double wildcards:    "**" => ".*"    (regex match any)
+
+        // with flag Glob::ESCAPE:
         // Escaped wildcards:   "\*" => "\*"    (regex star)
         // Escaped backslashes: "\\" => "\\"    (regex backslash)
 
         // Other characters are escaped as usual for regular expressions.
 
         // Quote regex characters
-        $regEx = preg_quote($glob, '~');
+        $quoted = preg_quote($glob, '~');
 
-        // Replace "**" by ".*", as long as preceded by an even number of backslashes
-        if (false !== strpos($regEx, self::STAR.self::STAR)) {
-            $regEx = preg_replace(
-                '~(?<!'.self::E_BACKSLASH.')(('.self::E_BACKSLASH.self::E_BACKSLASH.')*)'.self::E_STAR.self::E_STAR.'~',
-                '$1.*',
-                $regEx
-            );
+        if ($flags & self::ESCAPE) {
+            $regEx = self::toRegExEscaped($quoted);
+        } else {
+            $regEx = self::toRegExNonEscaped($quoted);
         }
-
-        // Replace "*" by "[^/]*", as long as preceded by an even number of backslashes
-        if (false !== strpos($regEx, self::STAR)) {
-            $regEx = preg_replace(
-                '~(?<!'.self::E_BACKSLASH.')(('.self::E_BACKSLASH.self::E_BACKSLASH.')*)'.self::E_STAR.'~',
-                '$1[^/]*',
-                $regEx
-            );
-        }
-
-        // Replace "\*" by "*"
-        $regEx = str_replace(self::BACKSLASH.self::STAR, self::STAR, $regEx);
-
-        // Replace "\\\\" by "\\"
-        // (escaped backslashes were escaped again by preg_quote())
-        $regEx = str_replace(self::E_BACKSLASH, self::BACKSLASH, $regEx);
 
         return '~^'.$regEx.'$~';
     }
@@ -332,24 +308,78 @@ class Glob
      * The "static prefix" is the part of the glob up to the first wildcard "*".
      * If the glob does not contain wildcards, the full glob is returned.
      *
-     * @param string $glob The canonical glob. The glob should contain forward
-     *                     slashes as directory separators only. It must not
-     *                     contain any "." or ".." segments. Use the
-     *                     "webmozart/path-util" utility to canonicalize globs
-     *                     prior to calling this method.
+     * @param string $glob  The canonical glob. The glob should contain forward
+     *                      slashes as directory separators only. It must not
+     *                      contain any "." or ".." segments. Use the
+     *                      "webmozart/path-util" utility to canonicalize globs
+     *                      prior to calling this method.
+     * @param int    $flags A bitwise combination of the flag constants in this
+     *                      class.
      *
      * @return string The static prefix of the glob.
      */
-    public static function getStaticPrefix($glob)
+    public static function getStaticPrefix($glob, $flags = 0)
     {
-        if (false !== ($pos = strpos($glob, '*'))) {
-            return substr($glob, 0, $pos);
+        $prefix = $glob;
+
+        if ($flags & self::ESCAPE) {
+            // Read backslashes together with the next (the escaped) character
+            // up to the first non-escaped star
+            if (preg_match('~^('.Symbol::BACKSLASH.'.|[^'.Symbol::BACKSLASH.Symbol::STAR.'])*~', $glob, $matches)) {
+                $prefix = $matches[0];
+            }
+
+            // Replace escaped characters by their unescaped equivalents
+            $prefix = str_replace(array('\\\\', '\\*'), array('\\', '*'), $prefix);
+        } elseif (false !== ($pos = strpos($glob, '*'))) {
+            $prefix = substr($glob, 0, $pos);
         }
 
-        return $glob;
+        return $prefix;
     }
 
     private function __construct()
     {
+    }
+
+    private static function toRegExNonEscaped($quoted)
+    {
+        return str_replace(
+            // Replace "**" by ".*"
+            // Replace "*" by "[^/]*"
+            array(Symbol::STAR.Symbol::STAR, Symbol::STAR),
+            array('.*', '[^/]*'),
+            $quoted
+        );
+    }
+
+    private static function toRegExEscaped($quoted)
+    {
+        // Replace "**" by ".*", as long as preceded by an even number of backslashes
+        if (false !== strpos($quoted, Symbol::STAR.Symbol::STAR)) {
+            $quoted = preg_replace(
+                '~(?<!'.Symbol::E_BACKSLASH.')(('.Symbol::E_BACKSLASH.Symbol::E_BACKSLASH.')*)'.Symbol::E_STAR.Symbol::E_STAR.'~',
+                '$1.*',
+                $quoted
+            );
+        }
+
+        // Replace "*" by "[^/]*", as long as preceded by an even number of backslashes
+        if (false !== strpos($quoted, Symbol::STAR)) {
+            $quoted = preg_replace(
+                '~(?<!'.Symbol::E_BACKSLASH.')(('.Symbol::E_BACKSLASH.Symbol::E_BACKSLASH.')*)'.Symbol::E_STAR.'~',
+                '$1[^/]*',
+                $quoted
+            );
+        }
+
+        return str_replace(
+            // Replace "\*" by "*"
+            // Replace "\\\\" by "\\"
+            // (escaped backslashes were escaped again by preg_quote())
+            array(Symbol::BACKSLASH.Symbol::STAR, Symbol::E_BACKSLASH),
+            array(Symbol::STAR, Symbol::BACKSLASH),
+            $quoted
+        );
     }
 }

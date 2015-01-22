@@ -5,6 +5,8 @@ Changelog
 
  * implemented Ant-like globbing: "*" does not match directory separators
    anymore, but "**" does
+ * escaping must now be explicitly enabled by passing the flag `Glob::ESCAPE`
+   to any of the `Glob` methods
 
 * 1.0.0-beta (2015-01-12)
 

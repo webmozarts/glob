@@ -93,6 +93,7 @@ class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
             $this->tempDir.'/base.css' => 'base.css',
             $this->tempDir.'/css' => 'css',
             $this->tempDir.'/css/reset.css' => 'reset.css',
+            $this->tempDir.'/css/style*.css' => 'style*.css',
             $this->tempDir.'/css/style.css' => 'style.css',
             $this->tempDir.'/js' => 'js',
             $this->tempDir.'/js/script.js' => 'script.js',

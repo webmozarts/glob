@@ -29,6 +29,17 @@ class GlobTest extends PHPUnit_Framework_TestCase
         ), Glob::glob($fixturesDir.'/*.css'));
 
         $this->assertSame(array(
+            $fixturesDir.'/css/style*.css',
+            $fixturesDir.'/css/style.css',
+        ), Glob::glob($fixturesDir.'/css/style*.css'));
+
+        $this->assertSame(array(
+            $fixturesDir.'/css/style*.css',
+        ), Glob::glob($fixturesDir.'/css/style\\*.css', Glob::ESCAPE));
+
+        $this->assertSame(array(), Glob::glob($fixturesDir.'/css/style\\*.css'));
+
+        $this->assertSame(array(
             $fixturesDir.'/base.css',
             $fixturesDir.'/css',
         ), Glob::glob($fixturesDir.'/*css*'));
@@ -36,11 +47,13 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(
             $fixturesDir.'/base.css',
             $fixturesDir.'/css/reset.css',
+            $fixturesDir.'/css/style*.css',
             $fixturesDir.'/css/style.css',
         ), Glob::glob($fixturesDir.'/**.css'));
 
         $this->assertSame(array(
             $fixturesDir.'/css/reset.css',
+            $fixturesDir.'/css/style*.css',
             $fixturesDir.'/css/style.css',
         ), Glob::glob($fixturesDir.'/**/*.css'));
 
@@ -48,25 +61,52 @@ class GlobTest extends PHPUnit_Framework_TestCase
             $fixturesDir.'/base.css',
             $fixturesDir.'/css',
             $fixturesDir.'/css/reset.css',
+            $fixturesDir.'/css/style*.css',
             $fixturesDir.'/css/style.css',
         ), Glob::glob($fixturesDir.'/**css**'));
 
         $this->assertSame(array(), Glob::glob($fixturesDir.'/*foo*'));
     }
+
     /**
-     * @dataProvider provideMatches
+     * @dataProvider provideWildcardMatches
      */
     public function testToRegEx($path, $isMatch)
+    {
+        $regExp = Glob::toRegEx('/foo/*.js~');
+
+        $this->assertSame($isMatch, preg_match($regExp, $path));
+    }
+
+    /**
+     * @dataProvider provideDoubleWildcardMatches
+     */
+    public function testToRegExDoubleWildcard($path, $isMatch)
     {
         $regExp = Glob::toRegEx('/foo/**.js~');
 
         $this->assertSame($isMatch, preg_match($regExp, $path));
     }
 
-    public function provideMatches()
+    public function provideWildcardMatches()
     {
         return array(
             // The method assumes that the path is already consolidated
+            array('/bar/baz.js~', 0),
+            array('/foo/baz.js~', 1),
+            array('/foo/../bar/baz.js~', 0),
+            array('/foo/../foo/baz.js~', 0),
+            array('/bar/baz.js', 0),
+            array('/foo/bar/baz.js~', 0),
+            array('foo/baz.js~', 0),
+            array('/bar/foo/baz.js~', 0),
+            array('/bar/.js~', 0),
+        );
+    }
+
+    public function provideDoubleWildcardMatches()
+    {
+        return array(
             array('/bar/baz.js~', 0),
             array('/foo/baz.js~', 1),
             array('/foo/../bar/baz.js~', 1),
@@ -86,23 +126,40 @@ class GlobTest extends PHPUnit_Framework_TestCase
     public function testEscapedWildcard()
     {
         // evaluates to "\*"
-        $regExp = Glob::toRegEx('/foo/\\*.js~');
+        $regExp = Glob::toRegEx('/foo/\\*.js~', Glob::ESCAPE);
 
         $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/*.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/\\baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/\\*.js~'));
     }
 
     public function testEscapedWildcard2()
     {
         // evaluates to "\*"
-        $regExp = Glob::toRegEx('/foo/\*.js~');
+        $regExp = Glob::toRegEx('/foo/\*.js~', Glob::ESCAPE);
 
         $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/*.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/\\baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/\\*.js~'));
+    }
+
+    public function testEscapedWildcardIgnoredIfNoEscapeFlag()
+    {
+        // evaluates to "\*"
+        $regExp = Glob::toRegEx('/foo/\\*.js~');
+
+        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/*.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\\baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\\*.js~'));
     }
 
     public function testMatchEscapedWildcard()
     {
         // evaluates to "\*"
-        $regExp = Glob::toRegEx('/foo/\\*.js~');
+        $regExp = Glob::toRegEx('/foo/\\*.js~', Glob::ESCAPE);
 
         $this->assertSame(1, preg_match($regExp, '/foo/*.js~'));
     }
@@ -110,7 +167,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
     public function testMatchEscapedDoubleWildcard()
     {
         // evaluates to "\*\*"
-        $regExp = Glob::toRegEx('/foo/\\*\\*.js~');
+        $regExp = Glob::toRegEx('/foo/\\*\\*.js~', Glob::ESCAPE);
 
         $this->assertSame(1, preg_match($regExp, '/foo/**.js~'));
     }
@@ -118,7 +175,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
     public function testMatchWildcardWithLeadingBackslash()
     {
         // evaluates to "\\*"
-        $regExp = Glob::toRegEx('/foo/\\\\*.js~');
+        $regExp = Glob::toRegEx('/foo/\\\\*.js~', Glob::ESCAPE);
 
         $this->assertSame(1, preg_match($regExp, '/foo/\\baz.js~'));
         $this->assertSame(1, preg_match($regExp, '/foo/\baz.js~'));
@@ -128,7 +185,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
     public function testMatchWildcardWithLeadingBackslash2()
     {
         // evaluates to "\\*"
-        $regExp = Glob::toRegEx('/foo/\\\*.js~');
+        $regExp = Glob::toRegEx('/foo/\\\*.js~', Glob::ESCAPE);
 
         $this->assertSame(1, preg_match($regExp, '/foo/\\baz.js~'));
         $this->assertSame(1, preg_match($regExp, '/foo/\baz.js~'));
@@ -138,7 +195,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
     public function testMatchEscapedWildcardWithLeadingBackslash()
     {
         // evaluates to "\\\*"
-        $regExp = Glob::toRegEx('/foo/\\\\\\*.js~');
+        $regExp = Glob::toRegEx('/foo/\\\\\\*.js~', Glob::ESCAPE);
 
         $this->assertSame(1, preg_match($regExp, '/foo/\\*.js~'));
         $this->assertSame(1, preg_match($regExp, '/foo/\*.js~'));
@@ -150,7 +207,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
     public function testMatchWildcardWithTwoLeadingBackslashes()
     {
         // evaluates to "\\\\*"
-        $regExp = Glob::toRegEx('/foo/\\\\\\\\*.js~');
+        $regExp = Glob::toRegEx('/foo/\\\\\\\\*.js~', Glob::ESCAPE);
 
         $this->assertSame(1, preg_match($regExp, '/foo/\\\\baz.js~'));
         $this->assertSame(1, preg_match($regExp, '/foo/\\\baz.js~'));
@@ -162,7 +219,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
     public function testMatchEscapedWildcardWithTwoLeadingBackslashes()
     {
         // evaluates to "\\\\*"
-        $regExp = Glob::toRegEx('/foo/\\\\\\\\\\*.js~');
+        $regExp = Glob::toRegEx('/foo/\\\\\\\\\\*.js~', Glob::ESCAPE);
 
         $this->assertSame(1, preg_match($regExp, '/foo/\\\\*.js~'));
         $this->assertSame(1, preg_match($regExp, '/foo/\\\*.js~'));
@@ -176,9 +233,9 @@ class GlobTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideStaticPrefixes
      */
-    public function testGetStaticPrefix($glob, $prefix)
+    public function testGetStaticPrefix($glob, $prefix, $flags = 0)
     {
-        $this->assertSame($prefix, Glob::getStaticPrefix($glob));
+        $this->assertSame($prefix, Glob::getStaticPrefix($glob, $flags));
     }
 
     public function provideStaticPrefixes()
@@ -187,15 +244,22 @@ class GlobTest extends PHPUnit_Framework_TestCase
             // The method assumes that the path is already consolidated
             array('/foo/baz/../*/bar/*', '/foo/baz/../'),
             array('/foo/baz/bar*', '/foo/baz/bar'),
+            array('/foo/baz/bar\\*', '/foo/baz/bar\\'),
+            array('/foo/baz/bar\\\\*', '/foo/baz/bar\\\\'),
+            array('/foo/baz/bar\\*', '/foo/baz/bar*', Glob::ESCAPE),
+            array('/foo/baz/bar\\\\*', '/foo/baz/bar\\', Glob::ESCAPE),
+            array('/foo/baz/bar\\\\\\*', '/foo/baz/bar\\*', Glob::ESCAPE),
+            array('/foo/baz/bar\\\\\\\\*', '/foo/baz/bar\\\\', Glob::ESCAPE),
+            array('/foo/baz/bar\\*\\\\', '/foo/baz/bar*\\', Glob::ESCAPE),
         );
     }
 
     /**
      * @dataProvider provideBasePaths
      */
-    public function testGetBasePath($glob, $basePath)
+    public function testGetBasePath($glob, $basePath, $flags = 0)
     {
-        $this->assertSame($basePath, Glob::getBasePath($glob));
+        $this->assertSame($basePath, Glob::getBasePath($glob, $flags));
     }
 
     public function provideBasePaths()
@@ -211,11 +275,19 @@ class GlobTest extends PHPUnit_Framework_TestCase
             array('foo*/baz/bar', ''),
             array('foo*', ''),
             array('*', ''),
+            array('/foo/baz*/bar', '/foo'),
+            array('/foo/baz\\*/bar', '/foo'),
+            array('/foo/baz\\\\*/bar', '/foo'),
+            array('/foo/baz\\\\\\*/bar', '/foo'),
+            array('/foo/baz*/bar', '/foo', Glob::ESCAPE),
+            array('/foo/baz\\*/bar', '/foo/baz*', Glob::ESCAPE),
+            array('/foo/baz\\\\*/bar', '/foo', Glob::ESCAPE),
+            array('/foo/baz\\\\\\*/bar', '/foo/baz\\*', Glob::ESCAPE),
         );
     }
 
     /**
-     * @dataProvider provideMatches
+     * @dataProvider provideDoubleWildcardMatches
      */
     public function testMatch($path, $isMatch)
     {
@@ -228,6 +300,19 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(Glob::match('/foo/bar.js', '/foo/bar.js~'));
     }
 
+    public function testMatchEscaped()
+    {
+        $this->assertTrue(Glob::match('/foo/bar*.js~', '/foo/bar*.js~', Glob::ESCAPE));
+        $this->assertTrue(Glob::match('/foo/bar\\*.js~', '/foo/bar*.js~', Glob::ESCAPE));
+        $this->assertTrue(Glob::match('/foo/bar\\baz.js~', '/foo/bar*.js~', Glob::ESCAPE));
+        $this->assertTrue(Glob::match('/foo/bar*.js~', '/foo/bar\\*.js~', Glob::ESCAPE));
+        $this->assertFalse(Glob::match('/foo/bar\\*.js~', '/foo/bar\\*.js~', Glob::ESCAPE));
+        $this->assertFalse(Glob::match('/foo/bar\\baz.js~', '/foo/bar\\*.js~', Glob::ESCAPE));
+        $this->assertFalse(Glob::match('/foo/bar*.js~', '/foo/bar\\\\*.js~', Glob::ESCAPE));
+        $this->assertTrue(Glob::match('/foo/bar\\*.js~', '/foo/bar\\\\*.js~', Glob::ESCAPE));
+        $this->assertTrue(Glob::match('/foo/bar\\baz.js~', '/foo/bar\\\\*.js~', Glob::ESCAPE));
+    }
+
     public function testFilter()
     {
         $paths = array();
@@ -236,7 +321,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
         // The keys remain the same in the filtered array
         $i = 0;
 
-        foreach ($this->provideMatches() as $input) {
+        foreach ($this->provideDoubleWildcardMatches() as $input) {
             $paths[$i] = $input[0];
 
             if ($input[1]) {
@@ -256,7 +341,42 @@ class GlobTest extends PHPUnit_Framework_TestCase
             '/foo/bar.js',
         );
 
-        $this->assertSame(array('/foo/bar.js'), Glob::filter($paths, '/foo/bar.js'));
+        $this->assertSame(array(1 => '/foo/bar.js'), Glob::filter($paths, '/foo/bar.js'));
         $this->assertSame(array(), Glob::filter($paths, '/foo/bar.js~'));
+    }
+
+    public function testFilterEscaped()
+    {
+        $paths = array(
+            '/foo',
+            '/foo*.js',
+            '/foo/bar.js',
+            '/foo/bar*.js',
+            '/foo/bar\\*.js',
+            '/foo/bar\\baz.js',
+        );
+
+        $this->assertSame(array(
+            1 => '/foo*.js',
+            3 => '/foo/bar*.js',
+            4 => '/foo/bar\\*.js',
+        ), Glob::filter($paths, '/**\\*.js', Glob::ESCAPE));
+    }
+
+    public function testFilterNonEscaped()
+    {
+        $paths = array(
+            '/foo',
+            '/foo*.js',
+            '/foo/bar.js',
+            '/foo/bar*.js',
+            '/foo/bar\\*.js',
+            '/foo/bar\\baz.js',
+        );
+
+        $this->assertSame(array(
+            4 => '/foo/bar\\*.js',
+            5 => '/foo/bar\\baz.js',
+        ), Glob::filter($paths, '/**\\*.js'));
     }
 }

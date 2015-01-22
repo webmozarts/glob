@@ -12,6 +12,7 @@
 namespace Webmozart\Glob\Tests\Iterator;
 
 use PHPUnit_Framework_TestCase;
+use Webmozart\Glob\Glob;
 use Webmozart\Glob\Iterator\GlobIterator;
 
 /**
@@ -44,6 +45,32 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
         ), iterator_to_array($iterator));
     }
 
+    public function testIterateEscaped()
+    {
+        $iterator = new GlobIterator($this->fixturesDir.'/css/style\\*.css', Glob::ESCAPE);
+
+        $this->assertSameAfterSorting(array(
+            $this->fixturesDir.'/css/style*.css',
+        ), iterator_to_array($iterator));
+    }
+
+    public function testIterateNonEscaped1()
+    {
+        $iterator = new GlobIterator($this->fixturesDir.'/css/style*.css');
+
+        $this->assertSameAfterSorting(array(
+            $this->fixturesDir.'/css/style*.css',
+            $this->fixturesDir.'/css/style.css',
+        ), iterator_to_array($iterator));
+    }
+
+    public function testIterateNonEscaped2()
+    {
+        $iterator = new GlobIterator($this->fixturesDir.'/css/style\\*.css');
+
+        $this->assertSameAfterSorting(array(), iterator_to_array($iterator));
+    }
+
     public function testIterateDoubleWildcard()
     {
         $iterator = new GlobIterator($this->fixturesDir.'/**.css');
@@ -51,6 +78,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
         $this->assertSameAfterSorting(array(
             $this->fixturesDir.'/base.css',
             $this->fixturesDir.'/css/reset.css',
+            $this->fixturesDir.'/css/style*.css',
             $this->fixturesDir.'/css/style.css',
         ), iterator_to_array($iterator));
     }
@@ -100,6 +128,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
             $this->fixturesDir.'/base.css',
             $this->fixturesDir.'/css',
             $this->fixturesDir.'/css/reset.css',
+            $this->fixturesDir.'/css/style*.css',
             $this->fixturesDir.'/css/style.css',
         ), iterator_to_array($iterator));
     }
@@ -123,6 +152,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
             $this->fixturesDir.'/base.css',
             $this->fixturesDir.'/css',
             $this->fixturesDir.'/css/reset.css',
+            $this->fixturesDir.'/css/style*.css',
             $this->fixturesDir.'/css/style.css',
             $this->fixturesDir.'/js',
             $this->fixturesDir.'/js/script.js',

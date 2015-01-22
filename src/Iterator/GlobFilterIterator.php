@@ -29,12 +29,14 @@ class GlobFilterIterator extends RegexFilterIterator
      * @param string   $glob          The canonical glob.
      * @param Iterator $innerIterator The filtered iterator.
      * @param int      $mode          A bitwise combination of the mode constants.
+     * @param int      $flags         A bitwise combination of the flag constants
+     *                                in {@link Glob}.
      */
-    public function __construct($glob, Iterator $innerIterator, $mode = self::FILTER_VALUE)
+    public function __construct($glob, Iterator $innerIterator, $mode = self::FILTER_VALUE, $flags = 0)
     {
         parent::__construct(
-            Glob::toRegEx($glob),
-            Glob::getStaticPrefix($glob),
+            Glob::toRegEx($glob, $flags),
+            Glob::getStaticPrefix($glob, $flags),
             $innerIterator,
             $mode
         );

@@ -17,26 +17,26 @@ use RecursiveIteratorIterator;
 use Webmozart\Glob\Glob;
 
 /**
- * Implements a Git-like variant of glob.
- *
- * Contrary to {@link glob()}, wildcards "*" also match directory separators
- * in this implementation.
+ * Returns filesystem paths matching a glob.
  *
  * @since  1.0
  * @author Bernhard Schussek <bschussek@gmail.com>
+ * @see    Glob
  */
 class GlobIterator extends GlobFilterIterator
 {
     /**
      * Creates a new iterator.
      *
-     * @param string $glob The glob pattern.
+     * @param string $glob  The glob pattern.
+     * @param int    $flags A bitwise combination of the flag constants in
+     *                      {@link Glob}.
      */
-    public function __construct($glob)
+    public function __construct($glob, $flags = 0)
     {
         $basePath = Glob::getBasePath($glob);
 
-        if (file_exists($glob)) {
+        if (file_exists($glob) && false === strpos($glob, '*')) {
             // If the glob is a file path, return that path
             $innerIterator = new ArrayIterator(array($glob));
         } elseif (is_dir($basePath)) {
@@ -50,6 +50,6 @@ class GlobIterator extends GlobFilterIterator
             $innerIterator = new EmptyIterator();
         }
 
-        parent::__construct($glob, $innerIterator);
+        parent::__construct($glob, $innerIterator, self::FILTER_VALUE, $flags);
     }
 }
