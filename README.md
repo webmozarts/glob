@@ -99,11 +99,11 @@ contain a `*` in their filename. To enable the escape mode, pass the
 `Glob::ESCAPE` flag to any of the methods in `Glob`.
 
 ```php
-$paths = Glob::glob('//backup\\*/*.css', Glob::ESCAPE);
+$paths = Glob::glob('/backup\\*/*.css', Glob::ESCAPE);
 ```
 
-In the previous example, the glob matches all CSS files in the `backup*`
-directory rather than in all directories starting with `backup`. Due to PHP's 
+In the previous example, the glob matches all CSS files in the `/backup*`
+directory rather than in all directories starting with `/backup`. Due to PHP's 
 own escaping in strings, the backslash character `\` needs to be typed twice to
 produce a single `\` in the string.
 
