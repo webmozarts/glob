@@ -39,8 +39,7 @@ foreach ($iterator as $path) {
 }
 ```
 
-Path Matching
-~~~~~~~~~~~~~
+### Path Matching
 
 The package also provides utility methods for comparing paths against globs.
 Use `Glob::match()` to match a path against a glob:
@@ -69,8 +68,7 @@ foreach ($iterator as $path) {
 }
 ```
 
-Relative Globs
-~~~~~~~~~~~~~~
+### Relative Globs
 
 Relative globs such as `*.css` are not supported. Usually, such globs refer to
 paths relative to the current working directory. This utility, however, does not
@@ -89,8 +87,7 @@ use Webmozart\PathUtil\Path;
 $paths = Glob::glob(Path::makeAbsolute($glob, getcwd());
 ```
 
-Windows Compatibility
-~~~~~~~~~~~~~~~~~~~~~
+### Windows Compatibility
 
 Globs need to be passed in [canonical form] with forward slashes only.
 
