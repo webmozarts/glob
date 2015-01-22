@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Webmozart\Glob\Glob | Webmozart Glob API</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="active">
+					<a href="namespace-Webmozart.html">
+						Webmozart<span></span>
+					</a>
+
+						<ul>
+				<li class="active">
+					<a href="namespace-Webmozart.Glob.html">
+						Glob<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Webmozart.Glob.Iterator.html">
+						Iterator					</a>
+
+						</li>
+							</ul></li></ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-Webmozart.Glob.Glob.html">Glob</a></li>
+				<li><a href="class-Webmozart.Glob.Symbol.html">Symbol</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Webmozart.Glob.html" title="Summary of Webmozart\Glob"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Glob</h1>
+
+
+	<div class="description">
+	<p>Searches and matches file paths using Ant-like globs.</p>
+
+<p>This class implements an Ant-like version of PHP's <code>glob()</code> function. The
+wildcard "*" matches any number of characters except directory separators.
+The double wildcard "**" matches any number of characters, including
+directory separators.</p>
+
+<p>Use <code><a href="class-Webmozart.Glob.Glob.html#_glob">Webmozart\Glob\Glob::glob()</a></code> to glob the filesystem for paths:</p>
+
+<pre><span class="php-keyword1">foreach</span> (<span class="php-keyword2">Glob</span>::<span class="php-keyword2">glob</span>(<span class="php-quote">'/project/**.twig'</span>) <span class="php-keyword1">as</span> <span class="php-var">$path</span>) { <span class="php-comment">// do something...</span>
+}</pre>
+
+<p>Use <code><a href="class-Webmozart.Glob.Glob.html#_match">Webmozart\Glob\Glob::match()</a></code> to match a file path against a glob:</p>
+
+<pre><span class="php-keyword1">if</span> (<span class="php-keyword2">Glob</span>::match(<span class="php-quote">'/project/views/index.html.twig'</span>, <span class="php-quote">'/project/**.twig'</span>)) { <span class="php-comment">// path matches</span>
+}</pre>
+
+<p>You can also filter an array of paths for all paths that match your glob with
+<code><a href="class-Webmozart.Glob.Glob.html#_filter">Webmozart\Glob\Glob::filter()</a></code>:</p>
+
+<pre><span class="php-var">$filteredPaths</span> = <span class="php-keyword2">Glob</span>::filter(<span class="php-var">$paths</span>, <span class="php-quote">'/project/**.twig'</span>);</pre>
+
+<p>Internally, the methods described above convert the glob into a regular
+expression that is then matched against the matched paths. If you need to
+match many paths against the same glob, you should convert the glob manually
+and use preg_match() to test the paths:</p>
+
+<pre><span class="php-var">$staticPrefix</span> = <span class="php-keyword2">Glob</span>::getStaticPrefix(<span class="php-quote">'/project/**.twig'</span>);
+<span class="php-var">$regEx</span> = <span class="php-keyword2">Glob</span>::toRegEx(<span class="php-quote">'/project/**.twig'</span>);
+
+<span class="php-keyword1">if</span> (<span class="php-num">0</span> !== <span class="php-keyword2">strpos</span>(<span class="php-var">$path</span>, <span class="php-var">$staticPrefix</span>)) { <span class="php-comment">// no match</span>
+}
+
+<span class="php-keyword1">if</span> (!<span class="php-keyword2">preg_match</span>(<span class="php-var">$regEx</span>, <span class="php-var">$path</span>)) { <span class="php-comment">// no match</span>
+}</pre>
+
+<p>The method <code><a href="class-Webmozart.Glob.Glob.html#_getStaticPrefix">Webmozart\Glob\Glob::getStaticPrefix()</a></code> returns the part of the glob up to the
+first wildcard "*". You should always test whether a path has this prefix
+before calling the much more expensive preg_match().</p>
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Webmozart.html">Webmozart</a>\<a href="namespace-Webmozart.Glob.html">Glob</a><br>
+		
+
+				<b>Author:</b>
+				Bernhard Schussek <a href="&#x6d;&#x61;&#105;&#108;&#116;&#x6f;&#x3a;&#x62;&#115;&#99;h&#x75;&#x73;&#115;&#101;&#107;&#x40;&#x67;&#x6d;&#97;&#105;l&#x2e;&#x63;&#111;&#109;">&#x62;&#115;&#99;h&#x75;&#x73;&#115;&#101;&#107;&#x40;&#x67;&#x6d;&#97;&#105;l&#x2e;&#x63;&#111;&#109;</a><br>
+				<b>Since:</b>
+				1.0<br>
+			<b>Located at</b> <a href="source-class-Webmozart.Glob.Glob.html#18-400" title="Go to source code">Glob.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="glob" id="_glob">
+
+		<td class="attributes"><code>
+			 public static
+
+			string[]
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_glob">#</a>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#81-111" title="Go to source code">glob</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			<p>Globs the file system paths matching the glob.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Globs the file system paths matching the glob.</p>
+
+<p>The glob may contain the wildcard "<em>". This wildcard matches any number
+of characters, *including</em> directory separators.</p>
+
+<pre><span class="php-keyword1">foreach</span> (<span class="php-keyword2">Glob</span>::<span class="php-keyword2">glob</span>(<span class="php-quote">'/project/**.twig'</span>) <span class="php-keyword1">as</span> <span class="php-var">$path</span>) { <span class="php-comment">// do something...</span>
+}</pre>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$glob</var></dt>
+					<dd><p>The canonical glob. The glob should contain forward
+                     slashes as directory separators only. It must not
+                     contain any "." or ".." segments. Use the
+                     "webmozart/path-util" utility to canonicalize globs
+                     prior to calling this method.</p></dd>
+					<dt><var>$flags</var></dt>
+					<dd><p>A bitwise combination of the flag constants in this
+                     class.</p></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string[]<br><p>The matching paths. The keys of the array are
+                 incrementing integers.</p>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="match" id="_match">
+
+		<td class="attributes"><code>
+			 public static
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_match">#</a>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#113-148" title="Go to source code">match</a>( <span>string <var>$path</var></span>, <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			<p>Matches a path against a glob.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Matches a path against a glob.</p>
+
+<pre><span class="php-keyword1">if</span> (<span class="php-keyword2">Glob</span>::match(<span class="php-quote">'/project/views/index.html.twig'</span>, <span class="php-quote">'/project/**.twig'</span>)) { <span class="php-comment">// path matches</span>
+}</pre>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd>The path to match.</dd>
+					<dt><var>$glob</var></dt>
+					<dd><p>The canonical glob. The glob should contain forward
+                     slashes as directory separators only. It must not
+                     contain any "." or ".." segments. Use the
+                     "webmozart/path-util" utility to canonicalize globs
+                     prior to calling this method.</p></dd>
+					<dt><var>$flags</var></dt>
+					<dd><p>A bitwise combination of the flag constants in
+                     this class.</p></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean<br>Returns <code>true</code> if the path is matched by the glob.
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="filter" id="_filter">
+
+		<td class="attributes"><code>
+			 public static
+
+			string[]
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_filter">#</a>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#150-188" title="Go to source code">filter</a>( <span>array <var>$paths</var></span>, <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			<p>Filters an array for paths matching a glob.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Filters an array for paths matching a glob.</p>
+
+<p>The filtered array is returned. This array preserves the keys of the
+passed array.</p>
+
+<pre><span class="php-var">$filteredPaths</span> = <span class="php-keyword2">Glob</span>::filter(<span class="php-var">$paths</span>, <span class="php-quote">'/project/**.twig'</span>);</pre>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$paths</var></dt>
+					<dd>A list of paths.</dd>
+					<dt><var>$glob</var></dt>
+					<dd><p>The canonical glob. The glob should contain
+                       forward slashes as directory separators only. It
+                       must not contain any "." or ".." segments. Use the
+                       "webmozart/path-util" utility to canonicalize
+                       globs prior to calling this method.</p></dd>
+					<dt><var>$flags</var></dt>
+					<dd><p>A bitwise combination of the flag constants in
+                       this class.</p></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string[]<br><p>The paths matching the glob indexed by their original
+                 keys.</p>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getBasePath" id="_getBasePath">
+
+		<td class="attributes"><code>
+			 public static
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getBasePath">#</a>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#190-243" title="Go to source code">getBasePath</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			<p>Returns the base path of a glob.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Returns the base path of a glob.</p>
+
+<p>This method returns the most specific directory that contains all files
+matched by the glob. If this directory does not exist on the file system,
+it's not necessary to execute the glob algorithm.</p>
+
+<p>More specifically, the "base path" is the longest path trailed by a "/"
+on the left of the first wildcard "*". If the glob does not contain
+wildcards, the directory name of the glob is returned.</p>
+
+<pre><span class="php-keyword2">Glob</span>::getBasePath(<span class="php-quote">'/css/*.css'</span>);
+<span class="php-comment">// =&gt; /css</span>
+
+<span class="php-keyword2">Glob</span>::getBasePath(<span class="php-quote">'/css/style.css'</span>);
+<span class="php-comment">// =&gt; /css</span>
+
+<span class="php-keyword2">Glob</span>::getBasePath(<span class="php-quote">'/css/st*.css'</span>);
+<span class="php-comment">// =&gt; /css</span>
+
+<span class="php-keyword2">Glob</span>::getBasePath(<span class="php-quote">'/*.css'</span>);
+<span class="php-comment">// =&gt; /</span></pre>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$glob</var></dt>
+					<dd><p>The canonical glob. The glob should contain forward
+                     slashes as directory separators only. It must not
+                     contain any "." or ".." segments. Use the
+                     "webmozart/path-util" utility to canonicalize globs
+                     prior to calling this method.</p></dd>
+					<dt><var>$flags</var></dt>
+					<dd><p>A bitwise combination of the flag constants in this
+                     class.</p></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string<br>The base path of the glob.
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="toRegEx" id="_toRegEx">
+
+		<td class="attributes"><code>
+			 public static
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_toRegEx">#</a>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#245-311" title="Go to source code">toRegEx</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			<p>Converts a glob to a regular expression.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Converts a glob to a regular expression.</p>
+
+<p>Use this method if you need to match many paths against a glob:</p>
+
+<pre><span class="php-var">$staticPrefix</span> = <span class="php-keyword2">Glob</span>::getStaticPrefix(<span class="php-quote">'/project/**.twig'</span>);
+<span class="php-var">$regEx</span> = <span class="php-keyword2">Glob</span>::toRegEx(<span class="php-quote">'/project/**.twig'</span>);
+
+<span class="php-keyword1">if</span> (<span class="php-num">0</span> !== <span class="php-keyword2">strpos</span>(<span class="php-var">$path</span>, <span class="php-var">$staticPrefix</span>)) { <span class="php-comment">// no match</span>
+}
+
+<span class="php-keyword1">if</span> (!<span class="php-keyword2">preg_match</span>(<span class="php-var">$regEx</span>, <span class="php-var">$path</span>)) { <span class="php-comment">// no match</span>
+}</pre>
+
+<p>You should always test whether a path contains the static prefix of the
+glob returned by <code><a href="class-Webmozart.Glob.Glob.html#_getStaticPrefix">Webmozart\Glob\Glob::getStaticPrefix()</a></code> to reduce the number of calls
+to the expensive preg_match().</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$glob</var></dt>
+					<dd><p>The canonical glob. The glob should contain forward
+                     slashes as directory separators only. It must not
+                     contain any "." or ".." segments. Use the
+                     "webmozart/path-util" utility to canonicalize globs
+                     prior to calling this method.</p></dd>
+					<dt><var>$flags</var></dt>
+					<dd><p>A bitwise combination of the flag constants in this
+                     class.</p></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string<br>The regular expression for matching the glob.
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getStaticPrefix" id="_getStaticPrefix">
+
+		<td class="attributes"><code>
+			 public static
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getStaticPrefix">#</a>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#313-354" title="Go to source code">getStaticPrefix</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			<p>Returns the static prefix of a glob.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Returns the static prefix of a glob.</p>
+
+<p>The "static prefix" is the part of the glob up to the first wildcard "*".
+If the glob does not contain wildcards, the full glob is returned.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$glob</var></dt>
+					<dd><p>The canonical glob. The glob should contain forward
+                     slashes as directory separators only. It must not
+                     contain any "." or ".." segments. Use the
+                     "webmozart/path-util" utility to canonicalize globs
+                     prior to calling this method.</p></dd>
+					<dt><var>$flags</var></dt>
+					<dd><p>A bitwise combination of the flag constants in this
+                     class.</p></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string<br>The static prefix of the glob.
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="ESCAPE" id="ESCAPE">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Webmozart.Glob.Glob.html#76-79" title="Go to source code"><b>ESCAPE</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Flag: Enable escaping of special characters with leading backslashes.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Flag: Enable escaping of special characters with leading backslashes.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#ESCAPE" class="anchor">#</a>
+				<code><span class="php-num">1</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Webmozart Glob API API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

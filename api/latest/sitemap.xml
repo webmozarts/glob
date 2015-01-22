@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+	<loc>https://webmozart.github.io/glob/api/latest/index.html</loc>
+</url>
+<url>
+	<loc>https://webmozart.github.io/glob/api/latest/namespace-Webmozart.html</loc>
+</url>
+<url>
+	<loc>https://webmozart.github.io/glob/api/latest/namespace-Webmozart.Glob.html</loc>
+</url>
+<url>
+	<loc>https://webmozart.github.io/glob/api/latest/namespace-Webmozart.Glob.Iterator.html</loc>
+</url>
+
+
+<url>
+	<loc>https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.GlobFilterIterator.html</loc>
+</url>
+<url>
+	<loc>https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.GlobIterator.html</loc>
+</url>
+<url>
+	<loc>https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html</loc>
+</url>
+<url>
+	<loc>https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.RegexFilterIterator.html</loc>
+</url>
+</urlset>
