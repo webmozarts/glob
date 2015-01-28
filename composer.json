@@ -1,6 +1,6 @@
 {
     "name": "webmozart/glob",
-    "description": "A PHP implementation of Git's glob.",
+    "description": "A PHP implementation of Ant's glob.",
     "license": "MIT",
     "authors": [
         {
