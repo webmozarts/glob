@@ -1,6 +1,10 @@
 Changelog
 =========
 
+* 1.0.0-next (@release_date@)
+
+ * fixed installation on Windows
+
 * 1.0.0-beta2 (2015-01-22)
 
  * implemented Ant-like globbing: `*` does not match directory separators

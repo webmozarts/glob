@@ -26,10 +26,10 @@ class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        while (false === mkdir($this->tempDir = sys_get_temp_dir().'/webmozart/RecursiveDirectoryIteratorTest'.rand(10000, 99999), 0777, true)) {}
+        while (false === mkdir($this->tempDir = sys_get_temp_dir().'/webmozart-glob/RecursiveDirectoryIteratorTest'.rand(10000, 99999), 0777, true)) {}
 
         $filesystem = new Filesystem();
-        $filesystem->mirror(__DIR__.'/Fixtures', $this->tempDir);
+        $filesystem->mirror(__DIR__.'/../Fixtures', $this->tempDir);
     }
 
     protected function tearDown()
@@ -93,7 +93,6 @@ class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
             $this->tempDir.'/base.css' => 'base.css',
             $this->tempDir.'/css' => 'css',
             $this->tempDir.'/css/reset.css' => 'reset.css',
-            $this->tempDir.'/css/style*.css' => 'style*.css',
             $this->tempDir.'/css/style.css' => 'style.css',
             $this->tempDir.'/js' => 'js',
             $this->tempDir.'/js/script.js' => 'script.js',

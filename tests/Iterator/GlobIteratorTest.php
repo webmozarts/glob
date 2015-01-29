@@ -12,6 +12,7 @@
 namespace Webmozart\Glob\Tests\Iterator;
 
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Glob;
 use Webmozart\Glob\Iterator\GlobIterator;
 
@@ -21,83 +22,113 @@ use Webmozart\Glob\Iterator\GlobIterator;
  */
 class GlobIteratorTest extends PHPUnit_Framework_TestCase
 {
-    private $fixturesDir;
+    private $tempDir;
 
     private $tempFile;
 
     protected function setUp()
     {
-        $this->fixturesDir = __DIR__.'/Fixtures';
+        while (false === @mkdir($this->tempDir = sys_get_temp_dir().'/webmozart-glob/GlobIteratorTest'.rand(10000, 99999), 0777, true)) {}
+
+        $filesystem = new Filesystem();
+        $filesystem->mirror(__DIR__.'/../Fixtures', $this->tempDir);
+
         $this->tempFile = tempnam(sys_get_temp_dir(), 'webmozart_GlobIteratorTest');
+
     }
 
     protected function tearDown()
     {
-        unlink($this->tempFile);
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->tempDir);
+        $filesystem->remove($this->tempFile);
     }
 
     public function testIterate()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/*.css');
+        $iterator = new GlobIterator($this->tempDir.'/*.css');
 
         $this->assertSameAfterSorting(array(
-            $this->fixturesDir.'/base.css',
+            $this->tempDir.'/base.css',
         ), iterator_to_array($iterator));
     }
 
     public function testIterateEscaped()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/css/style\\*.css', Glob::ESCAPE);
+        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            $this->markTestSkipped('A "*" in filenames is not supported on Windows.');
+
+            return;
+        }
+
+        touch($this->tempDir.'/css/style*.css');
+
+        $iterator = new GlobIterator($this->tempDir.'/css/style\\*.css', Glob::ESCAPE);
 
         $this->assertSameAfterSorting(array(
-            $this->fixturesDir.'/css/style*.css',
+            $this->tempDir.'/css/style*.css',
         ), iterator_to_array($iterator));
     }
 
     public function testIterateNonEscaped1()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/css/style*.css');
+        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            $this->markTestSkipped('A "*" in filenames is not supported on Windows.');
+
+            return;
+        }
+
+        touch($this->tempDir.'/css/style*.css');
+
+        $iterator = new GlobIterator($this->tempDir.'/css/style*.css');
 
         $this->assertSameAfterSorting(array(
-            $this->fixturesDir.'/css/style*.css',
-            $this->fixturesDir.'/css/style.css',
+            $this->tempDir.'/css/style*.css',
+            $this->tempDir.'/css/style.css',
         ), iterator_to_array($iterator));
     }
 
     public function testIterateNonEscaped2()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/css/style\\*.css');
+        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            $this->markTestSkipped('A "*" in filenames is not supported on Windows.');
+
+            return;
+        }
+
+        touch($this->tempDir.'/css/style*.css');
+
+        $iterator = new GlobIterator($this->tempDir.'/css/style\\*.css');
 
         $this->assertSameAfterSorting(array(), iterator_to_array($iterator));
     }
 
     public function testIterateDoubleWildcard()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/**.css');
+        $iterator = new GlobIterator($this->tempDir.'/**.css');
 
         $this->assertSameAfterSorting(array(
-            $this->fixturesDir.'/base.css',
-            $this->fixturesDir.'/css/reset.css',
-            $this->fixturesDir.'/css/style*.css',
-            $this->fixturesDir.'/css/style.css',
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css/reset.css',
+            $this->tempDir.'/css/style.css',
         ), iterator_to_array($iterator));
     }
 
     public function testIterateSingleDirectory()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/css');
+        $iterator = new GlobIterator($this->tempDir.'/css');
 
         $this->assertSame(array(
-            $this->fixturesDir.'/css',
+            $this->tempDir.'/css',
         ), iterator_to_array($iterator));
     }
 
     public function testIterateSingleFile()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/css/style.css');
+        $iterator = new GlobIterator($this->tempDir.'/css/style.css');
 
         $this->assertSame(array(
-            $this->fixturesDir.'/css/style.css',
+            $this->tempDir.'/css/style.css',
         ), iterator_to_array($iterator));
     }
 
@@ -112,63 +143,61 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
 
     public function testWildcardMayMatchZeroCharacters()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/*css');
+        $iterator = new GlobIterator($this->tempDir.'/*css');
 
         $this->assertSameAfterSorting(array(
-            $this->fixturesDir.'/base.css',
-            $this->fixturesDir.'/css',
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css',
         ), iterator_to_array($iterator));
     }
 
     public function testDoubleWildcardMayMatchZeroCharacters()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/**css');
+        $iterator = new GlobIterator($this->tempDir.'/**css');
 
         $this->assertSameAfterSorting(array(
-            $this->fixturesDir.'/base.css',
-            $this->fixturesDir.'/css',
-            $this->fixturesDir.'/css/reset.css',
-            $this->fixturesDir.'/css/style*.css',
-            $this->fixturesDir.'/css/style.css',
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css',
+            $this->tempDir.'/css/reset.css',
+            $this->tempDir.'/css/style.css',
         ), iterator_to_array($iterator));
     }
 
     public function testWildcardInRoot()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/*');
+        $iterator = new GlobIterator($this->tempDir.'/*');
 
         $this->assertSameAfterSorting(array(
-            $this->fixturesDir.'/base.css',
-            $this->fixturesDir.'/css',
-            $this->fixturesDir.'/js',
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css',
+            $this->tempDir.'/js',
         ), iterator_to_array($iterator));
     }
 
     public function testDoubleWildcardInRoot()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/**');
+        $iterator = new GlobIterator($this->tempDir.'/**');
 
         $this->assertSameAfterSorting(array(
-            $this->fixturesDir.'/base.css',
-            $this->fixturesDir.'/css',
-            $this->fixturesDir.'/css/reset.css',
-            $this->fixturesDir.'/css/style*.css',
-            $this->fixturesDir.'/css/style.css',
-            $this->fixturesDir.'/js',
-            $this->fixturesDir.'/js/script.js',
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css',
+            $this->tempDir.'/css/reset.css',
+            $this->tempDir.'/css/style.css',
+            $this->tempDir.'/js',
+            $this->tempDir.'/js/script.js',
         ), iterator_to_array($iterator));
     }
 
     public function testNoMatches()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/foo*');
+        $iterator = new GlobIterator($this->tempDir.'/foo*');
 
         $this->assertSame(array(), iterator_to_array($iterator));
     }
 
     public function testNonExistingBaseDirectory()
     {
-        $iterator = new GlobIterator($this->fixturesDir.'/foo/*');
+        $iterator = new GlobIterator($this->tempDir.'/foo/*');
 
         $this->assertSame(array(), iterator_to_array($iterator));
     }

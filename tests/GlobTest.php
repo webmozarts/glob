@@ -12,6 +12,7 @@
 namespace Webmozart\Glob\Tests;
 
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Glob;
 
 /**
@@ -20,52 +21,74 @@ use Webmozart\Glob\Glob;
  */
 class GlobTest extends PHPUnit_Framework_TestCase
 {
+    private $tempDir;
+
+    protected function setUp()
+    {
+        while (false === @mkdir($this->tempDir = sys_get_temp_dir().'/webmozart-glob/GlobTest'.rand(10000, 99999), 0777, true)) {}
+
+        $filesystem = new Filesystem();
+        $filesystem->mirror(__DIR__.'/Fixtures', $this->tempDir);
+    }
+
+    protected function tearDown()
+    {
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->tempDir);
+    }
+
     public function testGlob()
     {
-        $fixturesDir = __DIR__.'/Iterator/Fixtures';
+        $this->assertSame(array(
+            $this->tempDir.'/base.css',
+        ), Glob::glob($this->tempDir.'/*.css'));
 
         $this->assertSame(array(
-            $fixturesDir.'/base.css',
-        ), Glob::glob($fixturesDir.'/*.css'));
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css',
+        ), Glob::glob($this->tempDir.'/*css*'));
 
         $this->assertSame(array(
-            $fixturesDir.'/css/style*.css',
-            $fixturesDir.'/css/style.css',
-        ), Glob::glob($fixturesDir.'/css/style*.css'));
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css/reset.css',
+            $this->tempDir.'/css/style.css',
+        ), Glob::glob($this->tempDir.'/**.css'));
 
         $this->assertSame(array(
-            $fixturesDir.'/css/style*.css',
-        ), Glob::glob($fixturesDir.'/css/style\\*.css', Glob::ESCAPE));
-
-        $this->assertSame(array(), Glob::glob($fixturesDir.'/css/style\\*.css'));
-
-        $this->assertSame(array(
-            $fixturesDir.'/base.css',
-            $fixturesDir.'/css',
-        ), Glob::glob($fixturesDir.'/*css*'));
+            $this->tempDir.'/css/reset.css',
+            $this->tempDir.'/css/style.css',
+        ), Glob::glob($this->tempDir.'/**/*.css'));
 
         $this->assertSame(array(
-            $fixturesDir.'/base.css',
-            $fixturesDir.'/css/reset.css',
-            $fixturesDir.'/css/style*.css',
-            $fixturesDir.'/css/style.css',
-        ), Glob::glob($fixturesDir.'/**.css'));
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css',
+            $this->tempDir.'/css/reset.css',
+            $this->tempDir.'/css/style.css',
+        ), Glob::glob($this->tempDir.'/**css**'));
+
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/*foo*'));
+    }
+
+    public function testGlobEscape()
+    {
+        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            $this->markTestSkipped('A "*" in filenames is not supported on Windows.');
+
+            return;
+        }
+
+        touch($this->tempDir.'/css/style*.css');
 
         $this->assertSame(array(
-            $fixturesDir.'/css/reset.css',
-            $fixturesDir.'/css/style*.css',
-            $fixturesDir.'/css/style.css',
-        ), Glob::glob($fixturesDir.'/**/*.css'));
+            $this->tempDir.'/css/style*.css',
+            $this->tempDir.'/css/style.css',
+        ), Glob::glob($this->tempDir.'/css/style*.css'));
 
         $this->assertSame(array(
-            $fixturesDir.'/base.css',
-            $fixturesDir.'/css',
-            $fixturesDir.'/css/reset.css',
-            $fixturesDir.'/css/style*.css',
-            $fixturesDir.'/css/style.css',
-        ), Glob::glob($fixturesDir.'/**css**'));
+            $this->tempDir.'/css/style*.css',
+        ), Glob::glob($this->tempDir.'/css/style\\*.css', Glob::ESCAPE));
 
-        $this->assertSame(array(), Glob::glob($fixturesDir.'/*foo*'));
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/css/style\\*.css'));
     }
 
     /**
