@@ -132,7 +132,7 @@ class Glob
      */
     public static function match($path, $glob, $flags = 0)
     {
-        if (false === strpos($glob, '*')) {
+        if (!self::isDynamic($glob)) {
             return $glob === $path;
         }
 
@@ -171,7 +171,7 @@ class Glob
      */
     public static function filter(array $paths, $glob, $flags = 0)
     {
-        if (false === strpos($glob, '*')) {
+        if (!self::isDynamic($glob)) {
             if (false !== $key = array_search($glob, $paths)) {
                 return array($key => $glob);
             }
@@ -289,8 +289,9 @@ class Glob
 
         // This method does the following replacements:
 
-        // Normal wildcards:    "*"  => "[^/]*" (regex match any except separator)
-        // Double wildcards:    "**" => ".*"    (regex match any)
+        // Normal wildcards:    "*"       => "[^/]*"   (regex match any except separator)
+        // Double wildcards:    "**"      => ".*"      (regex match any)
+        // Sets:                "{ab,cd}" => "(ab|cd)" (regex group)
 
         // with flag Glob::ESCAPE:
         // Escaped wildcards:   "\*" => "\*"    (regex star)
@@ -339,18 +340,43 @@ class Glob
 
         if ($flags & self::ESCAPE) {
             // Read backslashes together with the next (the escaped) character
-            // up to the first non-escaped star
-            if (preg_match('~^('.Symbol::BACKSLASH.'.|[^'.Symbol::BACKSLASH.Symbol::STAR.'])*~', $glob, $matches)) {
+            // up to the first non-escaped star/brace
+            if (preg_match('~^('.Symbol::BACKSLASH.'.|[^'.Symbol::BACKSLASH.Symbol::STAR.Symbol::L_BRACE.'])*~', $glob, $matches)) {
                 $prefix = $matches[0];
             }
 
             // Replace escaped characters by their unescaped equivalents
-            $prefix = str_replace(array('\\\\', '\\*'), array('\\', '*'), $prefix);
-        } elseif (false !== ($pos = strpos($glob, '*'))) {
-            $prefix = substr($glob, 0, $pos);
+            $prefix = str_replace(array('\\\\', '\\*', '\\{', '\\}'), array('\\', '*', '{', '}'), $prefix);
+        } else {
+            $pos1 = strpos($glob, '*');
+            $pos2 = strpos($glob, '{');
+
+            if (false !== $pos1 && false !== $pos2) {
+                $prefix = substr($glob, 0, min($pos1, $pos2));
+            } elseif (false !== $pos1) {
+                $prefix = substr($glob, 0, $pos1);
+            } elseif (false !== $pos2) {
+                $prefix = substr($glob, 0, $pos2);
+            }
         }
 
         return $prefix;
+    }
+
+    /**
+     * Returns whether the glob contains a dynamic part.
+     *
+     * The glob contains a dynamic part if it contains an unescaped "*" or
+     * "{" character.
+     *
+     * @param string $glob The glob to test.
+     *
+     * @return bool Returns `true` if the glob contains a dynamic part and
+     *              `false` otherwise.
+     */
+    public static function isDynamic($glob)
+    {
+        return false !== strpos($glob, '*') || false !== strpos($glob, '{');
     }
 
     private function __construct()
@@ -359,6 +385,17 @@ class Glob
 
     private static function toRegExNonEscaped($quoted)
     {
+        // Replace "{a,b,c}" by "(a|b|c)"
+        if (false !== strpos($quoted, Symbol::L_BRACE)) {
+            $quoted = preg_replace_callback(
+                '~'.Symbol::E_L_BRACE.'([^'.Symbol::R_BRACE.']*)'.Symbol::E_R_BRACE.'~',
+                function ($match) {
+                    return '('.str_replace(',', '|', $match[1]).')';
+                },
+                $quoted
+            );
+        }
+
         return str_replace(
             // Replace "**" by ".*"
             // Replace "*" by "[^/]*"
@@ -370,10 +407,24 @@ class Glob
 
     private static function toRegExEscaped($quoted)
     {
+        $noEscaping = '(?<!'.Symbol::E_BACKSLASH.')(('.Symbol::E_BACKSLASH.Symbol::E_BACKSLASH.')*)';
+
+        // Replace "{a,b,c}" by "(a|b|c)", as long as preceded by an even number
+        // of backslashes
+        if (false !== strpos($quoted, Symbol::L_BRACE)) {
+            $quoted = preg_replace_callback(
+                '~'.$noEscaping.Symbol::E_L_BRACE.'([^'.Symbol::R_BRACE.']*)'.$noEscaping.Symbol::E_R_BRACE.'~',
+                function ($match) {
+                    return '('.str_replace(',', '|', $match[1]).')';
+                },
+                $quoted
+            );
+        }
+
         // Replace "**" by ".*", as long as preceded by an even number of backslashes
         if (false !== strpos($quoted, Symbol::STAR.Symbol::STAR)) {
             $quoted = preg_replace(
-                '~(?<!'.Symbol::E_BACKSLASH.')(('.Symbol::E_BACKSLASH.Symbol::E_BACKSLASH.')*)'.Symbol::E_STAR.Symbol::E_STAR.'~',
+                '~'.$noEscaping.Symbol::E_STAR.Symbol::E_STAR.'~',
                 '$1.*',
                 $quoted
             );
@@ -382,7 +433,7 @@ class Glob
         // Replace "*" by "[^/]*", as long as preceded by an even number of backslashes
         if (false !== strpos($quoted, Symbol::STAR)) {
             $quoted = preg_replace(
-                '~(?<!'.Symbol::E_BACKSLASH.')(('.Symbol::E_BACKSLASH.Symbol::E_BACKSLASH.')*)'.Symbol::E_STAR.'~',
+                '~'.$noEscaping.Symbol::E_STAR.'~',
                 '$1[^/]*',
                 $quoted
             );
@@ -390,10 +441,22 @@ class Glob
 
         return str_replace(
             // Replace "\*" by "*"
+            // Replace "\{" by "{"
+            // Replace "\}" by "}"
             // Replace "\\\\" by "\\"
             // (escaped backslashes were escaped again by preg_quote())
-            array(Symbol::BACKSLASH.Symbol::STAR, Symbol::E_BACKSLASH),
-            array(Symbol::STAR, Symbol::BACKSLASH),
+            array(
+                Symbol::BACKSLASH.Symbol::STAR,
+                Symbol::BACKSLASH.Symbol::L_BRACE,
+                Symbol::BACKSLASH.Symbol::R_BRACE,
+                Symbol::E_BACKSLASH,
+            ),
+            array(
+                Symbol::STAR,
+                Symbol::L_BRACE,
+                Symbol::R_BRACE,
+                Symbol::BACKSLASH,
+            ),
             $quoted
         );
     }

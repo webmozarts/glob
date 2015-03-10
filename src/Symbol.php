@@ -30,6 +30,16 @@ final class Symbol
     const STAR = '\\*';
 
     /**
+     * Represents a literal "{" in a regular expression.
+     */
+    const L_BRACE = '\\{';
+
+    /**
+     * Represents a literal "}" in a regular expression.
+     */
+    const R_BRACE = '\\}';
+
+    /**
      * Matches a literal "\" when running a regular expression against
      * another regular expression.
      */
@@ -40,6 +50,18 @@ final class Symbol
      * another regular expression.
      */
     const E_STAR = '\\\\\\*';
+
+    /**
+     * Matches a literal "{" when running a regular expression against
+     * another regular expression.
+     */
+    const E_L_BRACE = '\\\\\\{';
+
+    /**
+     * Matches a literal "}" when running a regular expression against
+     * another regular expression.
+     */
+    const E_R_BRACE = '\\\\\\}';
 
     private function __construct()
     {

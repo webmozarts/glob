@@ -10,9 +10,13 @@ Webmozart Glob
 
 Latest release: [1.0.0-beta3](https://packagist.org/packages/webmozart/glob#1.0.0-beta3)
 
-A utility implementing Ant-like globbing. Wildcards (`*`) in the glob match any
-number of characters (zero or more), except directory separators (`/`). Double
-wildcards (`**`) in the glob match directory separators too.
+A utility implementing Ant-like globbing. 
+
+Syntax:
+
+* `*` matches zero or more characters, except `/`
+* `**` matches zero or more characters, including `/`
+* `{ab,cd}` matches `ab` or `cd`
 
 [API Documentation]
 
@@ -97,7 +101,7 @@ Returned paths contain forward slashes only.
 ### Escaping
 
 The `Glob` class supports a mode where you can match files that actually
-contain a `*` in their filename. To enable the escape mode, pass the
+contain a `*`, `{` or `}` in their filename. To enable the escape mode, pass the
 `Glob::ESCAPE` flag to any of the methods in `Glob`.
 
 ```php
@@ -112,6 +116,8 @@ produce a single `\` in the string.
 The following escape sequences are available:
 
 * `\\*`: match a `*` in the path
+* `\\{`: match a `{` in the path
+* `\\}`: match a `}` in the path
 * `\\\\`: match a `\` in the path
 
 Authors

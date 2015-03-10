@@ -36,7 +36,7 @@ class GlobIterator extends GlobFilterIterator
     {
         $basePath = Glob::getBasePath($glob);
 
-        if (file_exists($glob) && false === strpos($glob, '*')) {
+        if (file_exists($glob) && !Glob::isDynamic($glob)) {
             // If the glob is a file path, return that path
             $innerIterator = new ArrayIterator(array($glob));
         } elseif (is_dir($basePath)) {

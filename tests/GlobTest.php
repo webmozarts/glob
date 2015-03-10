@@ -66,6 +66,17 @@ class GlobTest extends PHPUnit_Framework_TestCase
             $this->tempDir.'/css/style.css',
         ), Glob::glob($this->tempDir.'/**css**'));
 
+        $this->assertSame(array(
+            $this->tempDir.'/base.css',
+            $this->tempDir.'/css/reset.css',
+        ), Glob::glob($this->tempDir.'/**{base,reset}.css'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css',
+            $this->tempDir.'/css/reset.css',
+            $this->tempDir.'/css/style.css',
+        ), Glob::glob($this->tempDir.'/css{,/**}'));
+
         $this->assertSame(array(), Glob::glob($this->tempDir.'/*foo*'));
     }
 
@@ -78,10 +89,14 @@ class GlobTest extends PHPUnit_Framework_TestCase
         }
 
         touch($this->tempDir.'/css/style*.css');
+        touch($this->tempDir.'/css/style{.css');
+        touch($this->tempDir.'/css/style}.css');
 
         $this->assertSame(array(
             $this->tempDir.'/css/style*.css',
             $this->tempDir.'/css/style.css',
+            $this->tempDir.'/css/style{.css',
+            $this->tempDir.'/css/style}.css',
         ), Glob::glob($this->tempDir.'/css/style*.css'));
 
         $this->assertSame(array(
@@ -89,6 +104,18 @@ class GlobTest extends PHPUnit_Framework_TestCase
         ), Glob::glob($this->tempDir.'/css/style\\*.css', Glob::ESCAPE));
 
         $this->assertSame(array(), Glob::glob($this->tempDir.'/css/style\\*.css'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/style{.css',
+        ), Glob::glob($this->tempDir.'/css/style\\{.css', Glob::ESCAPE));
+
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/css/style\\{.css'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/style}.css',
+        ), Glob::glob($this->tempDir.'/css/style\\}.css', Glob::ESCAPE));
+
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/css/style\\}.css'));
     }
 
     /**
