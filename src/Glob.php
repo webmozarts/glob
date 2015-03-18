@@ -413,9 +413,9 @@ class Glob
         // of backslashes
         if (false !== strpos($quoted, Symbol::L_BRACE)) {
             $quoted = preg_replace_callback(
-                '~'.$noEscaping.Symbol::E_L_BRACE.'([^'.Symbol::R_BRACE.']*)'.$noEscaping.Symbol::E_R_BRACE.'~',
+                '~'.$noEscaping.Symbol::E_L_BRACE.'(.*?)'.$noEscaping.Symbol::E_R_BRACE.'~',
                 function ($match) {
-                    return '('.str_replace(',', '|', $match[1]).')';
+                    return $match[1].'('.str_replace(',', '|', $match[3]).$match[4].')';
                 },
                 $quoted
             );

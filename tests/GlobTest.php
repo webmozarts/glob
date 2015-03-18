@@ -289,6 +289,72 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, preg_match($regExp, '/foo/\\\baz.js~'));
     }
 
+    public function testMatchEscapedLeftBrace()
+    {
+        $regExp = Glob::toRegEx('/foo/\\{.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/{.js~'));
+    }
+
+    public function testMatchLeftBraceWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/\\\\{b,c}az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/\\baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+    }
+
+    public function testMatchEscapedLeftBraceWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/\\\\\\{b,c}az.js~', Glob::ESCAPE);
+
+        $this->assertSame(0, preg_match($regExp, '/foo/\\baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/\baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\\{b,c}az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\{b,c}az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/{b,c}az.js~'));
+    }
+
+    public function testMatchEscapedRightBrace()
+    {
+        $regExp = Glob::toRegEx('/foo/\\}.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/}.js~'));
+    }
+
+    public function testMatchRightBraceWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/{b,c\\\\}az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/c\\az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/c\az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/caz.js~'));
+    }
+
+    public function testMatchEscapedRightBraceWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/{b,c\\\\\\}}az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/c\\}az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/c\}az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/c\\az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/c\az.js~'));
+    }
+
+    public function testCloseBracesAsSoonAsPossible()
+    {
+        $regExp = Glob::toRegEx('/foo/{b,c}}az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/b}az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/c}az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/caz.js~'));
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage *.css
