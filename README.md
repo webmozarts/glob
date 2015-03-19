@@ -1,14 +1,14 @@
 Webmozart Glob
 ==============
 
-[![Build Status](https://travis-ci.org/webmozart/glob.svg?branch=master)](https://travis-ci.org/webmozart/glob)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmozart/glob/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/webmozart/glob/?branch=master)
+[![Build Status](https://travis-ci.org/webmozart/glob.svg?branch=1.0.0)](https://travis-ci.org/webmozart/glob)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmozart/glob/badges/quality-score.png?b=1.0.0)](https://scrutinizer-ci.com/g/webmozart/glob/?branch=1.0.0)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/05213817-ed84-4171-88f5-6b818179fbe2/mini.png)](https://insight.sensiolabs.com/projects/05213817-ed84-4171-88f5-6b818179fbe2)
 [![Latest Stable Version](https://poser.pugx.org/webmozart/glob/v/stable.svg)](https://packagist.org/packages/webmozart/glob)
 [![Total Downloads](https://poser.pugx.org/webmozart/glob/downloads.svg)](https://packagist.org/packages/webmozart/glob)
 [![Dependency Status](https://www.versioneye.com/php/webmozart:glob/1.0.0/badge.svg)](https://www.versioneye.com/php/webmozart:glob/1.0.0)
 
-Latest release: [1.0.0-beta3](https://packagist.org/packages/webmozart/glob#1.0.0-beta3)
+Latest release: [1.0.0](https://packagist.org/packages/webmozart/glob#1.0.0)
 
 A utility implementing Ant-like globbing. 
 
@@ -26,7 +26,7 @@ Installation
 Use [Composer] to install the package:
 
 ```
-$ composer require webmozart/glob:~1.0@beta
+$ composer require webmozart/glob:~1.0
 ```
 
 Usage
