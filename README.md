@@ -8,7 +8,7 @@ Webmozart Glob
 [![Total Downloads](https://poser.pugx.org/webmozart/glob/downloads.svg)](https://packagist.org/packages/webmozart/glob)
 [![Dependency Status](https://www.versioneye.com/php/webmozart:glob/1.0.0/badge.svg)](https://www.versioneye.com/php/webmozart:glob/1.0.0)
 
-Latest release: [1.0.0-beta3](https://packagist.org/packages/webmozart/glob#1.0.0-beta3)
+Latest release: [1.0.0](https://packagist.org/packages/webmozart/glob#1.0.0)
 
 A utility implementing Ant-like globbing. 
 
@@ -26,7 +26,7 @@ Installation
 Use [Composer] to install the package:
 
 ```
-$ composer require webmozart/glob:~1.0@beta
+$ composer require webmozart/glob:~1.0
 ```
 
 Usage
