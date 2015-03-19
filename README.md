@@ -20,6 +20,15 @@ Syntax:
 
 [API Documentation]
 
+Installation
+------------
+
+Use [Composer] to install the package:
+
+```
+$ composer require webmozart/glob:~1.0@beta
+```
+
 Usage
 -----
 
@@ -125,15 +134,6 @@ Authors
 
 * [Bernhard Schussek] a.k.a. [@webmozart]
 * [The Community Contributors]
-
-Installation
-------------
-
-Use [Composer] to install the package:
-
-```
-$ composer require webmozart/glob@beta
-```
 
 Contribute
 ----------
