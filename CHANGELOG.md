@@ -1,6 +1,11 @@
 Changelog
 =========
 
+* 2.0.0 (@release_date@)
+
+ * restricted `**` to be used within two separators only: `/**/`. This improves
+   performance while maintaining equal expressiveness
+
 * 1.0.0 (2015-03-19)
 
  * added support for sets: `{ab,cd}`

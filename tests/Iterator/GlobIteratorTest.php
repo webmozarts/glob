@@ -105,7 +105,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
 
     public function testIterateDoubleWildcard()
     {
-        $iterator = new GlobIterator($this->tempDir.'/**.css');
+        $iterator = new GlobIterator($this->tempDir.'/**/*.css');
 
         $this->assertSameAfterSorting(array(
             $this->tempDir.'/base.css',
@@ -153,7 +153,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
 
     public function testDoubleWildcardMayMatchZeroCharacters()
     {
-        $iterator = new GlobIterator($this->tempDir.'/**css');
+        $iterator = new GlobIterator($this->tempDir.'/**/*css');
 
         $this->assertSameAfterSorting(array(
             $this->tempDir.'/base.css',
@@ -176,7 +176,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
 
     public function testDoubleWildcardInRoot()
     {
-        $iterator = new GlobIterator($this->tempDir.'/**');
+        $iterator = new GlobIterator($this->tempDir.'/**/*');
 
         $this->assertSameAfterSorting(array(
             $this->tempDir.'/base.css',

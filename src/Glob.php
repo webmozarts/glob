@@ -397,10 +397,10 @@ class Glob
         }
 
         return str_replace(
-            // Replace "**" by ".*"
+            // Replace "/**/" by "/(.+/)?"
             // Replace "*" by "[^/]*"
-            array(Symbol::STAR.Symbol::STAR, Symbol::STAR),
-            array('.*', '[^/]*'),
+            array('/'.Symbol::STAR.Symbol::STAR.'/', Symbol::STAR),
+            array('/(.+/)?', '[^/]*'),
             $quoted
         );
     }
@@ -421,14 +421,8 @@ class Glob
             );
         }
 
-        // Replace "**" by ".*", as long as preceded by an even number of backslashes
-        if (false !== strpos($quoted, Symbol::STAR.Symbol::STAR)) {
-            $quoted = preg_replace(
-                '~'.$noEscaping.Symbol::E_STAR.Symbol::E_STAR.'~',
-                '$1.*',
-                $quoted
-            );
-        }
+        // Replace "/**/" by "/(.+/)?"
+        $quoted = str_replace('/'.Symbol::STAR.Symbol::STAR.'/', '/(.+/)?', $quoted);
 
         // Replace "*" by "[^/]*", as long as preceded by an even number of backslashes
         if (false !== strpos($quoted, Symbol::STAR)) {
