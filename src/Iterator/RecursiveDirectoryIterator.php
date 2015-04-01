@@ -85,7 +85,7 @@ class RecursiveDirectoryIterator implements RecursiveIterator, SeekableIterator
             $flags |= self::CURRENT_AS_PATH;
         }
 
-        $this->path = rtrim($path, '/');
+        $this->path = '/' === substr($path, -1) ? $path : $path.'/';
         $this->flags = $flags;
     }
 
@@ -128,7 +128,7 @@ class RecursiveDirectoryIterator implements RecursiveIterator, SeekableIterator
             return;
         }
 
-        $path = $this->path.'/'.$file;
+        $path = $this->path.$file;
 
         // handle concurrent deletions
         if (!file_exists($path)) {

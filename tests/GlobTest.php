@@ -29,12 +29,16 @@ class GlobTest extends PHPUnit_Framework_TestCase
 
         $filesystem = new Filesystem();
         $filesystem->mirror(__DIR__.'/Fixtures', $this->tempDir);
+
+        TestStreamWrapper::register('globtest', __DIR__.'/Fixtures');
     }
 
     protected function tearDown()
     {
         $filesystem = new Filesystem();
         $filesystem->remove($this->tempDir);
+
+        TestStreamWrapper::unregister('globtest');
     }
 
     public function testGlob()
@@ -83,6 +87,54 @@ class GlobTest extends PHPUnit_Framework_TestCase
         ), Glob::glob($this->tempDir.'/css{,/**/*}'));
 
         $this->assertSame(array(), Glob::glob($this->tempDir.'/*foo*'));
+    }
+
+    public function testGlobStreamWrapper()
+    {
+        $this->assertSame(array(
+            'globtest:///base.css',
+        ), Glob::glob('globtest:///*.css'));
+
+        $this->assertSame(array(
+            'globtest:///base.css',
+            'globtest:///css',
+        ), Glob::glob('globtest:///*css*'));
+
+        $this->assertSame(array(
+            'globtest:///css/reset.css',
+            'globtest:///css/style.css',
+        ), Glob::glob('globtest:///*/*.css'));
+
+        $this->assertSame(array(
+            'globtest:///css/reset.css',
+            'globtest:///css/style.css',
+        ), Glob::glob('globtest:///*/**/*.css'));
+
+        $this->assertSame(array(
+            'globtest:///base.css',
+            'globtest:///css/reset.css',
+            'globtest:///css/style.css',
+        ), Glob::glob('globtest:///**/*.css'));
+
+        $this->assertSame(array(
+            'globtest:///base.css',
+            'globtest:///css',
+            'globtest:///css/reset.css',
+            'globtest:///css/style.css',
+        ), Glob::glob('globtest:///**/*css'));
+
+        $this->assertSame(array(
+            'globtest:///base.css',
+            'globtest:///css/reset.css',
+        ), Glob::glob('globtest:///**/{base,reset}.css'));
+
+        $this->assertSame(array(
+            'globtest:///css',
+            'globtest:///css/reset.css',
+            'globtest:///css/style.css',
+        ), Glob::glob('globtest:///css{,/**/*}'));
+
+        $this->assertSame(array(), Glob::glob('globtest:///*foo*'));
     }
 
     public function testGlobEscape()
@@ -408,6 +460,14 @@ class GlobTest extends PHPUnit_Framework_TestCase
     public function testGetBasePath($glob, $basePath, $flags = 0)
     {
         $this->assertSame($basePath, Glob::getBasePath($glob, $flags));
+    }
+
+    /**
+     * @dataProvider provideBasePaths
+     */
+    public function testGetBasePathStream($glob, $basePath, $flags = 0)
+    {
+        $this->assertSame('globtest://'.$basePath, Glob::getBasePath('globtest://'.$glob, $flags));
     }
 
     public function provideBasePaths()

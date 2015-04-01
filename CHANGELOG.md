@@ -5,6 +5,7 @@ Changelog
 
  * restricted `**` to be used within two separators only: `/**/`. This improves
    performance while maintaining equal expressiveness
+ * added support for stream wrappers
 
 * 1.0.0 (2015-03-19)
 

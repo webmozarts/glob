@@ -129,6 +129,14 @@ The following escape sequences are available:
 * `\\}`: match a `}` in the path
 * `\\\\`: match a `\` in the path
 
+### Stream Wrappers
+
+The `Glob` class supports [stream wrappers]:
+
+```php
+$paths = Glob::glob('myscheme:///**/*.css');
+```
+
 Authors
 -------
 
@@ -164,6 +172,7 @@ All contents of this package are licensed under the [MIT license].
 [MIT license]: LICENSE
 [Webmozart Path Utility]: https://github.com/webmozart/path-util
 [canonical form]: https://webmozart.github.io/path-util/api/latest/class-Webmozart.PathUtil.Path.html#_canonicalize
+[stream wrappers]: http://php.net/manual/en/wrappers.php
 [`Glob`]: https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Glob.html
 [`GlobIterator`]: https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.GlobIterator.html
 [`GlobFilterIterator`]: https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.GlobFilterIterator.html

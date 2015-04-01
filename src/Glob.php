@@ -234,6 +234,11 @@ class Glob
                 return '/';
             }
 
+            // Special case: Include trailing slash of "scheme:///foo"
+            if ($pos - 3 === strpos($glob, '://')) {
+                return substr($staticPrefix, 0, $pos + 1);
+            }
+
             return substr($staticPrefix, 0, $pos);
         }
 
@@ -276,9 +281,9 @@ class Glob
      */
     public static function toRegEx($glob, $flags = 0)
     {
-        if (!Path::isAbsolute($glob)) {
+        if (!Path::isAbsolute($glob) && false === strpos($glob, '://')) {
             throw new InvalidArgumentException(sprintf(
-                'The glob "%s" is not absolute.',
+                'The glob "%s" is not absolute and not a URI.',
                 $glob
             ));
         }
@@ -329,9 +334,9 @@ class Glob
      */
     public static function getStaticPrefix($glob, $flags = 0)
     {
-        if (!Path::isAbsolute($glob)) {
+        if (!Path::isAbsolute($glob) && false === strpos($glob, '://')) {
             throw new InvalidArgumentException(sprintf(
-                'The glob "%s" is not absolute.',
+                'The glob "%s" is not absolute and not a URI.',
                 $glob
             ));
         }
