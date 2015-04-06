@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 2.0.0 (@release_date@)
+* 2.0.0 (2015-04-06)
 
  * restricted `**` to be used within two separators only: `/**/`. This improves
    performance while maintaining equal expressiveness
