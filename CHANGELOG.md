@@ -1,6 +1,10 @@
 Changelog
 =========
 
+* 2.0.1 (@release_date@)
+
+ * upgraded to webmozart/path-util 2.0
+
 * 2.0.0 (2015-04-06)
 
  * restricted `**` to be used within two separators only: `/**/`. This improves
