@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 2.0.1 (@release_date@)
+* 2.0.1 (2015-05-21)
 
  * upgraded to webmozart/path-util 2.0
 
