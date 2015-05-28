@@ -15,6 +15,9 @@
 
 
 <url>
+	<loc>https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Glob.html</loc>
+</url>
+<url>
 	<loc>https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.GlobFilterIterator.html</loc>
 </url>
 <url>
@@ -25,5 +28,8 @@
 </url>
 <url>
 	<loc>https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Iterator.RegexFilterIterator.html</loc>
+</url>
+<url>
+	<loc>https://webmozart.github.io/glob/api/latest/class-Webmozart.Glob.Symbol.html</loc>
 </url>
 </urlset>

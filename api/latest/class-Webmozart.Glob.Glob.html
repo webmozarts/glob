@@ -5,7 +5,7 @@
 
 	<title>Class Webmozart\Glob\Glob | Webmozart Glob API</title>
 
-	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+	<link rel="stylesheet" href="resources/style.css?95ada9fb523b6ab4fd1c47bb375f713f2cc65542">
 
 </head>
 
@@ -148,7 +148,7 @@ before calling the much more expensive preg_match().</p>
 				Bernhard Schussek <a href="&#x6d;&#x61;&#105;&#108;&#116;&#x6f;&#x3a;&#x62;&#115;&#99;h&#x75;&#x73;&#115;&#101;&#107;&#x40;&#x67;&#x6d;&#97;&#105;l&#x2e;&#x63;&#111;&#109;">&#x62;&#115;&#99;h&#x75;&#x73;&#115;&#101;&#107;&#x40;&#x67;&#x6d;&#97;&#105;l&#x2e;&#x63;&#111;&#109;</a><br>
 				<b>Since:</b>
 				1.0<br>
-			<b>Located at</b> <a href="source-class-Webmozart.Glob.Glob.html#18-400" title="Go to source code">Glob.php</a>
+			<b>Located at</b> <a href="source-class-Webmozart.Glob.Glob.html#18-463" title="Go to source code">Glob.php</a>
 		<br>
 	</div>
 
@@ -392,7 +392,7 @@ wildcards, the directory name of the glob is returned.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_toRegEx">#</a>
-		<code><a href="source-class-Webmozart.Glob.Glob.html#245-311" title="Go to source code">toRegEx</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#245-312" title="Go to source code">toRegEx</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			<p>Converts a glob to a regular expression.</p>
@@ -453,7 +453,7 @@ to the expensive preg_match().</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getStaticPrefix">#</a>
-		<code><a href="source-class-Webmozart.Glob.Glob.html#313-354" title="Go to source code">getStaticPrefix</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#314-364" title="Go to source code">getStaticPrefix</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			<p>Returns the static prefix of a glob.</p>
@@ -482,6 +482,49 @@ If the glob does not contain wildcards, the full glob is returned.</p>
 				<h4>Returns</h4>
 				<div class="list">
 					string<br>The static prefix of the glob.
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isDynamic" id="_isDynamic">
+
+		<td class="attributes"><code>
+			 public static
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isDynamic">#</a>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#366-380" title="Go to source code">isDynamic</a>( <span>string <var>$glob</var></span> )</code>
+
+		<div class="description short">
+			<p>Returns whether the glob contains a dynamic part.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Returns whether the glob contains a dynamic part.</p>
+
+<p>The glob contains a dynamic part if it contains an unescaped "*" or
+"{" character.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$glob</var></dt>
+					<dd>The glob to test.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean<br><p>Returns <code>true</code> if the glob contains a dynamic part and
+             <code>false</code> otherwise.</p>
 				</div>
 
 
