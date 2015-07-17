@@ -18,6 +18,7 @@ use Webmozart\Glob\Iterator\GlobIterator;
 
 /**
  * @since  1.0
+ *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 class GlobIteratorTest extends PHPUnit_Framework_TestCase
@@ -28,13 +29,13 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        while (false === @mkdir($this->tempDir = sys_get_temp_dir().'/webmozart-glob/GlobIteratorTest'.rand(10000, 99999), 0777, true)) {}
+        while (false === @mkdir($this->tempDir = sys_get_temp_dir().'/webmozart-glob/GlobIteratorTest'.rand(10000, 99999), 0777, true)) {
+        }
 
         $filesystem = new Filesystem();
         $filesystem->mirror(__DIR__.'/../Fixtures', $this->tempDir);
 
         $this->tempFile = tempnam(sys_get_temp_dir(), 'webmozart_GlobIteratorTest');
-
     }
 
     protected function tearDown()

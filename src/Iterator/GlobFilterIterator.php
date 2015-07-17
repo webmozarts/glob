@@ -18,7 +18,9 @@ use Webmozart\Glob\Glob;
  * Filters an iterator by a glob.
  *
  * @since  1.0
+ *
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
  * @see    Glob
  */
 class GlobFilterIterator extends RegexFilterIterator

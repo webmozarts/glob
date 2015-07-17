@@ -22,6 +22,7 @@ use SeekableIterator;
  * See https://bugs.php.net/bug.php?id=68557
  *
  * @since  1.0
+ *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 class RecursiveDirectoryIterator implements RecursiveIterator, SeekableIterator

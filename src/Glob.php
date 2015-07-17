@@ -69,6 +69,7 @@ use Webmozart\PathUtil\Path;
  * before calling the much more expensive {@link preg_match()}.
  *
  * @since  1.0
+ *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 class Glob
@@ -163,7 +164,7 @@ class Glob
      *                        must not contain any "." or ".." segments. Use the
      *                        "webmozart/path-util" utility to canonicalize
      *                        globs prior to calling this method.
-     * @param int    $flags   A bitwise combination of the flag constants in
+     * @param int      $flags A bitwise combination of the flag constants in
      *                        this class.
      *
      * @return string[] The paths matching the glob indexed by their original

@@ -18,7 +18,9 @@ use Iterator;
  * Filters an iterator by a regular expression.
  *
  * @since  1.0
+ *
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
  * @see    Glob
  */
 class RegexFilterIterator extends FilterIterator

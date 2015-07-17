@@ -20,7 +20,9 @@ use Webmozart\Glob\Glob;
  * Returns filesystem paths matching a glob.
  *
  * @since  1.0
+ *
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
  * @see    Glob
  */
 class GlobIterator extends GlobFilterIterator

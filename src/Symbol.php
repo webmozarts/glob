@@ -15,6 +15,7 @@ namespace Webmozart\Glob;
  * Contains symbol constants.
  *
  * @since  1.0
+ *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 final class Symbol
