@@ -11,43 +11,24 @@
 
 namespace Webmozart\Glob\Iterator;
 
-if ((version_compare(PHP_VERSION, '5.5.23', '>=') && version_compare(PHP_VERSION, '5.6', '<'))
-    || version_compare(PHP_VERSION, '5.6.7', '>=')) {
-
+/**
+ * Recursive directory iterator that is working during recursive iteration.
+ *
+ * Recursive iteration is broken on PHP < 5.5.23 and on PHP 5.6 < 5.6.7.
+ *
+ * @since  1.0
+ * @since  3.0 Removed support for seek(), added \RecursiveDirectoryIterator
+ *             base class, adapted API to match \RecursiveDirectoryIterator
+ *
+ * @author Bernhard Schussek <bschussek@gmail.com>
+ */
+class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
+{
     /**
-     * Redefines the native {@link \RecursiveDirectoryIterator} under a
-     * different name.
-     *
-     * {@link class_alias()} doesn't work for native classes.
-     *
-     * @since  1.0
-     *
-     * @author Bernhard Schussek <bschussek@gmail.com>
+     * {@inheritdoc}
      */
-    class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
+    public function getChildren()
     {
+        return new static($this->getPathname(), $this->getFlags());
     }
-
-} else {
-
-    /**
-     * Recursive directory iterator that is working during recursive iteration.
-     *
-     * This implementation is very slow compared to PHP's native implementation.
-     *
-     * @since  1.0
-     *
-     * @author Bernhard Schussek <bschussek@gmail.com>
-     */
-    class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
-    {
-        /**
-         * {@inheritdoc}
-         */
-        public function getChildren()
-        {
-            return new static($this->getPathname(), $this->getFlags());
-        }
-    }
-
 }
