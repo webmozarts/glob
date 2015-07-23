@@ -44,7 +44,10 @@ class GlobIterator extends GlobFilterIterator
         } elseif (is_dir($basePath)) {
             // Otherwise scan the glob's base directory for matches
             $innerIterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($basePath),
+                new RecursiveDirectoryIterator(
+                    $basePath,
+                    RecursiveDirectoryIterator::CURRENT_AS_PATHNAME | RecursiveDirectoryIterator::SKIP_DOTS
+                ),
                 RecursiveIteratorIterator::SELF_FIRST
             );
         } else {

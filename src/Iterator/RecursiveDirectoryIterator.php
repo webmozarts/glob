@@ -11,192 +11,43 @@
 
 namespace Webmozart\Glob\Iterator;
 
-use InvalidArgumentException;
-use RecursiveIterator;
-use SeekableIterator;
-
-/**
- * Recursive directory iterator with a working seek() method and working
- * behavior during recursive iteration.
- *
- * See https://bugs.php.net/bug.php?id=68557
- *
- * @since  1.0
- *
- * @author Bernhard Schussek <bschussek@gmail.com>
- */
-class RecursiveDirectoryIterator implements RecursiveIterator, SeekableIterator
-{
-    /**
-     * Flag: Return current value as file path.
-     */
-    const CURRENT_AS_PATH = 1;
+if ((version_compare(PHP_VERSION, '5.5.23', '>=') && version_compare(PHP_VERSION, '5.6', '<'))
+    || version_compare(PHP_VERSION, '5.6.7', '>=')) {
 
     /**
-     * Flag: Return current value as file name.
-     */
-    const CURRENT_AS_FILE = 2;
-
-    /**
-     * @var resource
-     */
-    private $handle;
-
-    /**
-     * @var string
-     */
-    private $path;
-
-    /**
-     * @var string
-     */
-    private $current;
-
-    /**
-     * @var string
-     */
-    private $key;
-
-    /**
-     * @var int
-     */
-    private $flags;
-
-    /**
-     * @var int
-     */
-    private $position;
-
-    /**
-     * Creates an iterator for the given path.
+     * Redefines the native {@link \RecursiveDirectoryIterator} under a
+     * different name.
      *
-     * @param string $path  A canonical directory path.
-     * @param int    $flags The flags.
+     * {@link class_alias()} doesn't work for native classes.
+     *
+     * @since  1.0
+     *
+     * @author Bernhard Schussek <bschussek@gmail.com>
      */
-    public function __construct($path, $flags = null)
+    class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     {
-        if (!is_dir($path)) {
-            throw new InvalidArgumentException(sprintf(
-                'The path "%s" was expected to be a directory.',
-                $path
-            ));
-        }
-
-        if (!($flags & (self::CURRENT_AS_FILE | self::CURRENT_AS_PATH))) {
-            $flags |= self::CURRENT_AS_PATH;
-        }
-
-        $this->path = '/' === substr($path, -1) ? $path : $path.'/';
-        $this->flags = $flags;
     }
 
-    public function __destruct()
-    {
-        if (null !== $this->handle) {
-            closedir($this->handle);
-            $this->handle = null;
-        }
-    }
+} else {
 
     /**
-     * {@inheritdoc}
+     * Recursive directory iterator that is working during recursive iteration.
+     *
+     * This implementation is very slow compared to PHP's native implementation.
+     *
+     * @since  1.0
+     *
+     * @author Bernhard Schussek <bschussek@gmail.com>
      */
-    public function current()
+    class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     {
-        return $this->current;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function next()
-    {
-        $file = readdir($this->handle);
-
-        if (false === $file) {
-            closedir($this->handle);
-            $this->current = null;
-            $this->key = null;
-            $this->handle = null;
-            $this->position = -1;
-
-            return;
-        }
-
-        if ('.' === $file || '..' === $file) {
-            $this->next();
-
-            return;
-        }
-
-        $path = $this->path.$file;
-
-        // handle concurrent deletions
-        if (!file_exists($path)) {
-            $this->next();
-
-            return;
-        }
-
-        $this->key = $path;
-        $this->current = ($this->flags & self::CURRENT_AS_FILE) ? $file : $this->key;
-        ++$this->position;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function key()
-    {
-        return $this->key;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function valid()
-    {
-        return null !== $this->key;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rewind()
-    {
-        $this->handle = opendir($this->path);
-        $this->position = -1;
-
-        $this->next();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasChildren()
-    {
-        return is_dir($this->key);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getChildren()
-    {
-        return new static($this->key, $this->flags);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function seek($position)
-    {
-        if ($this->position > $position || null === $this->handle) {
-            $this->rewind();
-        }
-
-        while ($this->position < $position) {
-            $this->next();
+        /**
+         * {@inheritdoc}
+         */
+        public function getChildren()
+        {
+            return new static($this->getPathname(), $this->getFlags());
         }
     }
+
 }
