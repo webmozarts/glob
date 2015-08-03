@@ -72,7 +72,7 @@ use Webmozart\PathUtil\Path;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class Glob
+final class Glob
 {
     /**
      * Flag: Enable escaping of special characters with leading backslashes.
