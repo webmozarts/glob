@@ -6,6 +6,7 @@ Changelog
  * `RecursiveDirectoryIterator` now inherits from `\RecursiveDirectoryIterator`
    for performance reasons. Support for `seek()` was removed on PHP versions
    < 5.5.23 or < 5.6.7
+ * made `Glob` final
 
 * 2.0.1 (2015-05-21)
 
