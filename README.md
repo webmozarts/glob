@@ -26,7 +26,7 @@ Installation
 Use [Composer] to install the package:
 
 ```
-$ composer require webmozart/glob:^2.0
+$ composer require webmozart/glob:^3.0
 ```
 
 Usage
