@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 3.0.0 (@release_date@)
+* 3.0.0 (2015-08-11)
 
  * `RecursiveDirectoryIterator` now inherits from `\RecursiveDirectoryIterator`
    for performance reasons. Support for `seek()` was removed on PHP versions
