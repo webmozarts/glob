@@ -1,8 +1,8 @@
 Webmozart Glob
 ==============
 
-[![Build Status](https://travis-ci.org/webmozart/glob.svg?branch=master)](https://travis-ci.org/webmozart/glob)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmozart/glob/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/webmozart/glob/?branch=master)
+[![Build Status](https://travis-ci.org/webmozart/glob.svg?branch=3.0.0)](https://travis-ci.org/webmozart/glob)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmozart/glob/badges/quality-score.png?b=3.0.0)](https://scrutinizer-ci.com/g/webmozart/glob/?branch=3.0.0)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/05213817-ed84-4171-88f5-6b818179fbe2/mini.png)](https://insight.sensiolabs.com/projects/05213817-ed84-4171-88f5-6b818179fbe2)
 [![Latest Stable Version](https://poser.pugx.org/webmozart/glob/v/stable.svg)](https://packagist.org/packages/webmozart/glob)
 [![Total Downloads](https://poser.pugx.org/webmozart/glob/downloads.svg)](https://packagist.org/packages/webmozart/glob)
