@@ -15,6 +15,7 @@ use PHPUnit_Framework_TestCase;
 use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Iterator\RecursiveDirectoryIterator;
+use Webmozart\Glob\Test\TestUtil;
 
 /**
  * @since  1.0
@@ -27,8 +28,7 @@ class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        while (false === mkdir($this->tempDir = sys_get_temp_dir().'/webmozart-glob/RecursiveDirectoryIteratorTest'.rand(10000, 99999), 0777, true)) {
-        }
+        $this->tempDir = TestUtil::makeTempDir('webmozart-glob', __CLASS__);
 
         $filesystem = new Filesystem();
         $filesystem->mirror(__DIR__.'/../Fixtures', $this->tempDir);
