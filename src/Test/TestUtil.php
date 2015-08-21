@@ -11,6 +11,8 @@
 
 namespace Webmozart\Glob\Test;
 
+use Webmozart\PathUtil\Path;
+
 /**
  * Contains utility methods for testing.
  *
@@ -41,7 +43,8 @@ final class TestUtil
         // symlink to another directory (e.g. /var => /private/var on some Macs)
         // We want to know the real path to avoid comparison failures with
         // code that uses real paths only
-        $basePath = realpath(sys_get_temp_dir()).'/'.$namespace.'/'.$shortClass;
+        $systemTempDir = Path::normalize(realpath(sys_get_temp_dir()));
+        $basePath = $systemTempDir.'/'.$namespace.'/'.$shortClass;
 
         while (false === @mkdir($tempDir = $basePath.rand(10000, 99999), 0777, true)) {
             // Run until we are able to create a directory
