@@ -13,6 +13,7 @@ namespace Webmozart\Glob\Iterator;
 
 use FilterIterator;
 use Iterator;
+use Webmozart\PathUtil\Path;
 
 /**
  * Filters an iterator by a regular expression.
@@ -139,7 +140,7 @@ class RegexFilterIterator extends FilterIterator
      */
     public function accept()
     {
-        $path = ($this->mode & self::FILTER_VALUE) ? $this->current() : parent::key();
+        $path = Path::normalize(($this->mode & self::FILTER_VALUE) ? $this->current() : parent::key());
 
         if (0 !== strpos($path, $this->staticPrefix)) {
             return false;
