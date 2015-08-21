@@ -1,6 +1,11 @@
 Changelog
 =========
 
+* 3.1.0 (2015-08-21)
+
+ * added `TestUtil` class
+ * fixed normalizing of slashes on Windows
+
 * 3.0.0 (2015-08-11)
 
  * `RecursiveDirectoryIterator` now inherits from `\RecursiveDirectoryIterator`
