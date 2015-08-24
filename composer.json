@@ -10,10 +10,10 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "webmozart/path-util": "~2.0"
+        "webmozart/path-util": "^2.2"
     },
     "require-dev": {
-        "symfony/filesystem": "~2.5",
+        "symfony/filesystem": "^2.5",
         "phpunit/phpunit": "^4.6"
     },
     "autoload": {
