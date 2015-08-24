@@ -1,6 +1,10 @@
 Changelog
 =========
 
+* 3.1.1 (2015-08-24)
+
+ * fixed minimum versions in composer.json
+
 * 3.1.0 (2015-08-21)
 
  * added `TestUtil` class
