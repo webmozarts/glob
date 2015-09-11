@@ -35,6 +35,11 @@
 						Iterator					</a>
 
 						</li>
+				<li>
+					<a href="namespace-Webmozart.Glob.Test.html">
+						Test					</a>
+
+						</li>
 							</ul></li></ul></li>
 			</ul>
 		</div>
@@ -139,15 +144,15 @@ before calling the much more expensive preg_match().</p>
 
 
 	<div class="info">
-		
+		<b>Final</b><br>
 		
 		<b>Namespace:</b> <a href="namespace-Webmozart.html">Webmozart</a>\<a href="namespace-Webmozart.Glob.html">Glob</a><br>
 		
 
-				<b>Since:</b>
-				1.0<br>
 				<b>Author:</b>
 				Bernhard Schussek <a href="&#x6d;&#x61;&#105;&#108;&#116;&#x6f;&#x3a;&#x62;&#115;&#99;h&#x75;&#x73;&#115;&#101;&#107;&#x40;&#x67;&#x6d;&#97;&#105;l&#x2e;&#x63;&#111;&#109;">&#x62;&#115;&#99;h&#x75;&#x73;&#115;&#101;&#107;&#x40;&#x67;&#x6d;&#97;&#105;l&#x2e;&#x63;&#111;&#109;</a><br>
+				<b>Since:</b>
+				1.0<br>
 			<b>Located at</b> <a href="source-class-Webmozart.Glob.Glob.html#18-463" title="Go to source code">Glob.php</a>
 		<br>
 	</div>
@@ -168,7 +173,7 @@ before calling the much more expensive preg_match().</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_glob">#</a>
-		<code><a href="source-class-Webmozart.Glob.Glob.html#81-111" title="Go to source code">glob</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#82-112" title="Go to source code">glob</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			<p>Globs the file system paths matching the glob.</p>
@@ -221,7 +226,7 @@ of characters, *including</em> directory separators.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_match">#</a>
-		<code><a href="source-class-Webmozart.Glob.Glob.html#113-148" title="Go to source code">match</a>( <span>string <var>$path</var></span>, <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#114-149" title="Go to source code">match</a>( <span>string <var>$path</var></span>, <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			<p>Matches a path against a glob.</p>
@@ -272,7 +277,7 @@ of characters, *including</em> directory separators.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_filter">#</a>
-		<code><a href="source-class-Webmozart.Glob.Glob.html#150-188" title="Go to source code">filter</a>( <span>array <var>$paths</var></span>, <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#151-189" title="Go to source code">filter</a>( <span>array <var>$paths</var></span>, <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			<p>Filters an array for paths matching a glob.</p>
@@ -326,7 +331,7 @@ passed array.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getBasePath">#</a>
-		<code><a href="source-class-Webmozart.Glob.Glob.html#190-243" title="Go to source code">getBasePath</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#191-249" title="Go to source code">getBasePath</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			<p>Returns the base path of a glob.</p>
@@ -392,7 +397,7 @@ wildcards, the directory name of the glob is returned.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_toRegEx">#</a>
-		<code><a href="source-class-Webmozart.Glob.Glob.html#245-312" title="Go to source code">toRegEx</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#251-318" title="Go to source code">toRegEx</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			<p>Converts a glob to a regular expression.</p>
@@ -453,7 +458,7 @@ to the expensive preg_match().</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getStaticPrefix">#</a>
-		<code><a href="source-class-Webmozart.Glob.Glob.html#314-364" title="Go to source code">getStaticPrefix</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#320-370" title="Go to source code">getStaticPrefix</a>( <span>string <var>$glob</var></span>, <span>integer <var>$flags</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			<p>Returns the static prefix of a glob.</p>
@@ -502,7 +507,7 @@ If the glob does not contain wildcards, the full glob is returned.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_isDynamic">#</a>
-		<code><a href="source-class-Webmozart.Glob.Glob.html#366-380" title="Go to source code">isDynamic</a>( <span>string <var>$glob</var></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Glob.html#372-386" title="Go to source code">isDynamic</a>( <span>string <var>$glob</var></span> )</code>
 
 		<div class="description short">
 			<p>Returns whether the glob contains a dynamic part.</p>
@@ -549,7 +554,7 @@ If the glob does not contain wildcards, the full glob is returned.</p>
 		<td class="attributes"><code>integer</code></td>
 		<td class="name">
 			<code>
-				<a href="source-constant-ESCAPE.html#76-79" title="Go to source code"><b>ESCAPE</b></a>
+				<a href="source-class-Webmozart.Glob.Glob.html#77-80" title="Go to source code"><b>ESCAPE</b></a>
 			</code>
 
 			<div class="description short">

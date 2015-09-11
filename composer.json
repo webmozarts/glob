@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "webmozart/glob": "~1.0@dev",
+        "webmozart/glob": "~3.0@dev",
         "apigen/apigen": "~4.1@dev"
     },
     "config": {

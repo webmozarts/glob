@@ -35,6 +35,11 @@
 						Iterator					</a>
 
 						</li>
+				<li>
+					<a href="namespace-Webmozart.Glob.Test.html">
+						Test					</a>
+
+						</li>
 							</ul></li></ul></li>
 			</ul>
 		</div>
@@ -91,19 +96,46 @@
 
 
 	<div class="description">
-	<p>Recursive directory iterator with a working seek() method and working
-behavior during recursive iteration.</p>
+	<p>Recursive directory iterator that is working during recursive iteration.</p>
 
-<p>See https://bugs.php.net/bug.php?id=68557</p>
+<p>Recursive iteration is broken on PHP &lt; 5.5.23 and on PHP 5.6 &lt; 5.6.7.</p>
 	</div>
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
-<b><span>Webmozart\Glob\Iterator\RecursiveDirectoryIterator</span></b>			
+SplFileInfo
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+DirectoryIterator
 			 implements 
-<span>RecursiveIterator</span>, 
+<span>Iterator</span>, 
+			
+<span>Traversable</span>, 
 			
 <span>SeekableIterator</span>
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by">
+FilesystemIterator
+			
+			
+		</dd>
+		<dd style="padding-left:90px">
+			<img src="resources/inherit.png" alt="Extended by">
+RecursiveDirectoryIterator
+			 implements 
+<span>RecursiveIterator</span>
+			
+			
+		</dd>
+		<dd style="padding-left:120px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Webmozart\Glob\Iterator\RecursiveDirectoryIterator</span></b>			
 			
 			
 		</dd>
@@ -122,11 +154,16 @@ behavior during recursive iteration.</p>
 		<b>Namespace:</b> <a href="namespace-Webmozart.html">Webmozart</a>\<a href="namespace-Webmozart.Glob.html">Glob</a>\<a href="namespace-Webmozart.Glob.Iterator.html">Iterator</a><br>
 		
 
-				<b>Since:</b>
-				1.0<br>
 				<b>Author:</b>
 				Bernhard Schussek <a href="&#x6d;&#x61;&#105;&#108;&#116;&#x6f;&#x3a;&#x62;&#115;&#99;h&#x75;&#x73;&#115;&#101;&#107;&#x40;&#x67;&#x6d;&#97;&#105;l&#x2e;&#x63;&#111;&#109;">&#x62;&#115;&#99;h&#x75;&#x73;&#115;&#101;&#107;&#x40;&#x67;&#x6d;&#97;&#105;l&#x2e;&#x63;&#111;&#109;</a><br>
-			<b>Located at</b> <a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#18-201" title="Go to source code">Iterator/RecursiveDirectoryIterator.php</a>
+				<b>Since:</b>
+				1.0<br>
+				<b>Since:</b>
+				<p>3.0 Removed support for seek(), added \RecursiveDirectoryIterator
+            base class, adapted API to match \RecursiveDirectoryIterator</p><br>
+				<b>Since:</b>
+				3.1 Slashes are normalized to forward slashes on Windows<br>
+			<b>Located at</b> <a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#14-85" title="Go to source code">Iterator/RecursiveDirectoryIterator.php</a>
 		<br>
 	</div>
 
@@ -146,32 +183,27 @@ behavior during recursive iteration.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#69-90" title="Go to source code">__construct</a>( <span>string <var>$path</var></span>, <span>integer <var>$flags</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#38-48" title="Go to source code">__construct</a>( <span> <var>$path</var></span>, <span> <var>$flags</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
-			<p>Creates an iterator for the given path.</p>
+			
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Creates an iterator for the given path.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$path</var></dt>
-					<dd>A canonical directory path.</dd>
-					<dt><var>$flags</var></dt>
-					<dd>The flags.</dd>
-				</dl></div>
+			
 
 
 
 
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code>RecursiveDirectoryIterator::__construct()</code></div>
 
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="__destruct" id="___destruct">
+	<tr data-order="getChildren" id="_getChildren">
 
 		<td class="attributes"><code>
 			 public 
@@ -182,8 +214,8 @@ behavior during recursive iteration.</p>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#___destruct">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#92-98" title="Go to source code">__destruct</a>( )</code>
+		<a class="anchor" href="#_getChildren">#</a>
+		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#50-56" title="Go to source code">getChildren</a>( )</code>
 
 		<div class="description short">
 			
@@ -197,6 +229,40 @@ behavior during recursive iteration.</p>
 
 
 
+				<h4>Overrides</h4>
+				<div class="list"><code>RecursiveDirectoryIterator::getChildren()</code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="key" id="_key">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_key">#</a>
+		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#58-70" title="Go to source code">key</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code>FilesystemIterator::key()</code></div>
 
 		</div>
 		</div></td>
@@ -213,7 +279,7 @@ behavior during recursive iteration.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_current">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#100-106" title="Go to source code">current</a>( )</code>
+		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#72-84" title="Go to source code">current</a>( )</code>
 
 		<div class="description short">
 			
@@ -227,235 +293,79 @@ behavior during recursive iteration.</p>
 
 
 
+				<h4>Overrides</h4>
+				<div class="list"><code>FilesystemIterator::current()</code></div>
 
-				<h4>Implementation of</h4>
-				<div class="list"><code>Iterator::current()</code></div>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="next" id="_next">
+	</table>
 
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_next">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#108-143" title="Go to source code">next</a>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>Iterator::next()</code></div>
-		</div>
-		</div></td>
+	<table class="summary inherited">
+	<caption>Methods inherited from RecursiveDirectoryIterator</caption>
+	<tr>
+		<td><code>
+getSubPath(), 
+getSubPathname(), 
+hasChildren()
+		</code></td>
 	</tr>
-	<tr data-order="key" id="_key">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_key">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#145-151" title="Go to source code">key</a>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>Iterator::key()</code></div>
-		</div>
-		</div></td>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from FilesystemIterator</caption>
+	<tr>
+		<td><code>
+getFlags(), 
+next(), 
+rewind(), 
+setFlags()
+		</code></td>
 	</tr>
-	<tr data-order="valid" id="_valid">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_valid">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#153-159" title="Go to source code">valid</a>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>Iterator::valid()</code></div>
-		</div>
-		</div></td>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from DirectoryIterator</caption>
+	<tr>
+		<td><code>
+__toString(), 
+getBasename(), 
+getExtension(), 
+getFilename(), 
+isDot(), 
+seek(), 
+valid()
+		</code></td>
 	</tr>
-	<tr data-order="rewind" id="_rewind">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_rewind">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#161-170" title="Go to source code">rewind</a>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>Iterator::rewind()</code></div>
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="hasChildren" id="_hasChildren">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_hasChildren">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#172-178" title="Go to source code">hasChildren</a>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>RecursiveIterator::hasChildren()</code></div>
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getChildren" id="_getChildren">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getChildren">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#180-186" title="Go to source code">getChildren</a>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>RecursiveIterator::getChildren()</code></div>
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="seek" id="_seek">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_seek">#</a>
-		<code><a href="source-class-Webmozart.Glob.Iterator.RecursiveDirectoryIterator.html#188-200" title="Go to source code">seek</a>( <span> <var>$position</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>SeekableIterator::seek()</code></div>
-		</div>
-		</div></td>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from SplFileInfo</caption>
+	<tr>
+		<td><code>
+_bad_state_ex(), 
+getATime(), 
+getCTime(), 
+getFileInfo(), 
+getGroup(), 
+getInode(), 
+getLinkTarget(), 
+getMTime(), 
+getOwner(), 
+getPath(), 
+getPathInfo(), 
+getPathname(), 
+getPerms(), 
+getRealPath(), 
+getSize(), 
+getType(), 
+isDir(), 
+isExecutable(), 
+isFile(), 
+isLink(), 
+isReadable(), 
+isWritable(), 
+openFile(), 
+setFileClass(), 
+setInfoClass()
+		</code></td>
 	</tr>
 	</table>
 
@@ -466,58 +376,25 @@ behavior during recursive iteration.</p>
 
 
 
-	<table class="summary constants" id="constants">
-	<caption>Constants summary</caption>
-	<tr data-order="CURRENT_AS_PATH" id="CURRENT_AS_PATH">
-
-		<td class="attributes"><code>integer</code></td>
-		<td class="name">
-			<code>
-				<a href="source-constant-CURRENT_AS_PATH.html#29-32" title="Go to source code"><b>CURRENT_AS_PATH</b></a>
-			</code>
-
-			<div class="description short">
-				<p>Flag: Return current value as file path.</p>
-			</div>
-
-			<div class="description detailed hidden">
-				<p>Flag: Return current value as file path.</p>
-
-			</div>
-		</td>
-		<td class="value">
-			<div>
-				<a href="#CURRENT_AS_PATH" class="anchor">#</a>
-				<code><span class="php-num">1</span></code>
-			</div>
-		</td>
-	</tr>
-	<tr data-order="CURRENT_AS_FILE" id="CURRENT_AS_FILE">
-
-		<td class="attributes"><code>integer</code></td>
-		<td class="name">
-			<code>
-				<a href="source-constant-CURRENT_AS_FILE.html#34-37" title="Go to source code"><b>CURRENT_AS_FILE</b></a>
-			</code>
-
-			<div class="description short">
-				<p>Flag: Return current value as file name.</p>
-			</div>
-
-			<div class="description detailed hidden">
-				<p>Flag: Return current value as file name.</p>
-
-			</div>
-		</td>
-		<td class="value">
-			<div>
-				<a href="#CURRENT_AS_FILE" class="anchor">#</a>
-				<code><span class="php-num">2</span></code>
-			</div>
-		</td>
+	<table class="summary inherited">
+	<caption>Constants inherited from FilesystemIterator</caption>
+	<tr>
+		<td><code>
+<b>CURRENT_AS_FILEINFO</b>, 
+<b>CURRENT_AS_PATHNAME</b>, 
+<b>CURRENT_AS_SELF</b>, 
+<b>CURRENT_MODE_MASK</b>, 
+<b>FOLLOW_SYMLINKS</b>, 
+<b>KEY_AS_FILENAME</b>, 
+<b>KEY_AS_PATHNAME</b>, 
+<b>KEY_MODE_MASK</b>, 
+<b>NEW_CURRENT_AND_KEY</b>, 
+<b>OTHER_MODE_MASK</b>, 
+<b>SKIP_DOTS</b>, 
+<b>UNIX_PATHS</b>
+		</code></td>
 	</tr>
 	</table>
-
 
 
 
