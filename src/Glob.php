@@ -112,6 +112,82 @@ final class Glob
     }
 
     /**
+     * Combines two globs/paths into another, stricter glob/path.
+     *
+     * @param string $glob1 Path or glob expression.
+     * @param string $glob2 Path or glob expression.
+     *
+     * @return null|string
+     */
+    public static function intersect($glob1, $glob2)
+    {
+        $isStatic1 = !self::isDynamic($glob1);
+        $isStatic2 = !self::isDynamic($glob2);
+
+        // If both globs are static (paths), return the path if they are equal and null otherwise.
+        if ($isStatic1 && $isStatic2) {
+            return $glob1 === $glob2 ? $glob1 : null;
+        }
+
+        // If one glob is dynamic (wildcards) and the other static (path),
+        // return the path if it matches the glob and null otherwise.
+        if (!$isStatic1 && $isStatic2) {
+            return self::match($glob2, $glob1) ? $glob2 : null;
+        }
+        if ($isStatic1 && !$isStatic2) {
+            return self::match($glob1, $glob2) ? $glob1 : null;
+        }
+
+        // If both globs are dynamic, return the combined glob if they match each other and null otherwise.
+        $tokens1 = explode('/', ltrim($glob1, '/'));
+        $tokens2 = explode('/', ltrim($glob2, '/'));
+
+        $matches = true;
+        $tokens = array();
+
+        while (isset($tokens1[0]) && isset($tokens2[0])) {
+            $t1 = '/'.$tokens1[0];
+            $t2 = '/'.$tokens2[0];
+
+            // tokens are equals, probably "**" or "*"
+            if (self::match($t1, $t2) && self::match($t2, $t1)) {
+                $tokens[] = $t1;
+
+                unset($tokens1[0], $tokens2[0]);
+                $tokens1 = array_values($tokens1);
+                $tokens2 = array_values($tokens2);
+
+                continue;
+            }
+
+            // no matching, means two different static values or not compatible globs
+            if (!(self::match($t1, $t2) || self::match($t2, $t1))) {
+                $matches = false;
+
+                break;
+            }
+
+            // current token of $glob2 includes current token of $glob1,
+            // so the token of $glob1 is more strict
+            if (self::match($t1, $t2)) {
+                $tokens[] = '/'.array_shift($tokens1);
+
+                continue;
+            }
+
+            // current token of $glob1 includes current token of $glob2,
+            // so the token of $glob2 is more strict
+            if (self::match($t2, $t1)) {
+                $tokens[] = '/'.array_shift($tokens2);
+
+                continue;
+            }
+        }
+
+        return $matches ? implode($tokens) : null;
+    }
+
+    /**
      * Matches a path against a glob.
      *
      * ```php

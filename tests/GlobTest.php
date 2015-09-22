@@ -206,6 +206,24 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame($isMatch, preg_match($regExp, $path));
     }
 
+    /**
+     * @dataProvider provideIntersections
+     */
+    public function testIntersect($glob1, $glob2, $expected)
+    {
+        $intersection = Glob::intersect($glob1, $glob2);
+
+        $this->assertSame($expected, $intersection);
+    }
+
+    public function provideIntersections()
+    {
+        return array(
+            array('/foo/bar/**/*.yml', '/**/messages.yml', '/foo/bar/**/messages.yml'),
+            array('/**/messages.yml', '/foo/bar/**/*.yml', '/foo/bar/**/messages.yml'),
+        );
+    }
+
     public function provideWildcardMatches()
     {
         return array(
