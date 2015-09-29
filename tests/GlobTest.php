@@ -221,6 +221,22 @@ class GlobTest extends PHPUnit_Framework_TestCase
         return array(
             array('/foo/bar/**/*.yml', '/**/messages.yml', '/foo/bar/**/messages.yml'),
             array('/**/messages.yml', '/foo/bar/**/*.yml', '/foo/bar/**/messages.yml'),
+            array('file/*/*.js', 'file/dir/*', 'file/dir/*.js'),
+            array('file/dir/*', 'file/*/*.js', 'file/dir/*.js'),
+            array('file/**/*.js', 'file/dir/*', 'file/dir/*.js'),
+            array('file/dir/*', 'file/**/*.js', 'file/dir/*.js'),
+            array('file/*/*.js', 'file/dir/dir/*', null),
+            array('file/dir/dir/*', 'file/*/*.js', null),
+            array('file/**/*.js', 'file/dir/dir/*', 'file/dir/dir/*.js'),
+            array('file/dir/dir/*', 'file/**/*.js', 'file/dir/dir/*.js'),
+            array('*ends', 'begins*', 'begins*ends'),
+            array('begins*', '*ends', 'begins*ends'),
+            array('*no', '*intersection', null),
+            array('*intersection', '*no', null),
+            array('file/dir/*.js', 'file/dir/*.cs', null),
+            array('file/dir/*.cs', 'file/dir/*.js', null),
+            array('a*db*c', 'adbcdbbc', 'adbcdbbc'),
+            array('adbcdbbc', 'a*db*c', 'adbcdbbc'),
         );
     }
 
