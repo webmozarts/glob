@@ -14,7 +14,8 @@
     },
     "require-dev": {
         "symfony/filesystem": "^2.5",
-        "phpunit/phpunit": "^4.6"
+        "phpunit/phpunit": "^4.6",
+        "sebastian/version": "^1.0.1"
     },
     "autoload": {
         "psr-4": {
