@@ -1,6 +1,10 @@
 Changelog
 =========
 
+* 3.3.1 (@release_date@)
+
+ * checked return value of `glob()`
+
 * 3.3.0 (2015-12-23)
 
  * improved globbing performance by falling back to PHP's `glob()` function

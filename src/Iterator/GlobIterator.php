@@ -59,7 +59,11 @@ class GlobIterator extends IteratorIterator
                     $glob = str_replace('\\', '\\\\', $glob);
                 }
 
-                $innerIterator = new ArrayIterator(glob($glob, GLOB_BRACE));
+                if (false === $results = glob($glob, GLOB_BRACE)) {
+                    $innerIterator = new EmptyIterator();
+                } else {
+                    $innerIterator = new ArrayIterator($results);
+                }
             } else {
                 // Otherwise scan the glob's base directory for matches
                 $innerIterator = new GlobFilterIterator(
