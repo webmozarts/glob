@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 3.3.1 (@release_date@)
+* 3.3.1 (2015-12-23)
 
  * checked return value of `glob()`
 
