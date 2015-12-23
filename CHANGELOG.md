@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 3.2.0 (@release_date@)
+* 3.2.0 (2015-12-23)
 
  * added support for `?` which matches any character
  * added support for character classes `[abc]` which match any of the specified
