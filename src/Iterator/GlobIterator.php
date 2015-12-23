@@ -43,13 +43,15 @@ class GlobIterator extends IteratorIterator
             // If the glob is a file path, return that path
             $innerIterator = new ArrayIterator(array($glob));
         } elseif (is_dir($basePath)) {
-            if (false === strpos($glob, '/**/') && false === strpos($glob, '://')) {
-                // Use the system's much more efficient glob() function where
-                // we can. Limitations of glob():
-
-                // * glob() does not support stream wrappers
-                // * glob() does not support /**/
-
+            // Use the system's much more efficient glob() function where we can
+            if (
+                // glob() does not support /**/
+                false === strpos($glob, '/**/') &&
+                // glob() does not support stream wrappers
+                false === strpos($glob, '://') &&
+                // glob() does not support [^...] on Windows
+                ('\\' !== DIRECTORY_SEPARATOR || false === strpos($glob, '[^'))
+            ) {
                 // glob() supports escape sequences by default
                 // If escape sequences are disabled, disable glob() escaping by
                 // escaping all backslashes in the pattern
