@@ -38,7 +38,7 @@ class GlobIterator extends IteratorIterator
      */
     public function __construct($glob, $flags = 0)
     {
-        $basePath = Glob::getBasePath($glob);
+        $basePath = Glob::getBasePath($glob, $flags);
 
         if (!Glob::isDynamic($glob) && file_exists($glob)) {
             // If the glob is a file path, return that path
