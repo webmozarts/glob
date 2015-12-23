@@ -113,8 +113,8 @@ Returned paths contain forward slashes only.
 ### Escaping
 
 The `Glob` class supports a mode where you can match files that actually
-contain a `*`, `{` or `}` in their filename. To enable the escape mode, pass the
-`Glob::ESCAPE` flag to any of the methods in `Glob`.
+contain a special character in their filename. To enable the escape mode, pass 
+the `Glob::ESCAPE` flag to any of the methods in `Glob`.
 
 ```php
 $paths = Glob::glob('/backup\\*/*.css', Glob::ESCAPE);
@@ -127,9 +127,13 @@ produce a single `\` in the string.
 
 The following escape sequences are available:
 
+* `\\?`: match a `?` in the path
 * `\\*`: match a `*` in the path
 * `\\{`: match a `{` in the path
 * `\\}`: match a `}` in the path
+* `\\[`: match a `[` in the path
+* `\\]`: match a `]` in the path
+* `\\^`: match a `^` in the path
 * `\\\\`: match a `\` in the path
 
 ### Stream Wrappers
