@@ -63,7 +63,23 @@ class GlobTest extends PHPUnit_Framework_TestCase
             $this->tempDir.'/css/reset.css',
             $this->tempDir.'/css/style.css',
             $this->tempDir.'/css/style.cts',
+            $this->tempDir.'/css/style.cxs',
         ), Glob::glob($this->tempDir.'/*/*.c?s'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/reset.css',
+            $this->tempDir.'/css/style.css',
+            $this->tempDir.'/css/style.cts',
+        ), Glob::glob($this->tempDir.'/*/*.c[st]s'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/style.cts',
+        ), Glob::glob($this->tempDir.'/*/*.c[t]s'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/style.cts',
+            $this->tempDir.'/css/style.cxs',
+        ), Glob::glob($this->tempDir.'/*/*.c[^s]s'));
 
         $this->assertSame(array(
             $this->tempDir.'/css/reset.css',
@@ -93,6 +109,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
             $this->tempDir.'/css/reset.css',
             $this->tempDir.'/css/style.css',
             $this->tempDir.'/css/style.cts',
+            $this->tempDir.'/css/style.cxs',
         ), Glob::glob($this->tempDir.'/css{,/**/*}'));
 
         $this->assertSame(array(), Glob::glob($this->tempDir.'/*foo*'));
@@ -113,6 +130,28 @@ class GlobTest extends PHPUnit_Framework_TestCase
             'globtest:///css/reset.css',
             'globtest:///css/style.css',
         ), Glob::glob('globtest:///*/*.css'));
+
+        $this->assertSame(array(
+            'globtest:///css/reset.css',
+            'globtest:///css/style.css',
+            'globtest:///css/style.cts',
+            'globtest:///css/style.cxs',
+        ), Glob::glob('globtest:///*/*.c?s'));
+
+        $this->assertSame(array(
+            'globtest:///css/reset.css',
+            'globtest:///css/style.css',
+            'globtest:///css/style.cts',
+        ), Glob::glob('globtest:///*/*.c[st]s'));
+
+        $this->assertSame(array(
+            'globtest:///css/style.cts',
+        ), Glob::glob('globtest:///*/*.c[t]s'));
+
+        $this->assertSame(array(
+            'globtest:///css/style.cts',
+            'globtest:///css/style.cxs',
+        ), Glob::glob('globtest:///*/*.c[^s]s'));
 
         $this->assertSame(array(
             'globtest:///css/reset.css',
@@ -142,6 +181,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
             'globtest:///css/reset.css',
             'globtest:///css/style.css',
             'globtest:///css/style.cts',
+            'globtest:///css/style.cxs',
         ), Glob::glob('globtest:///css{,/**/*}'));
 
         $this->assertSame(array(), Glob::glob('globtest:///*foo*'));
@@ -159,11 +199,17 @@ class GlobTest extends PHPUnit_Framework_TestCase
         touch($this->tempDir.'/css/style{.css');
         touch($this->tempDir.'/css/style}.css');
         touch($this->tempDir.'/css/style?.css');
+        touch($this->tempDir.'/css/style[.css');
+        touch($this->tempDir.'/css/style].css');
+        touch($this->tempDir.'/css/style^.css');
 
         $this->assertSame(array(
             $this->tempDir.'/css/style*.css',
             $this->tempDir.'/css/style.css',
             $this->tempDir.'/css/style?.css',
+            $this->tempDir.'/css/style[.css',
+            $this->tempDir.'/css/style].css',
+            $this->tempDir.'/css/style^.css',
             $this->tempDir.'/css/style{.css',
             $this->tempDir.'/css/style}.css',
         ), Glob::glob($this->tempDir.'/css/style*.css'));
@@ -191,6 +237,24 @@ class GlobTest extends PHPUnit_Framework_TestCase
         ), Glob::glob($this->tempDir.'/css/style\\?.css', Glob::ESCAPE));
 
         $this->assertSame(array(), Glob::glob($this->tempDir.'/css/style\\?.css'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/style[.css',
+        ), Glob::glob($this->tempDir.'/css/style\\[.css', Glob::ESCAPE));
+
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/css/style\\[.css'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/style].css',
+        ), Glob::glob($this->tempDir.'/css/style\\].css', Glob::ESCAPE));
+
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/css/style\\].css'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/style^.css',
+        ), Glob::glob($this->tempDir.'/css/style\\^.css', Glob::ESCAPE));
+
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/css/style\\^.css'));
     }
 
     /**
@@ -392,6 +456,13 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, preg_match($regExp, '/foo/{b,c}az.js~'));
     }
 
+    public function testMatchUnescapedRightBraceWithoutLeadingLeftBrace()
+    {
+        $regExp = Glob::toRegEx('/foo/}.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/}.js~'));
+    }
+
     public function testMatchEscapedRightBrace()
     {
         $regExp = Glob::toRegEx('/foo/\\}.js~', Glob::ESCAPE);
@@ -465,6 +536,115 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, preg_match($regExp, '/foo/caz.js~'));
     }
 
+    public function testMatchEscapedLeftBracket()
+    {
+        $regExp = Glob::toRegEx('/foo/\\[.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/[.js~'));
+    }
+
+    public function testMatchLeftBracketWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/\\\\[bc]az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/\\baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+    }
+
+    public function testMatchEscapedLeftBracketWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/\\\\\\[bc]az.js~', Glob::ESCAPE);
+
+        $this->assertSame(0, preg_match($regExp, '/foo/\\baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/\baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\\[bc]az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\[bc]az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/[bc]az.js~'));
+    }
+
+    public function testMatchUnescapedRightBracketWithoutLeadingLeftBracket()
+    {
+        $regExp = Glob::toRegEx('/foo/].js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/].js~'));
+    }
+
+    public function testMatchEscapedRightBracket()
+    {
+        $regExp = Glob::toRegEx('/foo/\\].js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/].js~'));
+    }
+
+    public function testMatchRightBracketWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/[bc\\\\]az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/caz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\\az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/bc\\az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/c\\az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/az.js~'));
+    }
+
+    public function testMatchEscapedRightBracketWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/[bc\\\\\\]]az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/caz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/\\az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/]az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/bc\\]az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/c\\]az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/\\]az.js~'));
+    }
+
+    public function testMatchUnescapedCaretWithoutLeadingLeftBracket()
+    {
+        $regExp = Glob::toRegEx('/foo/^.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/^.js~'));
+    }
+
+    public function testMatchEscapedCaret()
+    {
+        $regExp = Glob::toRegEx('/foo/\\^.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/^.js~'));
+    }
+
+    public function testMatchCaretWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/[\\\\^]az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/\\az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/^az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/az.js~'));
+    }
+
+    public function testMatchEscapedCaretWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/[\\\\\\^]az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/\\az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/^az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/az.js~'));
+    }
+
+    public function testCloseBracketsAsSoonAsPossible()
+    {
+        $regExp = Glob::toRegEx('/foo/[bc]]az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/b]az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/c]az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/caz.js~'));
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage *.css
@@ -496,21 +676,29 @@ class GlobTest extends PHPUnit_Framework_TestCase
             array('/foo/baz/bar?', '/foo/baz/bar'),
             array('/foo/baz/bar\\?', '/foo/baz/bar\\'),
             array('/foo/baz/bar\\\\?', '/foo/baz/bar\\\\'),
+            array('/foo/baz/bar[ab]', '/foo/baz/bar'),
+            array('/foo/baz/bar\\[ab]', '/foo/baz/bar\\'),
+            array('/foo/baz/bar\\\\[ab]', '/foo/baz/bar\\\\'),
             array('/foo/baz/bar\\*', '/foo/baz/bar*', Glob::ESCAPE),
             array('/foo/baz/bar\\\\*', '/foo/baz/bar\\', Glob::ESCAPE),
             array('/foo/baz/bar\\\\\\*', '/foo/baz/bar\\*', Glob::ESCAPE),
             array('/foo/baz/bar\\\\\\\\*', '/foo/baz/bar\\\\', Glob::ESCAPE),
             array('/foo/baz/bar\\*\\\\', '/foo/baz/bar*\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\?', '/foo/baz/bar?', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\?', '/foo/baz/bar\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\?', '/foo/baz/bar\\?', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\\\?', '/foo/baz/bar\\\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\?\\\\', '/foo/baz/bar?\\', Glob::ESCAPE),
             array('/foo/baz/bar\\{a,b}', '/foo/baz/bar{a,b}', Glob::ESCAPE),
             array('/foo/baz/bar\\\\{a,b}', '/foo/baz/bar\\', Glob::ESCAPE),
             array('/foo/baz/bar\\\\\\{a,b}', '/foo/baz/bar\\{a,b}', Glob::ESCAPE),
             array('/foo/baz/bar\\\\\\\\{a,b}', '/foo/baz/bar\\\\', Glob::ESCAPE),
             array('/foo/baz/bar\\{a,b}\\\\', '/foo/baz/bar{a,b}\\', Glob::ESCAPE),
+            array('/foo/baz/bar\\?', '/foo/baz/bar?', Glob::ESCAPE),
+            array('/foo/baz/bar\\\\?', '/foo/baz/bar\\', Glob::ESCAPE),
+            array('/foo/baz/bar\\\\\\?', '/foo/baz/bar\\?', Glob::ESCAPE),
+            array('/foo/baz/bar\\\\\\\\?', '/foo/baz/bar\\\\', Glob::ESCAPE),
+            array('/foo/baz/bar\\?\\\\', '/foo/baz/bar?\\', Glob::ESCAPE),
+            array('/foo/baz/bar\\[ab]', '/foo/baz/bar[ab]', Glob::ESCAPE),
+            array('/foo/baz/bar\\\\[ab]', '/foo/baz/bar\\', Glob::ESCAPE),
+            array('/foo/baz/bar\\\\\\[ab]', '/foo/baz/bar\\[ab]', Glob::ESCAPE),
+            array('/foo/baz/bar\\\\\\\\[ab]', '/foo/baz/bar\\\\', Glob::ESCAPE),
+            array('/foo/baz/bar\\[ab]\\\\', '/foo/baz/bar[ab]\\', Glob::ESCAPE),
         );
     }
 

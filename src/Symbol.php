@@ -46,6 +46,21 @@ final class Symbol
     const QUESTION_MARK = '\\?';
 
     /**
+     * Represents a literal "[" in a regular expression.
+     */
+    const L_BRACKET = '\\[';
+
+    /**
+     * Represents a literal "]" in a regular expression.
+     */
+    const R_BRACKET = '\\]';
+
+    /**
+     * Represents a literal "^" in a regular expression.
+     */
+    const CARET = '\\^';
+
+    /**
      * Matches a literal "\" when running a regular expression against
      * another regular expression.
      */
@@ -74,6 +89,24 @@ final class Symbol
      * another regular expression.
      */
     const E_QUESTION_MARK = '\\\\\\?';
+
+    /**
+     * Matches a literal "[" when running a regular expression against
+     * another regular expression.
+     */
+    const E_L_BRACKET = '\\\\\\[';
+
+    /**
+     * Matches a literal "]" when running a regular expression against
+     * another regular expression.
+     */
+    const E_R_BRACKET = '\\\\\\]';
+
+    /**
+     * Matches a literal "^" when running a regular expression against
+     * another regular expression.
+     */
+    const E_CARET = '\\\\\\^';
 
     private function __construct()
     {

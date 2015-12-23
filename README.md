@@ -17,6 +17,8 @@ Syntax:
 * `?` matches any character
 * `*` matches zero or more characters, except `/`
 * `/**/` matches zero or more directory names
+* `[abc]` matches a single character `a`, `b` or `c`
+* `[^abc]` matches any character but `a`, `b` or `c`
 * `{ab,cd}` matches `ab` or `cd`
 
 [API Documentation]

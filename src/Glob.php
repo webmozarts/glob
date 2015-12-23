@@ -347,22 +347,23 @@ final class Glob
         if ($flags & self::ESCAPE) {
             // Read backslashes together with the next (the escaped) character
             // up to the first non-escaped star/brace
-            if (preg_match('~^('.Symbol::BACKSLASH.'.|[^'.Symbol::BACKSLASH.Symbol::STAR.Symbol::L_BRACE.Symbol::QUESTION_MARK.'])*~', $glob, $matches)) {
+            if (preg_match('~^('.Symbol::BACKSLASH.'.|[^'.Symbol::BACKSLASH.Symbol::STAR.Symbol::L_BRACE.Symbol::QUESTION_MARK.Symbol::L_BRACKET.'])*~', $glob, $matches)) {
                 $prefix = $matches[0];
             }
 
             // Replace escaped characters by their unescaped equivalents
             $prefix = str_replace(
-                array('\\\\', '\\*', '\\{', '\\}', '\\?'),
-                array('\\', '*', '{', '}', '?'),
+                array('\\\\', '\\*', '\\{', '\\}', '\\?', '\\[', '\\]', '\\^'),
+                array('\\', '*', '{', '}', '?', '[', ']', '^'),
                 $prefix
             );
         } else {
             $pos1 = strpos($glob, '*');
             $pos2 = strpos($glob, '{');
             $pos3 = strpos($glob, '?');
+            $pos4 = strpos($glob, '[');
 
-            $positions = array_filter(array($pos1, $pos2, $pos3), function ($v) {
+            $positions = array_filter(array($pos1, $pos2, $pos3, $pos4), function ($v) {
                 return false !== $v;
             });
 
@@ -407,6 +408,19 @@ final class Glob
             );
         }
 
+        // Replace "[abc]" by "[abc]" and "[^abc]" by "[^abc]"
+        // We do this with a regex instead of simply replacing "[" etc. in order
+        // to not generate broken regular expressions
+        if (false !== strpos($quoted, Symbol::L_BRACKET)) {
+            $quoted = preg_replace_callback(
+                '~'.Symbol::E_L_BRACKET.'('.Symbol::E_CARET.')?'.'([^'.Symbol::E_R_BRACKET.']*)'.Symbol::E_R_BRACKET.'~',
+                function ($match) {
+                    return '['.($match[1] ? '^' : '').$match[2].']';
+                },
+                $quoted
+            );
+        }
+
         return str_replace(
             // Replace "/**/" by "/(.+/)?"
             // Replace "*" by "[^/]*"
@@ -428,6 +442,18 @@ final class Glob
                 '~'.$noEscaping.Symbol::E_L_BRACE.'(.*?)'.$noEscaping.Symbol::E_R_BRACE.'~',
                 function ($match) {
                     return $match[1].'('.str_replace(',', '|', $match[3]).$match[4].')';
+                },
+                $quoted
+            );
+        }
+
+        // Replace "[abc]" by "[abc]", as long as preceded by an even number
+        // of backslashes
+        if (false !== strpos($quoted, Symbol::L_BRACKET)) {
+            $quoted = preg_replace_callback(
+                '~'.$noEscaping.Symbol::E_L_BRACKET.'('.Symbol::E_CARET.')?(.*?)'.$noEscaping.Symbol::E_R_BRACKET.'~',
+                function ($match) {
+                    return $match[1].'['.($match[3] ? '^' : '').$match[4].$match[5].']';
                 },
                 $quoted
             );
@@ -466,6 +492,9 @@ final class Glob
                 Symbol::E_L_BRACE,
                 Symbol::E_R_BRACE,
                 Symbol::E_QUESTION_MARK,
+                Symbol::E_L_BRACKET,
+                Symbol::E_R_BRACKET,
+                Symbol::E_CARET,
                 Symbol::E_BACKSLASH,
             ),
             array(
@@ -473,6 +502,9 @@ final class Glob
                 Symbol::L_BRACE,
                 Symbol::R_BRACE,
                 Symbol::QUESTION_MARK,
+                Symbol::L_BRACKET,
+                Symbol::R_BRACKET,
+                Symbol::CARET,
                 Symbol::BACKSLASH,
             ),
             $quoted

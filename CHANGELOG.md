@@ -4,6 +4,10 @@ Changelog
 * 3.2.0 (@release_date@)
 
  * added support for `?` which matches any character
+ * added support for character classes `[abc]` which match any of the specified
+   characters
+ * added support for inverted character classes `[^abc]` which match any but
+   the specified characters
 
 * 3.1.1 (2015-08-24)
 
