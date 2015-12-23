@@ -387,6 +387,20 @@ final class Glob
             }
         }
 
+        if ($inSquare) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid glob: missing ] in %s',
+                $glob
+            ));
+        }
+
+        if ($curlyLevels > 0) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid glob: missing } in %s',
+                $glob
+            ));
+        }
+
         return $delimiter.'^'.$regex.'$'.$delimiter;
     }
 

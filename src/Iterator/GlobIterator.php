@@ -13,6 +13,7 @@ namespace Webmozart\Glob\Iterator;
 
 use ArrayIterator;
 use EmptyIterator;
+use InvalidArgumentException;
 use IteratorIterator;
 use RecursiveIteratorIterator;
 use Webmozart\Glob\Glob;
@@ -52,22 +53,37 @@ class GlobIterator extends IteratorIterator
                 // glob() does not support [^...] on Windows
                 ('\\' !== DIRECTORY_SEPARATOR || false === strpos($glob, '[^'))
             ) {
-                $innerIterator = new ArrayIterator(glob($glob, GLOB_BRACE));
+                if (false === $results = glob($glob, GLOB_BRACE)) {
+                    $innerIterator = new EmptyIterator();
+                } else {
+                    $innerIterator = new ArrayIterator($results);
+                }
             } else {
-                // Otherwise scan the glob's base directory for matches
-                $innerIterator = new GlobFilterIterator(
-                    $glob,
-                    new RecursiveIteratorIterator(
-                        new RecursiveDirectoryIterator(
-                            $basePath,
-                            RecursiveDirectoryIterator::CURRENT_AS_PATHNAME
-                                | RecursiveDirectoryIterator::SKIP_DOTS
+                try {
+                    // Otherwise scan the glob's base directory for matches
+                    $innerIterator = new GlobFilterIterator(
+                        $glob,
+                        new RecursiveIteratorIterator(
+                            new RecursiveDirectoryIterator(
+                                $basePath,
+                                RecursiveDirectoryIterator::CURRENT_AS_PATHNAME
+                                    | RecursiveDirectoryIterator::SKIP_DOTS
+                            ),
+                            RecursiveIteratorIterator::SELF_FIRST
                         ),
-                        RecursiveIteratorIterator::SELF_FIRST
-                    ),
-                    GlobFilterIterator::FILTER_VALUE,
-                    $flags
-                );
+                        GlobFilterIterator::FILTER_VALUE,
+                        $flags
+                    );
+                } catch (InvalidArgumentException $e) {
+                    if (0 === strpos($e->getMessage(), 'Invalid glob: missing ]')
+                        || 0 === strpos($e->getMessage(), 'Invalid glob: missing }')) {
+                        // Remain compatible with glob() which simply returns
+                        // nothing in this case
+                        $innerIterator = new EmptyIterator();
+                    } else {
+                        throw $e;
+                    }
+                }
             }
         } else {
             // If the glob's base directory does not exist, return nothing

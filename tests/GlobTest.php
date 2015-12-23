@@ -263,6 +263,24 @@ class GlobTest extends PHPUnit_Framework_TestCase
         ), Glob::glob($this->tempDir.'/css/style\\^.css'));
     }
 
+    public function testGlobReturnsEmptyArrayIfUnclosedBrace()
+    {
+        // native impl
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/*.cs{t,s'));
+
+        // custom impl
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/**/*.cs{t,s'));
+    }
+
+    public function testGlobReturnsEmptyArrayIfUnclosedBracket()
+    {
+        // native impl
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/*.cs[ts'));
+
+        // custom impl
+        $this->assertSame(array(), Glob::glob($this->tempDir.'/**/*.cs[ts'));
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage *.css
