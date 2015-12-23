@@ -3,7 +3,8 @@ Changelog
 
 * 4.0.0 (@release_date@)
 
- * switched to a better-performing regex compilation algorithm
+ * switched to a better-performing algorithm for `Glob::toRegEx()`
+ * switched to a better-performing algorithm for `Glob::getStaticPrefix()`
  * escaping is now always enabled
 
 * 3.3.0 (2015-12-23)

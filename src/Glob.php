@@ -420,33 +420,49 @@ final class Glob
             ));
         }
 
-        $prefix = $glob;
+        $prefix = '';
+        $length = strlen($glob);
 
-        if ($flags & self::ESCAPE) {
-            // Read backslashes together with the next (the escaped) character
-            // up to the first non-escaped star/brace
-            if (preg_match('~^('.Symbol::BACKSLASH.'.|[^'.Symbol::BACKSLASH.Symbol::STAR.Symbol::L_BRACE.Symbol::QUESTION_MARK.Symbol::L_BRACKET.'])*~', $glob, $matches)) {
-                $prefix = $matches[0];
-            }
+        for ($i = 0; $i < $length; ++$i) {
+            $c = $glob[$i];
 
-            // Replace escaped characters by their unescaped equivalents
-            $prefix = str_replace(
-                array('\\\\', '\\*', '\\{', '\\}', '\\?', '\\[', '\\]', '\\^'),
-                array('\\', '*', '{', '}', '?', '[', ']', '^'),
-                $prefix
-            );
-        } else {
-            $pos1 = strpos($glob, '*');
-            $pos2 = strpos($glob, '{');
-            $pos3 = strpos($glob, '?');
-            $pos4 = strpos($glob, '[');
+            switch ($c) {
+                case '/':
+                    $prefix .= '/';
+                    if (isset($glob[$i + 3]) && '**/' === $glob[$i + 1].$glob[$i + 2].$glob[$i + 3]) {
+                        break 2;
+                    }
+                    break;
 
-            $positions = array_filter(array($pos1, $pos2, $pos3, $pos4), function ($v) {
-                return false !== $v;
-            });
+                case '*':
+                case '?':
+                case '{':
+                case '[':
+                    break 2;
 
-            if (!empty($positions)) {
-                $prefix = substr($glob, 0, min($positions));
+                case '\\':
+                    if (isset($glob[$i + 1])) {
+                        switch ($glob[$i + 1]) {
+                            case '*':
+                            case '?':
+                            case '{':
+                            case '[':
+                            case '\\':
+                                $prefix .= $glob[$i + 1];
+                                ++$i;
+                                break;
+
+                            default:
+                                $prefix .= '\\';
+                        }
+                    } else {
+                        $prefix .= '\\';
+                    }
+                    break;
+
+                default:
+                    $prefix .= $c;
+                    break;
             }
         }
 

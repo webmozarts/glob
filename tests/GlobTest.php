@@ -711,9 +711,9 @@ class GlobTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideStaticPrefixes
      */
-    public function testGetStaticPrefix($glob, $prefix, $flags = 0)
+    public function testGetStaticPrefix($glob, $prefix)
     {
-        $this->assertSame($prefix, Glob::getStaticPrefix($glob, $flags));
+        $this->assertSame($prefix, Glob::getStaticPrefix($glob));
     }
 
     public function provideStaticPrefixes()
@@ -721,38 +721,26 @@ class GlobTest extends PHPUnit_Framework_TestCase
         return array(
             // The method assumes that the path is already consolidated
             array('/foo/baz/../*/bar/*', '/foo/baz/../'),
-            array('/foo/baz/bar*', '/foo/baz/bar'),
-            array('/foo/baz/bar\\*', '/foo/baz/bar\\'),
-            array('/foo/baz/bar\\\\*', '/foo/baz/bar\\\\'),
-            array('/foo/baz/bar{a,b}', '/foo/baz/bar'),
-            array('/foo/baz/bar\\{a,b}', '/foo/baz/bar\\'),
-            array('/foo/baz/bar\\\\{a,b}', '/foo/baz/bar\\\\'),
-            array('/foo/baz/bar?', '/foo/baz/bar'),
-            array('/foo/baz/bar\\?', '/foo/baz/bar\\'),
-            array('/foo/baz/bar\\\\?', '/foo/baz/bar\\\\'),
-            array('/foo/baz/bar[ab]', '/foo/baz/bar'),
-            array('/foo/baz/bar\\[ab]', '/foo/baz/bar\\'),
-            array('/foo/baz/bar\\\\[ab]', '/foo/baz/bar\\\\'),
-            array('/foo/baz/bar\\*', '/foo/baz/bar*', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\*', '/foo/baz/bar\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\*', '/foo/baz/bar\\*', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\\\*', '/foo/baz/bar\\\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\*\\\\', '/foo/baz/bar*\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\{a,b}', '/foo/baz/bar{a,b}', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\{a,b}', '/foo/baz/bar\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\{a,b}', '/foo/baz/bar\\{a,b}', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\\\{a,b}', '/foo/baz/bar\\\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\{a,b}\\\\', '/foo/baz/bar{a,b}\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\?', '/foo/baz/bar?', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\?', '/foo/baz/bar\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\?', '/foo/baz/bar\\?', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\\\?', '/foo/baz/bar\\\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\?\\\\', '/foo/baz/bar?\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\[ab]', '/foo/baz/bar[ab]', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\[ab]', '/foo/baz/bar\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\[ab]', '/foo/baz/bar\\[ab]', Glob::ESCAPE),
-            array('/foo/baz/bar\\\\\\\\[ab]', '/foo/baz/bar\\\\', Glob::ESCAPE),
-            array('/foo/baz/bar\\[ab]\\\\', '/foo/baz/bar[ab]\\', Glob::ESCAPE),
+            array('/foo/baz/bar\\*', '/foo/baz/bar*'),
+            array('/foo/baz/bar\\\\*', '/foo/baz/bar\\'),
+            array('/foo/baz/bar\\\\\\*', '/foo/baz/bar\\*'),
+            array('/foo/baz/bar\\\\\\\\*', '/foo/baz/bar\\\\'),
+            array('/foo/baz/bar\\*\\\\', '/foo/baz/bar*\\'),
+            array('/foo/baz/bar\\{a,b}', '/foo/baz/bar{a,b}'),
+            array('/foo/baz/bar\\\\{a,b}', '/foo/baz/bar\\'),
+            array('/foo/baz/bar\\\\\\{a,b}', '/foo/baz/bar\\{a,b}'),
+            array('/foo/baz/bar\\\\\\\\{a,b}', '/foo/baz/bar\\\\'),
+            array('/foo/baz/bar\\{a,b}\\\\', '/foo/baz/bar{a,b}\\'),
+            array('/foo/baz/bar\\?', '/foo/baz/bar?'),
+            array('/foo/baz/bar\\\\?', '/foo/baz/bar\\'),
+            array('/foo/baz/bar\\\\\\?', '/foo/baz/bar\\?'),
+            array('/foo/baz/bar\\\\\\\\?', '/foo/baz/bar\\\\'),
+            array('/foo/baz/bar\\?\\\\', '/foo/baz/bar?\\'),
+            array('/foo/baz/bar\\[ab]', '/foo/baz/bar[ab]'),
+            array('/foo/baz/bar\\\\[ab]', '/foo/baz/bar\\'),
+            array('/foo/baz/bar\\\\\\[ab]', '/foo/baz/bar\\[ab]'),
+            array('/foo/baz/bar\\\\\\\\[ab]', '/foo/baz/bar\\\\'),
+            array('/foo/baz/bar\\[ab]\\\\', '/foo/baz/bar[ab]\\'),
         );
     }
 
@@ -776,9 +764,9 @@ class GlobTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideBasePaths
      */
-    public function testGetBasePathStream($glob, $basePath, $flags = 0)
+    public function testGetBasePathStream($glob, $basePath)
     {
-        $this->assertSame('globtest://'.$basePath, Glob::getBasePath('globtest://'.$glob, $flags));
+        $this->assertSame('globtest://'.$basePath, Glob::getBasePath('globtest://'.$glob));
     }
 
     public function provideBasePaths()
@@ -792,13 +780,9 @@ class GlobTest extends PHPUnit_Framework_TestCase
             array('/foo*', '/'),
             array('/*', '/'),
             array('/foo/baz*/bar', '/foo'),
-            array('/foo/baz\\*/bar', '/foo'),
+            array('/foo/baz\\*/bar', '/foo/baz*'),
             array('/foo/baz\\\\*/bar', '/foo'),
-            array('/foo/baz\\\\\\*/bar', '/foo'),
-            array('/foo/baz*/bar', '/foo', Glob::ESCAPE),
-            array('/foo/baz\\*/bar', '/foo/baz*', Glob::ESCAPE),
-            array('/foo/baz\\\\*/bar', '/foo', Glob::ESCAPE),
-            array('/foo/baz\\\\\\*/bar', '/foo/baz\\*', Glob::ESCAPE),
+            array('/foo/baz\\\\\\*/bar', '/foo/baz\\*'),
         );
     }
 
