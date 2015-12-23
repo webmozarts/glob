@@ -6,9 +6,9 @@ Webmozart Glob
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmozart/glob/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/webmozart/glob/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/webmozart/glob/v/stable.svg)](https://packagist.org/packages/webmozart/glob)
 [![Total Downloads](https://poser.pugx.org/webmozart/glob/downloads.svg)](https://packagist.org/packages/webmozart/glob)
-[![Dependency Status](https://www.versioneye.com/php/webmozart:glob/3.2.0/badge.svg)](https://www.versioneye.com/php/webmozart:glob/3.2.0)
+[![Dependency Status](https://www.versioneye.com/php/webmozart:glob/3.3.0/badge.svg)](https://www.versioneye.com/php/webmozart:glob/3.3.0)
 
-Latest release: [3.2.0](https://packagist.org/packages/webmozart/glob#3.2.0)
+Latest release: [3.3.0](https://packagist.org/packages/webmozart/glob#3.3.0)
 
 A utility implementing Ant-like globbing. 
 
