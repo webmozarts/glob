@@ -413,9 +413,9 @@ final class Glob
         // to not generate broken regular expressions
         if (false !== strpos($quoted, Symbol::L_BRACKET)) {
             $quoted = preg_replace_callback(
-                '~'.Symbol::E_L_BRACKET.'('.Symbol::E_CARET.')?'.'([^'.Symbol::E_R_BRACKET.']*)'.Symbol::E_R_BRACKET.'~',
+                '~'.Symbol::E_L_BRACKET.'('.Symbol::E_CARET.')?'.'([^'.Symbol::R_BRACKET.']*)'.Symbol::E_R_BRACKET.'~',
                 function ($match) {
-                    return '['.($match[1] ? '^' : '').$match[2].']';
+                    return '['.($match[1] ? '^' : '').str_replace(Symbol::HYPHEN, '-', $match[2]).']';
                 },
                 $quoted
             );
@@ -452,8 +452,10 @@ final class Glob
         if (false !== strpos($quoted, Symbol::L_BRACKET)) {
             $quoted = preg_replace_callback(
                 '~'.$noEscaping.Symbol::E_L_BRACKET.'('.Symbol::E_CARET.')?(.*?)'.$noEscaping.Symbol::E_R_BRACKET.'~',
-                function ($match) {
-                    return $match[1].'['.($match[3] ? '^' : '').$match[4].$match[5].']';
+                function ($match) use ($noEscaping) {
+                    $content = preg_replace('~'.$noEscaping.Symbol::E_HYPHEN.'~', '$1-', $match[4]);
+
+                    return $match[1].'['.($match[3] ? '^' : '').$content.$match[5].']';
                 },
                 $quoted
             );
@@ -485,6 +487,10 @@ final class Glob
             // Replace "\{" by "{"
             // Replace "\}" by "}"
             // Replace "\?" by "?"
+            // Replace "\[" by "["
+            // Replace "\]" by "]"
+            // Replace "\^" by "^"
+            // Replace "\-" by "-"
             // Replace "\\\\" by "\\"
             // (escaped backslashes were escaped again by preg_quote())
             array(
@@ -495,6 +501,7 @@ final class Glob
                 Symbol::E_L_BRACKET,
                 Symbol::E_R_BRACKET,
                 Symbol::E_CARET,
+                Symbol::E_HYPHEN,
                 Symbol::E_BACKSLASH,
             ),
             array(
@@ -505,6 +512,7 @@ final class Glob
                 Symbol::L_BRACKET,
                 Symbol::R_BRACKET,
                 Symbol::CARET,
+                Symbol::HYPHEN,
                 Symbol::BACKSLASH,
             ),
             $quoted

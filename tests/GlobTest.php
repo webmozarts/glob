@@ -79,7 +79,17 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(
             $this->tempDir.'/css/style.cts',
             $this->tempDir.'/css/style.cxs',
+        ), Glob::glob($this->tempDir.'/*/*.c[t-x]s'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/style.cts',
+            $this->tempDir.'/css/style.cxs',
         ), Glob::glob($this->tempDir.'/*/*.c[^s]s'));
+
+        $this->assertSame(array(
+            $this->tempDir.'/css/reset.css',
+            $this->tempDir.'/css/style.css',
+        ), Glob::glob($this->tempDir.'/*/*.c[^t-x]s'));
 
         $this->assertSame(array(
             $this->tempDir.'/css/reset.css',
@@ -151,7 +161,17 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(
             'globtest:///css/style.cts',
             'globtest:///css/style.cxs',
+        ), Glob::glob('globtest:///*/*.c[t-x]s'));
+
+        $this->assertSame(array(
+            'globtest:///css/style.cts',
+            'globtest:///css/style.cxs',
         ), Glob::glob('globtest:///*/*.c[^s]s'));
+
+        $this->assertSame(array(
+            'globtest:///css/reset.css',
+            'globtest:///css/style.css',
+        ), Glob::glob('globtest:///*/*.c[^t-x]s'));
 
         $this->assertSame(array(
             'globtest:///css/reset.css',
@@ -635,6 +655,40 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, preg_match($regExp, '/foo/az.js~'));
     }
 
+    public function testMatchUnescapedHyphenWithoutLeadingLeftBracket()
+    {
+        $regExp = Glob::toRegEx('/foo/-.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/-.js~'));
+    }
+
+    public function testMatchEscapedHyphen()
+    {
+        $regExp = Glob::toRegEx('/foo/\\-.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/-.js~'));
+    }
+
+    public function testMatchHyphenWithLeadingBackslash()
+    {
+        // range from "\" to "a"
+        $regExp = Glob::toRegEx('/foo/[\\\\-a]az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/\\az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/aaz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/caz.js~'));
+    }
+
+    public function testMatchEscapedHyphenWithLeadingBackslash()
+    {
+        $regExp = Glob::toRegEx('/foo/[\\\\\\-]az.js~', Glob::ESCAPE);
+
+        $this->assertSame(1, preg_match($regExp, '/foo/\\az.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/-az.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
+    }
+
     public function testCloseBracketsAsSoonAsPossible()
     {
         $regExp = Glob::toRegEx('/foo/[bc]]az.js~', Glob::ESCAPE);
@@ -643,6 +697,17 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(1, preg_match($regExp, '/foo/c]az.js~'));
         $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
         $this->assertSame(0, preg_match($regExp, '/foo/caz.js~'));
+    }
+
+    public function testMatchCharacterRanges()
+    {
+        $regExp = Glob::toRegEx('/foo/[a-c]az.js~');
+
+        $this->assertSame(1, preg_match($regExp, '/foo/aaz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/baz.js~'));
+        $this->assertSame(1, preg_match($regExp, '/foo/caz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/daz.js~'));
+        $this->assertSame(0, preg_match($regExp, '/foo/eaz.js~'));
     }
 
     /**

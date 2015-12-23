@@ -61,6 +61,11 @@ final class Symbol
     const CARET = '\\^';
 
     /**
+     * Represents a literal "-" in a regular expression.
+     */
+    const HYPHEN = '\\-';
+
+    /**
      * Matches a literal "\" when running a regular expression against
      * another regular expression.
      */
@@ -107,6 +112,12 @@ final class Symbol
      * another regular expression.
      */
     const E_CARET = '\\\\\\^';
+
+    /**
+     * Matches a literal "-" when running a regular expression against
+     * another regular expression.
+     */
+    const E_HYPHEN = '\\\\\\-';
 
     private function __construct()
     {

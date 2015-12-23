@@ -18,7 +18,9 @@ Syntax:
 * `*` matches zero or more characters, except `/`
 * `/**/` matches zero or more directory names
 * `[abc]` matches a single character `a`, `b` or `c`
+* `[a-c]` matches a single character `a`, `b` or `c`
 * `[^abc]` matches any character but `a`, `b` or `c`
+* `[^a-c]` matches any character but `a`, `b` or `c`
 * `{ab,cd}` matches `ab` or `cd`
 
 [API Documentation]
@@ -147,6 +149,7 @@ The following escape sequences are available:
 * `\\[`: match a `[` in the path
 * `\\]`: match a `]` in the path
 * `\\^`: match a `^` in the path
+* `\\-`: match a `-` in the path
 * `\\\\`: match a `\` in the path
 
 ### Stream Wrappers
