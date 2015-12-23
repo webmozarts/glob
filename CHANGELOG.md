@@ -7,6 +7,7 @@ Changelog
  * switched to a better-performing algorithm for `Glob::getStaticPrefix()`
  * removed `Glob::ESCAPE` flag - escaping is now always enabled
  * added argument `$delimiter` to `Glob::toRegEx()`
+ * removed `Symbol` class
 
 * 3.3.0 (2015-12-23)
 
