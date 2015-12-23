@@ -13,6 +13,7 @@ namespace Webmozart\Glob\Iterator;
 
 use ArrayIterator;
 use EmptyIterator;
+use IteratorIterator;
 use RecursiveIteratorIterator;
 use Webmozart\Glob\Glob;
 
@@ -25,7 +26,7 @@ use Webmozart\Glob\Glob;
  *
  * @see    Glob
  */
-class GlobIterator extends GlobFilterIterator
+class GlobIterator extends IteratorIterator
 {
     /**
      * Creates a new iterator.
@@ -42,19 +43,42 @@ class GlobIterator extends GlobFilterIterator
             // If the glob is a file path, return that path
             $innerIterator = new ArrayIterator(array($glob));
         } elseif (is_dir($basePath)) {
-            // Otherwise scan the glob's base directory for matches
-            $innerIterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $basePath,
-                    RecursiveDirectoryIterator::CURRENT_AS_PATHNAME | RecursiveDirectoryIterator::SKIP_DOTS
-                ),
-                RecursiveIteratorIterator::SELF_FIRST
-            );
+            if (false === strpos($glob, '/**/') && false === strpos($glob, '://')) {
+                // Use the system's much more efficient glob() function where
+                // we can. Limitations of glob():
+
+                // * glob() does not support stream wrappers
+                // * glob() does not support /**/
+
+                // glob() supports escape sequences by default
+                // If escape sequences are disabled, disable glob() escaping by
+                // escaping all backslashes in the pattern
+                if (!($flags & Glob::ESCAPE)) {
+                    $glob = str_replace('\\', '\\\\', $glob);
+                }
+
+                $innerIterator = new ArrayIterator(glob($glob, GLOB_BRACE));
+            } else {
+                // Otherwise scan the glob's base directory for matches
+                $innerIterator = new GlobFilterIterator(
+                    $glob,
+                    new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator(
+                            $basePath,
+                            RecursiveDirectoryIterator::CURRENT_AS_PATHNAME
+                                | RecursiveDirectoryIterator::SKIP_DOTS
+                        ),
+                        RecursiveIteratorIterator::SELF_FIRST
+                    ),
+                    GlobFilterIterator::FILTER_VALUE,
+                    $flags
+                );
+            }
         } else {
             // If the glob's base directory does not exist, return nothing
             $innerIterator = new EmptyIterator();
         }
 
-        parent::__construct($glob, $innerIterator, self::FILTER_VALUE, $flags);
+        parent::__construct($innerIterator);
     }
 }

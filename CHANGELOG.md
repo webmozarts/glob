@@ -1,6 +1,11 @@
 Changelog
 =========
 
+* 3.2.1 (2015-12-23)
+
+ * improved globbing performance by falling back to PHP's `glob()` function
+   whenever possible
+
 * 3.2.0 (2015-12-23)
 
  * added support for `?` which matches any character
