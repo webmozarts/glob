@@ -363,17 +363,6 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, preg_match($regExp, '/foo/\\*.js~'));
     }
 
-    public function testEscapedWildcardIgnoredIfNoEscapeFlag()
-    {
-        // evaluates to "\*"
-        $regExp = Glob::toRegEx('/foo/\\*.js~');
-
-        $this->assertSame(0, preg_match($regExp, '/foo/baz.js~'));
-        $this->assertSame(0, preg_match($regExp, '/foo/*.js~'));
-        $this->assertSame(1, preg_match($regExp, '/foo/\\baz.js~'));
-        $this->assertSame(1, preg_match($regExp, '/foo/\\*.js~'));
-    }
-
     public function testMatchEscapedWildcard()
     {
         // evaluates to "\*"
@@ -906,23 +895,6 @@ class GlobTest extends PHPUnit_Framework_TestCase
             3 => '/foo/bar*.js',
             4 => '/foo/bar\\*.js',
         ), Glob::filter($paths, '/**/*\\*.js', Glob::ESCAPE));
-    }
-
-    public function testFilterNonEscaped()
-    {
-        $paths = array(
-            '/foo',
-            '/foo*.js',
-            '/foo/bar.js',
-            '/foo/bar*.js',
-            '/foo/bar\\*.js',
-            '/foo/bar\\baz.js',
-        );
-
-        $this->assertSame(array(
-            4 => '/foo/bar\\*.js',
-            5 => '/foo/bar\\baz.js',
-        ), Glob::filter($paths, '/**/*\\*.js'));
     }
 
     /**

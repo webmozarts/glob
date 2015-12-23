@@ -1,6 +1,11 @@
 Changelog
 =========
 
+* 4.0.0 (@release_date@)
+
+ * switched to a better-performing regex compilation algorithm
+ * escaping is now always enabled
+
 * 3.3.0 (2015-12-23)
 
  * improved globbing performance by falling back to PHP's `glob()` function

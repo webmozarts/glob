@@ -280,7 +280,7 @@ final class Glob
      *
      * @return string The regular expression for matching the glob.
      */
-    public static function toRegEx($glob, $flags = 0)
+    public static function toRegEx($glob, $flags = 0, $delimiter = '~')
     {
         if (!Path::isAbsolute($glob) && false === strpos($glob, '://')) {
             throw new InvalidArgumentException(sprintf(
@@ -289,32 +289,110 @@ final class Glob
             ));
         }
 
-        // From the PHP manual: To specify a literal single quote, escape it
-        // with a backslash (\). To specify a literal backslash, double it (\\).
-        // All other instances of backslash will be treated as a literal backslash.
+        $inSquare = false;
+        $curlyLevels = 0;
+        $regex = '';
+        $length = strlen($glob);
 
-        // This method does the following replacements:
+        for ($i = 0; $i < $length; ++$i) {
+            $c = $glob[$i];
 
-        // Normal wildcards:    "*"       => "[^/]*"   (regex match any except separator)
-        // Double wildcards:    "**"      => ".*"      (regex match any)
-        // Sets:                "{ab,cd}" => "(ab|cd)" (regex group)
+            switch ($c) {
+                case '.':
+                case '(':
+                case ')':
+                case '|':
+                case '+':
+                case '^':
+                case '$':
+                case $delimiter:
+                    $regex .= "\\$c";
+                    break;
 
-        // with flag Glob::ESCAPE:
-        // Escaped wildcards:   "\*" => "\*"    (regex star)
-        // Escaped backslashes: "\\" => "\\"    (regex backslash)
+                case '/':
+                    if (isset($glob[$i + 3]) && '**/' === $glob[$i + 1].$glob[$i + 2].$glob[$i + 3]) {
+                        $regex .= '/(.+/)*';
+                        $i += 3;
+                    } else {
+                        $regex .= '/';
+                    }
+                    break;
 
-        // Other characters are escaped as usual for regular expressions.
+                case '*':
+                    $regex .= '[^/]*';
+                    break;
 
-        // Quote regex characters
-        $quoted = preg_quote($glob, '~');
+                case '?':
+                    $regex .= '.';
+                    break;
 
-        if ($flags & self::ESCAPE) {
-            $regEx = self::toRegExEscaped($quoted);
-        } else {
-            $regEx = self::toRegExNonEscaped($quoted);
+                case '{':
+                    $regex .= '(';
+                    ++$curlyLevels;
+                    break;
+
+                case '}':
+                    if ($curlyLevels > 0) {
+                        $regex .= ')';
+                        --$curlyLevels;
+                    } else {
+                        $regex .= '}';
+                    }
+                    break;
+
+                case ',':
+                    $regex .= $curlyLevels > 0 ? '|' : ',';
+                    break;
+
+                case '[':
+                    $regex .= '[';
+                    $inSquare = true;
+                    if (isset($glob[$i + 1]) && '^' === $glob[$i + 1]) {
+                        $regex .= '^';
+                        ++$i;
+                    }
+                    break;
+
+                case ']':
+                    $regex .= $inSquare ? ']' : '\\]';
+                    $inSquare = false;
+                    break;
+
+                case '-':
+                    $regex .= $inSquare ? '-' : '\\-';
+                    break;
+
+                case '\\':
+                    if (isset($glob[$i + 1])) {
+                        switch ($glob[$i + 1]) {
+                            case '*':
+                            case '?':
+                            case '{':
+                            case '}':
+                            case '[':
+                            case ']':
+                            case '-':
+                            case '^':
+                            case '\\':
+                                $regex .= '\\'.$glob[$i + 1];
+                                ++$i;
+                                break;
+
+                            default:
+                                $regex .= '\\\\';
+                        }
+                    } else {
+                        $regex .= '\\\\';
+                    }
+                    break;
+
+                default:
+                    $regex .= $c;
+                    break;
+            }
         }
 
-        return '~^'.$regEx.'$~';
+        return $delimiter.'^'.$regex.'$'.$delimiter;
     }
 
     /**
@@ -388,134 +466,10 @@ final class Glob
      */
     public static function isDynamic($glob)
     {
-        return false !== strpos($glob, '*') || false !== strpos($glob, '{') || false !== strpos($glob, '?');
+        return false !== strpos($glob, '*') || false !== strpos($glob, '{') || false !== strpos($glob, '?') || false !== strpos($glob, '[');
     }
 
     private function __construct()
     {
-    }
-
-    private static function toRegExNonEscaped($quoted)
-    {
-        // Replace "{a,b,c}" by "(a|b|c)"
-        if (false !== strpos($quoted, Symbol::L_BRACE)) {
-            $quoted = preg_replace_callback(
-                '~'.Symbol::E_L_BRACE.'([^'.Symbol::R_BRACE.']*)'.Symbol::E_R_BRACE.'~',
-                function ($match) {
-                    return '('.str_replace(',', '|', $match[1]).')';
-                },
-                $quoted
-            );
-        }
-
-        // Replace "[abc]" by "[abc]" and "[^abc]" by "[^abc]"
-        // We do this with a regex instead of simply replacing "[" etc. in order
-        // to not generate broken regular expressions
-        if (false !== strpos($quoted, Symbol::L_BRACKET)) {
-            $quoted = preg_replace_callback(
-                '~'.Symbol::E_L_BRACKET.'('.Symbol::E_CARET.')?'.'([^'.Symbol::R_BRACKET.']*)'.Symbol::E_R_BRACKET.'~',
-                function ($match) {
-                    return '['.($match[1] ? '^' : '').str_replace(Symbol::HYPHEN, '-', $match[2]).']';
-                },
-                $quoted
-            );
-        }
-
-        return str_replace(
-            // Replace "/**/" by "/(.+/)?"
-            // Replace "*" by "[^/]*"
-            // Replace "?" by "."
-            array('/'.Symbol::STAR.Symbol::STAR.'/', Symbol::STAR, Symbol::QUESTION_MARK),
-            array('/(.+/)?', '[^/]*', '.'),
-            $quoted
-        );
-    }
-
-    private static function toRegExEscaped($quoted)
-    {
-        $noEscaping = '(?<!'.Symbol::E_BACKSLASH.')(('.Symbol::E_BACKSLASH.Symbol::E_BACKSLASH.')*)';
-
-        // Replace "{a,b,c}" by "(a|b|c)", as long as preceded by an even number
-        // of backslashes
-        if (false !== strpos($quoted, Symbol::L_BRACE)) {
-            $quoted = preg_replace_callback(
-                '~'.$noEscaping.Symbol::E_L_BRACE.'(.*?)'.$noEscaping.Symbol::E_R_BRACE.'~',
-                function ($match) {
-                    return $match[1].'('.str_replace(',', '|', $match[3]).$match[4].')';
-                },
-                $quoted
-            );
-        }
-
-        // Replace "[abc]" by "[abc]", as long as preceded by an even number
-        // of backslashes
-        if (false !== strpos($quoted, Symbol::L_BRACKET)) {
-            $quoted = preg_replace_callback(
-                '~'.$noEscaping.Symbol::E_L_BRACKET.'('.Symbol::E_CARET.')?(.*?)'.$noEscaping.Symbol::E_R_BRACKET.'~',
-                function ($match) use ($noEscaping) {
-                    $content = preg_replace('~'.$noEscaping.Symbol::E_HYPHEN.'~', '$1-', $match[4]);
-
-                    return $match[1].'['.($match[3] ? '^' : '').$content.$match[5].']';
-                },
-                $quoted
-            );
-        }
-
-        // Replace "/**/" by "/(.+/)?"
-        $quoted = str_replace('/'.Symbol::STAR.Symbol::STAR.'/', '/(.+/)?', $quoted);
-
-        // Replace "*" by "[^/]*", as long as preceded by an even number of backslashes
-        if (false !== strpos($quoted, Symbol::STAR)) {
-            $quoted = preg_replace(
-                '~'.$noEscaping.Symbol::E_STAR.'~',
-                '$1[^/]*',
-                $quoted
-            );
-        }
-
-        // Replace "?" by ".", as long as preceded by an even number of backslashes
-        if (false !== strpos($quoted, Symbol::QUESTION_MARK)) {
-            $quoted = preg_replace(
-                '~'.$noEscaping.Symbol::E_QUESTION_MARK.'~',
-                '$1.',
-                $quoted
-            );
-        }
-
-        return str_replace(
-            // Replace "\*" by "*"
-            // Replace "\{" by "{"
-            // Replace "\}" by "}"
-            // Replace "\?" by "?"
-            // Replace "\[" by "["
-            // Replace "\]" by "]"
-            // Replace "\^" by "^"
-            // Replace "\-" by "-"
-            // Replace "\\\\" by "\\"
-            // (escaped backslashes were escaped again by preg_quote())
-            array(
-                Symbol::E_STAR,
-                Symbol::E_L_BRACE,
-                Symbol::E_R_BRACE,
-                Symbol::E_QUESTION_MARK,
-                Symbol::E_L_BRACKET,
-                Symbol::E_R_BRACKET,
-                Symbol::E_CARET,
-                Symbol::E_HYPHEN,
-                Symbol::E_BACKSLASH,
-            ),
-            array(
-                Symbol::STAR,
-                Symbol::L_BRACE,
-                Symbol::R_BRACE,
-                Symbol::QUESTION_MARK,
-                Symbol::L_BRACKET,
-                Symbol::R_BRACKET,
-                Symbol::CARET,
-                Symbol::HYPHEN,
-                Symbol::BACKSLASH,
-            ),
-            $quoted
-        );
     }
 }
