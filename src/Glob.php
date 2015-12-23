@@ -347,22 +347,27 @@ final class Glob
         if ($flags & self::ESCAPE) {
             // Read backslashes together with the next (the escaped) character
             // up to the first non-escaped star/brace
-            if (preg_match('~^('.Symbol::BACKSLASH.'.|[^'.Symbol::BACKSLASH.Symbol::STAR.Symbol::L_BRACE.'])*~', $glob, $matches)) {
+            if (preg_match('~^('.Symbol::BACKSLASH.'.|[^'.Symbol::BACKSLASH.Symbol::STAR.Symbol::L_BRACE.Symbol::QUESTION_MARK.'])*~', $glob, $matches)) {
                 $prefix = $matches[0];
             }
 
             // Replace escaped characters by their unescaped equivalents
-            $prefix = str_replace(array('\\\\', '\\*', '\\{', '\\}'), array('\\', '*', '{', '}'), $prefix);
+            $prefix = str_replace(
+                array('\\\\', '\\*', '\\{', '\\}', '\\?'),
+                array('\\', '*', '{', '}', '?'),
+                $prefix
+            );
         } else {
             $pos1 = strpos($glob, '*');
             $pos2 = strpos($glob, '{');
+            $pos3 = strpos($glob, '?');
 
-            if (false !== $pos1 && false !== $pos2) {
-                $prefix = substr($glob, 0, min($pos1, $pos2));
-            } elseif (false !== $pos1) {
-                $prefix = substr($glob, 0, $pos1);
-            } elseif (false !== $pos2) {
-                $prefix = substr($glob, 0, $pos2);
+            $positions = array_filter(array($pos1, $pos2, $pos3), function ($v) {
+                return false !== $v;
+            });
+
+            if (!empty($positions)) {
+                $prefix = substr($glob, 0, min($positions));
             }
         }
 
@@ -382,7 +387,7 @@ final class Glob
      */
     public static function isDynamic($glob)
     {
-        return false !== strpos($glob, '*') || false !== strpos($glob, '{');
+        return false !== strpos($glob, '*') || false !== strpos($glob, '{') || false !== strpos($glob, '?');
     }
 
     private function __construct()
@@ -405,8 +410,9 @@ final class Glob
         return str_replace(
             // Replace "/**/" by "/(.+/)?"
             // Replace "*" by "[^/]*"
-            array('/'.Symbol::STAR.Symbol::STAR.'/', Symbol::STAR),
-            array('/(.+/)?', '[^/]*'),
+            // Replace "?" by "."
+            array('/'.Symbol::STAR.Symbol::STAR.'/', Symbol::STAR, Symbol::QUESTION_MARK),
+            array('/(.+/)?', '[^/]*', '.'),
             $quoted
         );
     }
@@ -439,22 +445,34 @@ final class Glob
             );
         }
 
+        // Replace "?" by ".", as long as preceded by an even number of backslashes
+        if (false !== strpos($quoted, Symbol::QUESTION_MARK)) {
+            $quoted = preg_replace(
+                '~'.$noEscaping.Symbol::E_QUESTION_MARK.'~',
+                '$1.',
+                $quoted
+            );
+        }
+
         return str_replace(
             // Replace "\*" by "*"
             // Replace "\{" by "{"
             // Replace "\}" by "}"
+            // Replace "\?" by "?"
             // Replace "\\\\" by "\\"
             // (escaped backslashes were escaped again by preg_quote())
             array(
-                Symbol::BACKSLASH.Symbol::STAR,
-                Symbol::BACKSLASH.Symbol::L_BRACE,
-                Symbol::BACKSLASH.Symbol::R_BRACE,
+                Symbol::E_STAR,
+                Symbol::E_L_BRACE,
+                Symbol::E_R_BRACE,
+                Symbol::E_QUESTION_MARK,
                 Symbol::E_BACKSLASH,
             ),
             array(
                 Symbol::STAR,
                 Symbol::L_BRACE,
                 Symbol::R_BRACE,
+                Symbol::QUESTION_MARK,
                 Symbol::BACKSLASH,
             ),
             $quoted

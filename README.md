@@ -14,6 +14,7 @@ A utility implementing Ant-like globbing.
 
 Syntax:
 
+* `?` matches any character
 * `*` matches zero or more characters, except `/`
 * `/**/` matches zero or more directory names
 * `{ab,cd}` matches `ab` or `cd`

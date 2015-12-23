@@ -1,6 +1,10 @@
 Changelog
 =========
 
+* 3.2.0 (@release_date@)
+
+ * added support for `?` which matches any character
+
 * 3.1.1 (2015-08-24)
 
  * fixed minimum versions in composer.json

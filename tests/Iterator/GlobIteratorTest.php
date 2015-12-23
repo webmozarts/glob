@@ -184,6 +184,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
             $this->tempDir.'/css',
             $this->tempDir.'/css/reset.css',
             $this->tempDir.'/css/style.css',
+            $this->tempDir.'/css/style.cts',
             $this->tempDir.'/js',
             $this->tempDir.'/js/script.js',
         ), iterator_to_array($iterator));

@@ -41,6 +41,11 @@ final class Symbol
     const R_BRACE = '\\}';
 
     /**
+     * Represents a literal "?" in a regular expression.
+     */
+    const QUESTION_MARK = '\\?';
+
+    /**
      * Matches a literal "\" when running a regular expression against
      * another regular expression.
      */
@@ -63,6 +68,12 @@ final class Symbol
      * another regular expression.
      */
     const E_R_BRACE = '\\\\\\}';
+
+    /**
+     * Matches a literal "?" when running a regular expression against
+     * another regular expression.
+     */
+    const E_QUESTION_MARK = '\\\\\\?';
 
     private function __construct()
     {

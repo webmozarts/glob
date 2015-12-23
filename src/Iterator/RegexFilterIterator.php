@@ -145,6 +145,8 @@ class RegexFilterIterator extends FilterIterator
             return false;
         }
 
-        return (bool) preg_match($this->regExp, $path);
+        $result = (bool) preg_match($this->regExp, $path);
+
+        return $result;
     }
 }
