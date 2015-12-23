@@ -29,7 +29,7 @@ Installation
 Use [Composer] to install the package:
 
 ```
-$ composer require webmozart/glob:^3.1
+$ composer require webmozart/glob
 ```
 
 Usage
