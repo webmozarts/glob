@@ -23,6 +23,19 @@ Syntax:
 
 [API Documentation]
 
+Comparison with glob()
+----------------------
+
+Compared to PHP's native `glob()` function, this utility supports:
+
+* `/**/` for matching zero or more directories
+* globbing custom stream wrappers, like `myscheme://path/**/*.css`
+* matching globs against path strings
+* filtering arrays of path strings by a glob
+
+Since PHP's native `glob()` function is much more efficient, this utility uses 
+`glob()` internally whenever possible (i.e. when no special feature is used).
+
 Installation
 ------------
 
