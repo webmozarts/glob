@@ -52,13 +52,6 @@ class GlobIterator extends IteratorIterator
                 // glob() does not support [^...] on Windows
                 ('\\' !== DIRECTORY_SEPARATOR || false === strpos($glob, '[^'))
             ) {
-                // glob() supports escape sequences by default
-                // If escape sequences are disabled, disable glob() escaping by
-                // escaping all backslashes in the pattern
-                if (!($flags & Glob::ESCAPE)) {
-                    $glob = str_replace('\\', '\\\\', $glob);
-                }
-
                 $innerIterator = new ArrayIterator(glob($glob, GLOB_BRACE));
             } else {
                 // Otherwise scan the glob's base directory for matches

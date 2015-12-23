@@ -127,17 +127,16 @@ Returned paths contain forward slashes only.
 
 ### Escaping
 
-The `Glob` class supports a mode where you can match files that actually
-contain a special character in their filename. To enable the escape mode, pass 
-the `Glob::ESCAPE` flag to any of the methods in `Glob`.
+The `Glob` class supports escaping by typing a backslash character `\` before
+any special character:
 
 ```php
-$paths = Glob::glob('/backup\\*/*.css', Glob::ESCAPE);
+$paths = Glob::glob('/backup\\*/*.css');
 ```
 
-In the previous example, the glob matches all CSS files in the `/backup*`
-directory rather than in all directories starting with `/backup`. Due to PHP's 
-own escaping in strings, the backslash character `\` needs to be typed twice to
+In this example, the glob matches all CSS files in the `/backup*` directory 
+rather than in all directories starting with `/backup`. Due to PHP's own 
+escaping in strings, the backslash character `\` needs to be typed twice to 
 produce a single `\` in the string.
 
 The following escape sequences are available:

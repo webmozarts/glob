@@ -75,11 +75,6 @@ use Webmozart\PathUtil\Path;
 final class Glob
 {
     /**
-     * Flag: Enable escaping of special characters with leading backslashes.
-     */
-    const ESCAPE = 1;
-
-    /**
      * Globs the file system paths matching the glob.
      *
      * The glob may contain the wildcard "*". This wildcard matches any number

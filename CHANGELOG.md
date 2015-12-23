@@ -5,7 +5,8 @@ Changelog
 
  * switched to a better-performing algorithm for `Glob::toRegEx()`
  * switched to a better-performing algorithm for `Glob::getStaticPrefix()`
- * escaping is now always enabled
+ * removed `Glob::ESCAPE` flag - escaping is now always enabled
+ * added argument `$delimiter` to `Glob::toRegEx()`
 
 * 3.3.0 (2015-12-23)
 

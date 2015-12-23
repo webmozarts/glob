@@ -64,14 +64,14 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
 
         touch($this->tempDir.'/css/style*.css');
 
-        $iterator = new GlobIterator($this->tempDir.'/css/style\\*.css', Glob::ESCAPE);
+        $iterator = new GlobIterator($this->tempDir.'/css/style\\*.css');
 
         $this->assertSameAfterSorting(array(
             $this->tempDir.'/css/style*.css',
         ), iterator_to_array($iterator));
     }
 
-    public function testIterateNonEscaped1()
+    public function testIterateSpecialChars()
     {
         if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
             $this->markTestSkipped('A "*" in filenames is not supported on Windows.');
@@ -87,21 +87,6 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
             $this->tempDir.'/css/style*.css',
             $this->tempDir.'/css/style.css',
         ), iterator_to_array($iterator));
-    }
-
-    public function testIterateNonEscaped2()
-    {
-        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-            $this->markTestSkipped('A "*" in filenames is not supported on Windows.');
-
-            return;
-        }
-
-        touch($this->tempDir.'/css/style*.css');
-
-        $iterator = new GlobIterator($this->tempDir.'/css/style\\*.css');
-
-        $this->assertSameAfterSorting(array(), iterator_to_array($iterator));
     }
 
     public function testIterateDoubleWildcard()
