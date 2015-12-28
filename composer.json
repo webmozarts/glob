@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": "^5.3.3|^7.0",
         "webmozart/path-util": "^2.2"
     },
     "require-dev": {
