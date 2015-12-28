@@ -13,7 +13,6 @@ namespace Webmozart\Glob\Iterator;
 
 use ArrayIterator;
 use EmptyIterator;
-use InvalidArgumentException;
 use IteratorIterator;
 use RecursiveIteratorIterator;
 use Webmozart\Glob\Glob;
