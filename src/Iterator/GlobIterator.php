@@ -53,37 +53,33 @@ class GlobIterator extends IteratorIterator
                 // glob() does not support [^...] on Windows
                 ('\\' !== DIRECTORY_SEPARATOR || false === strpos($glob, '[^'))
             ) {
-                if (false === $results = glob($glob, GLOB_BRACE)) {
+                $results = glob($glob, GLOB_BRACE);
+
+                // $results may be empty or false if $glob is invalid
+                if (empty($results)) {
+                    // Parse glob and provoke errors if invalid
+                    Glob::toRegEx($glob);
+
+                    // Otherwise return empty result set
                     $innerIterator = new EmptyIterator();
                 } else {
                     $innerIterator = new ArrayIterator($results);
                 }
             } else {
-                try {
-                    // Otherwise scan the glob's base directory for matches
-                    $innerIterator = new GlobFilterIterator(
-                        $glob,
-                        new RecursiveIteratorIterator(
-                            new RecursiveDirectoryIterator(
-                                $basePath,
-                                RecursiveDirectoryIterator::CURRENT_AS_PATHNAME
-                                    | RecursiveDirectoryIterator::SKIP_DOTS
-                            ),
-                            RecursiveIteratorIterator::SELF_FIRST
+                // Otherwise scan the glob's base directory for matches
+                $innerIterator = new GlobFilterIterator(
+                    $glob,
+                    new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator(
+                            $basePath,
+                            RecursiveDirectoryIterator::CURRENT_AS_PATHNAME
+                                | RecursiveDirectoryIterator::SKIP_DOTS
                         ),
-                        GlobFilterIterator::FILTER_VALUE,
-                        $flags
-                    );
-                } catch (InvalidArgumentException $e) {
-                    if (0 === strpos($e->getMessage(), 'Invalid glob: missing ]')
-                        || 0 === strpos($e->getMessage(), 'Invalid glob: missing }')) {
-                        // Remain compatible with glob() which simply returns
-                        // nothing in this case
-                        $innerIterator = new EmptyIterator();
-                    } else {
-                        throw $e;
-                    }
-                }
+                        RecursiveIteratorIterator::SELF_FIRST
+                    ),
+                    GlobFilterIterator::FILTER_VALUE,
+                    $flags
+                );
             }
         } else {
             // If the glob's base directory does not exist, return nothing
