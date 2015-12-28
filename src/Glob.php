@@ -306,7 +306,7 @@ final class Glob
 
                 case '/':
                     if (isset($glob[$i + 3]) && '**/' === $glob[$i + 1].$glob[$i + 2].$glob[$i + 3]) {
-                        $regex .= '/(.+/)*';
+                        $regex .= '/([^/]+/)*';
                         $i += 3;
                     } else {
                         $regex .= '/';
