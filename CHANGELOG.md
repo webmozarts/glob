@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 4.0.0 (@release_date@)
+* 4.0.0 (2015-12-28)
 
  * switched to a better-performing algorithm for `Glob::toRegEx()`
  * switched to a better-performing algorithm for `Glob::getStaticPrefix()`
