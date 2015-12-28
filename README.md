@@ -1,14 +1,14 @@
 Webmozart Glob
 ==============
 
-[![Build Status](https://travis-ci.org/webmozart/glob.svg?branch=3.3.1)](https://travis-ci.org/webmozart/glob)
+[![Build Status](https://travis-ci.org/webmozart/glob.svg?branch=4.0.0)](https://travis-ci.org/webmozart/glob)
 [![Build status](https://ci.appveyor.com/api/projects/status/das6j3x0org6219m/branch/master?svg=true)](https://ci.appveyor.com/project/webmozart/glob/branch/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmozart/glob/badges/quality-score.png?b=3.3.1)](https://scrutinizer-ci.com/g/webmozart/glob/?branch=3.3.1)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmozart/glob/badges/quality-score.png?b=4.0.0)](https://scrutinizer-ci.com/g/webmozart/glob/?branch=4.0.0)
 [![Latest Stable Version](https://poser.pugx.org/webmozart/glob/v/stable.svg)](https://packagist.org/packages/webmozart/glob)
 [![Total Downloads](https://poser.pugx.org/webmozart/glob/downloads.svg)](https://packagist.org/packages/webmozart/glob)
-[![Dependency Status](https://www.versioneye.com/php/webmozart:glob/3.3.1/badge.svg)](https://www.versioneye.com/php/webmozart:glob/3.3.1)
+[![Dependency Status](https://www.versioneye.com/php/webmozart:glob/4.0.0/badge.svg)](https://www.versioneye.com/php/webmozart:glob/4.0.0)
 
-Latest release: [3.3.1](https://packagist.org/packages/webmozart/glob#3.3.1)
+Latest release: [4.0.0](https://packagist.org/packages/webmozart/glob#4.0.0)
 
 A utility implementing Ant-like globbing. 
 
