@@ -75,12 +75,12 @@ use Webmozart\PathUtil\Path;
 final class Glob
 {
     /**
-     * Flag: Filter the values in {@link Glob::filter()}
+     * Flag: Filter the values in {@link Glob::filter()}.
      */
     const FILTER_VALUE = 1;
 
     /**
-     * Flag: Filter the keys in {@link Glob::filter()}
+     * Flag: Filter the keys in {@link Glob::filter()}.
      */
     const FILTER_KEY = 2;
 
