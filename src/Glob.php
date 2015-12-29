@@ -75,9 +75,14 @@ use Webmozart\PathUtil\Path;
 final class Glob
 {
     /**
-     * Flag: Match the keys instead of the values in {@link Glob::filter()}
+     * Flag: Filter the values in {@link Glob::filter()}
      */
-    const MATCH_KEYS = 1;
+    const FILTER_VALUE = 1;
+
+    /**
+     * Flag: Filter the keys in {@link Glob::filter()}
+     */
+    const FILTER_KEY = 2;
 
     /**
      * Globs the file system paths matching the glob.
@@ -170,10 +175,14 @@ final class Glob
      * @return string[] The paths matching the glob indexed by their original
      *                  keys.
      */
-    public static function filter(array $paths, $glob, $flags = 0)
+    public static function filter(array $paths, $glob, $flags = self::FILTER_VALUE)
     {
+        if (($flags & self::FILTER_VALUE) && ($flags & self::FILTER_KEY)) {
+            throw new InvalidArgumentException('The flags Glob::FILTER_VALUE and Glob::FILTER_KEY cannot be passed at the same time.');
+        }
+
         if (!self::isDynamic($glob)) {
-            if ($flags & self::MATCH_KEYS) {
+            if ($flags & self::FILTER_KEY) {
                 return isset($paths[$glob]) ? array($glob => $paths[$glob]) : array();
             }
 
@@ -189,13 +198,13 @@ final class Glob
         };
 
         if (PHP_VERSION_ID >= 50600) {
-            $filterFlags = ($flags & self::MATCH_KEYS) ? ARRAY_FILTER_USE_KEY : 0;
+            $filterFlags = ($flags & self::FILTER_KEY) ? ARRAY_FILTER_USE_KEY : 0;
 
             return array_filter($paths, $filter, $filterFlags);
         }
 
         // No support yet for the third argument of array_filter()
-        if ($flags & self::MATCH_KEYS) {
+        if ($flags & self::FILTER_KEY) {
             $result = array();
 
             foreach ($paths as $path => $value) {

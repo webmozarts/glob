@@ -930,7 +930,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
             ++$i;
         }
 
-        $this->assertSame($filtered, Glob::filter($paths, '/foo/**/*.js~', Glob::MATCH_KEYS));
+        $this->assertSame($filtered, Glob::filter($paths, '/foo/**/*.js~', Glob::FILTER_KEY));
     }
 
     public function testFilterKeysWithoutWildcard()
@@ -940,8 +940,8 @@ class GlobTest extends PHPUnit_Framework_TestCase
             '/foo/bar.js' => 3,
         );
 
-        $this->assertSame(array('/foo/bar.js' => 3), Glob::filter($paths, '/foo/bar.js', Glob::MATCH_KEYS));
-        $this->assertSame(array(), Glob::filter($paths, '/foo/bar.js~', Glob::MATCH_KEYS));
+        $this->assertSame(array('/foo/bar.js' => 3), Glob::filter($paths, '/foo/bar.js', Glob::FILTER_KEY));
+        $this->assertSame(array(), Glob::filter($paths, '/foo/bar.js~', Glob::FILTER_KEY));
     }
 
     public function testFilterKeysEscaped()
@@ -959,7 +959,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
             '/foo*.js' => 4,
             '/foo/bar*.js' => 6,
             '/foo/bar\\*.js' => 7,
-        ), Glob::filter($paths, '/**/*\\*.js', Glob::MATCH_KEYS));
+        ), Glob::filter($paths, '/**/*\\*.js', Glob::FILTER_KEY));
     }
 
     /**
@@ -968,6 +968,14 @@ class GlobTest extends PHPUnit_Framework_TestCase
      */
     public function testFilterKeysFailsIfNotAbsolute()
     {
-        Glob::filter(array('/foo/bar.css' => 42), '*.css', Glob::MATCH_KEYS);
+        Glob::filter(array('/foo/bar.css' => 42), '*.css', Glob::FILTER_KEY);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testFilterFailsIfInvalidFlags()
+    {
+        Glob::filter(array(42 => '/foo/bar.css'), '/foo/*.css', Glob::FILTER_KEY | Glob::FILTER_VALUE);
     }
 }

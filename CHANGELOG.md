@@ -3,7 +3,8 @@ Changelog
 
 * 4.1.0 (2015-12-29)
 
- * added flag `Glob::MATCH_KEYS` for `Glob::filter()`
+ * added flag `Glob::FILTER_VALUE` for `Glob::filter()`
+ * added flag `Glob::FILTER_KEY` for `Glob::filter()`
 
 * 4.0.0 (2015-12-28)
 

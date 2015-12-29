@@ -102,6 +102,20 @@ foreach ($iterator as $path) {
 }
 ```
 
+You can also filter the keys of the path list by passing the `FILTER_KEY`
+constant of the respective class:
+
+
+```php
+$paths = Glob::filter($paths, '/path/to/dir/*.css', Glob::FILTER_KEY);
+
+$iterator = new GlobFilterIterator(
+    '/path/to/dir/*.css', 
+    new ArrayIterator($paths),
+    GlobFilterIterator::FILTER_KEY
+);
+```
+
 ### Relative Globs
 
 Relative globs such as `*.css` are not supported. Usually, such globs refer to
