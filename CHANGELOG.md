@@ -1,6 +1,10 @@
 Changelog
 =========
 
+* 4.1.0 (2015-12-29)
+
+ * added flag `Glob::MATCH_KEYS` for `Glob::filter()`
+
 * 4.0.0 (2015-12-28)
 
  * switched to a better-performing algorithm for `Glob::toRegEx()`

@@ -859,7 +859,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $filtered = array();
 
         // The keys remain the same in the filtered array
-        $i = 0;
+        $i = 42;
 
         foreach ($this->provideDoubleWildcardMatches() as $input) {
             $paths[$i] = $input[0];
@@ -910,5 +910,64 @@ class GlobTest extends PHPUnit_Framework_TestCase
     public function testFilterFailsIfNotAbsolute()
     {
         Glob::filter(array('/foo/bar.css'), '*.css');
+    }
+
+    public function testFilterKeys()
+    {
+        $paths = array();
+        $filtered = array();
+
+        // The values remain the same in the filtered array
+        $i = 42;
+
+        foreach ($this->provideDoubleWildcardMatches() as $input) {
+            $paths[$input[0]] = $i;
+
+            if ($input[1]) {
+                $filtered[$input[0]] = $i;
+            }
+
+            ++$i;
+        }
+
+        $this->assertSame($filtered, Glob::filter($paths, '/foo/**/*.js~', Glob::MATCH_KEYS));
+    }
+
+    public function testFilterKeysWithoutWildcard()
+    {
+        $paths = array(
+            '/foo' => 2,
+            '/foo/bar.js' => 3,
+        );
+
+        $this->assertSame(array('/foo/bar.js' => 3), Glob::filter($paths, '/foo/bar.js', Glob::MATCH_KEYS));
+        $this->assertSame(array(), Glob::filter($paths, '/foo/bar.js~', Glob::MATCH_KEYS));
+    }
+
+    public function testFilterKeysEscaped()
+    {
+        $paths = array(
+            '/foo' => 3,
+            '/foo*.js' => 4,
+            '/foo/bar.js' => 5,
+            '/foo/bar*.js' => 6,
+            '/foo/bar\\*.js' => 7,
+            '/foo/bar\\baz.js' => 8,
+        );
+
+        $this->assertSame(array(
+            '/foo*.js' => 4,
+            '/foo/bar*.js' => 6,
+            '/foo/bar\\*.js' => 7,
+        ), Glob::filter($paths, '/**/*\\*.js', Glob::MATCH_KEYS));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage *.css
+     */
+    public function testFilterKeysFailsIfNotAbsolute()
+    {
+        Glob::filter(array('/foo/bar.css' => 42), '*.css', Glob::MATCH_KEYS);
     }
 }

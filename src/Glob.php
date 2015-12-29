@@ -75,6 +75,11 @@ use Webmozart\PathUtil\Path;
 final class Glob
 {
     /**
+     * Flag: Match the keys instead of the values in {@link Glob::filter()}
+     */
+    const MATCH_KEYS = 1;
+
+    /**
      * Globs the file system paths matching the glob.
      *
      * The glob may contain the wildcard "*". This wildcard matches any number
@@ -168,19 +173,41 @@ final class Glob
     public static function filter(array $paths, $glob, $flags = 0)
     {
         if (!self::isDynamic($glob)) {
-            if (false !== $key = array_search($glob, $paths)) {
-                return array($key => $glob);
+            if ($flags & self::MATCH_KEYS) {
+                return isset($paths[$glob]) ? array($glob => $paths[$glob]) : array();
             }
 
-            return array();
+            $key = array_search($glob, $paths);
+
+            return false !== $key ? array($key => $glob) : array();
         }
 
         $staticPrefix = self::getStaticPrefix($glob, $flags);
         $regExp = self::toRegEx($glob, $flags);
-
-        return array_filter($paths, function ($path) use ($staticPrefix, $regExp) {
+        $filter = function ($path) use ($staticPrefix, $regExp) {
             return 0 === strpos($path, $staticPrefix) && preg_match($regExp, $path);
-        });
+        };
+
+        if (PHP_VERSION_ID >= 50600) {
+            $filterFlags = ($flags & self::MATCH_KEYS) ? ARRAY_FILTER_USE_KEY : 0;
+
+            return array_filter($paths, $filter, $filterFlags);
+        }
+
+        // No support yet for the third argument of array_filter()
+        if ($flags & self::MATCH_KEYS) {
+            $result = array();
+
+            foreach ($paths as $path => $value) {
+                if ($filter($path)) {
+                    $result[$path] = $value;
+                }
+            }
+
+            return $result;
+        }
+
+        return array_filter($paths, $filter);
     }
 
     /**
