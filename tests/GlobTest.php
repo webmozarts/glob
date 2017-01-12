@@ -328,6 +328,40 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame($isMatch, preg_match($regExp, $path));
     }
 
+    /**
+     * @dataProvider provideIntersections
+     */
+    public function testIntersect($glob1, $glob2, $expected)
+    {
+        $intersection = Glob::intersect($glob1, $glob2);
+
+        $this->assertSame($expected, $intersection);
+    }
+
+    public function provideIntersections()
+    {
+        return array(
+            array('/foo/bar/**/*.yml', '/**/messages.yml', '/foo/bar/**/messages.yml'),
+            array('/**/messages.yml', '/foo/bar/**/*.yml', '/foo/bar/**/messages.yml'),
+            array('/file/*/*.js', '/file/dir/*', '/file/dir/*.js'),
+            array('/file/dir/*', '/file/*/*.js', '/file/dir/*.js'),
+            array('/file/**/*.js', '/file/dir/*', '/file/dir/*.js'),
+            array('/file/dir/*', '/file/**/*.js', '/file/dir/*.js'),
+            array('/file/*/*.js', '/file/dir/dir/*', null),
+            array('/file/dir/dir/*', '/file/*/*.js', null),
+            array('/file/**/*.js', '/file/dir/dir/*', '/file/dir/dir/*.js'),
+            array('/file/dir/dir/*', '/file/**/*.js', '/file/dir/dir/*.js'),
+            array('/*ends', '/begins*', '/begins*ends'),
+            array('/begins*', '/*ends', '/begins*ends'),
+            array('/*no', '/*intersection', null),
+            array('/*intersection', '/*no', null),
+            array('/file/dir/*.js', '/file/dir/*.cs', null),
+            array('/file/dir/*.cs', '/file/dir/*.js', null),
+            array('/a*db*c', '/adbcdbbc', '/adbcdbbc'),
+            array('/adbcdbbc', '/a*db*c', '/adbcdbbc'),
+        );
+    }
+
     public function provideWildcardMatches()
     {
         return array(
