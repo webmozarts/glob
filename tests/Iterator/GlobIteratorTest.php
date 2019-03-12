@@ -11,7 +11,7 @@
 
 namespace Webmozart\Glob\Tests\Iterator;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Glob;
 use Webmozart\Glob\Iterator\GlobIterator;
@@ -22,7 +22,7 @@ use Webmozart\Glob\Test\TestUtil;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class GlobIteratorTest extends PHPUnit_Framework_TestCase
+class GlobIteratorTest extends TestCase
 {
     private $tempDir;
 

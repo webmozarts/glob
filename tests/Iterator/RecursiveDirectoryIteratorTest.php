@@ -11,7 +11,7 @@
 
 namespace Webmozart\Glob\Tests\Iterator;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Iterator\RecursiveDirectoryIterator;
@@ -22,7 +22,7 @@ use Webmozart\Glob\Test\TestUtil;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
+class RecursiveDirectoryIteratorTest extends TestCase
 {
     private $tempDir;
 

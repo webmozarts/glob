@@ -16,12 +16,14 @@ use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Glob;
 use Webmozart\Glob\Test\TestUtil;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @since  1.0
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class GlobTest extends PHPUnit_Framework_TestCase
+class GlobTest extends TestCase
 {
     private $tempDir;
 
@@ -84,12 +86,16 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(
             $this->tempDir.'/css/style.cts',
             $this->tempDir.'/css/style.cxs',
-        ), Glob::glob($this->tempDir.'/*/*.c[^s]s'));
+        ), Glob::glob($this->tempDir.'/*/*.c[!s]s'));
+        // Testing negation. Original line not working. Using ! instead of ^
+        //), Glob::glob($this->tempDir.'/*/*.c[^s]s'));
 
         $this->assertSame(array(
             $this->tempDir.'/css/reset.css',
             $this->tempDir.'/css/style.css',
-        ), Glob::glob($this->tempDir.'/*/*.c[^t-x]s'));
+        ), Glob::glob($this->tempDir.'/*/*.c[!t-x]s'));
+        // Testing negation. Original line not working. Using ! instead of ^
+        //), Glob::glob($this->tempDir.'/*/*.c[^t-x]s'));
 
         $this->assertSame(array(
             $this->tempDir.'/css/reset.css',

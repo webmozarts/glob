@@ -12,7 +12,7 @@
 namespace Webmozart\Glob\Tests\Iterator;
 
 use ArrayIterator;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Webmozart\Glob\Iterator\RegexFilterIterator;
 
 /**
@@ -20,7 +20,7 @@ use Webmozart\Glob\Iterator\RegexFilterIterator;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class RegexFilterIteratorTest extends PHPUnit_Framework_TestCase
+class RegexFilterIteratorTest extends TestCase
 {
     public function testIterate()
     {
