@@ -26,10 +26,5 @@
         "psr-4": {
             "Webmozart\\Glob\\Tests\\": "tests/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "4.1-dev"
-        }
     }
 }
