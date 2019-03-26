@@ -30,5 +30,5 @@ script:
   if [[ "$COVERAGE" != "1" ]]; then
     echo;
     echo "Running unit tests";
-    ./bin/phpunit --colors tests/Unit/
+    ./vendor/bin/phpunit --colors tests
   fi
