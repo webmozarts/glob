@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\Glob\Iterator;
+namespace CPSIT\Glob\Iterator;
 
 /**
  * Recursive directory iterator that is working during recursive iteration.

@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\Glob\Tests;
+namespace CPSIT\Glob\Tests;
 
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\Glob\Glob;
-use Webmozart\Glob\Test\TestUtil;
+use CPSIT\Glob\Glob;
+use CPSIT\Glob\Test\TestUtil;
 
 use PHPUnit\Framework\TestCase;
 

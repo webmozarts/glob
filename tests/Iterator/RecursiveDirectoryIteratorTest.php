@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\Glob\Tests\Iterator;
+namespace CPSIT\Glob\Tests\Iterator;
 
 use PHPUnit\Framework\TestCase;
 use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\Glob\Iterator\RecursiveDirectoryIterator;
-use Webmozart\Glob\Test\TestUtil;
+use CPSIT\Glob\Iterator\RecursiveDirectoryIterator;
+use CPSIT\Glob\Test\TestUtil;
 
 /**
  * @since  1.0

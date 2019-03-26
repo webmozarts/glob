@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\Glob\Iterator;
+namespace CPSIT\Glob\Iterator;
 
 use Iterator;
-use Webmozart\Glob\Glob;
+use CPSIT\Glob\Glob;
 
 /**
  * Filters an iterator by a glob.

@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\Glob\Tests\Iterator;
+namespace CPSIT\Glob\Tests\Iterator;
 
 use ArrayIterator;
 use PHPUnit\Framework\TestCase;
-use Webmozart\Glob\Iterator\RegexFilterIterator;
+use CPSIT\Glob\Iterator\RegexFilterIterator;
 
 /**
  * @since  1.0
