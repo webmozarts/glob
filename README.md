@@ -1,16 +1,12 @@
-Webmozart Glob
-==============
-
-[![Build Status](https://travis-ci.org/webmozart/glob.svg?branch=4.1.0)](https://travis-ci.org/webmozart/glob)
-[![Build status](https://ci.appveyor.com/api/projects/status/das6j3x0org6219m/branch/master?svg=true)](https://ci.appveyor.com/project/webmozart/glob/branch/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmozart/glob/badges/quality-score.png?b=4.1.0)](https://scrutinizer-ci.com/g/webmozart/glob/?branch=4.1.0)
-[![Latest Stable Version](https://poser.pugx.org/webmozart/glob/v/stable.svg)](https://packagist.org/packages/webmozart/glob)
-[![Total Downloads](https://poser.pugx.org/webmozart/glob/downloads.svg)](https://packagist.org/packages/webmozart/glob)
-[![Dependency Status](https://www.versioneye.com/php/webmozart:glob/4.1.0/badge.svg)](https://www.versioneye.com/php/webmozart:glob/4.1.0)
-
-Latest release: [4.1.0](https://packagist.org/packages/webmozart/glob#4.1.0)
-
+Glob
+====
 A utility implementing Ant-like globbing. 
+
+**Note:**
+This is a fork of [webmozart/glob](https://github.com/webmozart/glob).
+In contrast to the original version it supports PHP >= 7.0.
+
+We had to change the vendor name from `Webmozart` to `CPSIT`
 
 Syntax:
 
@@ -55,7 +51,7 @@ The main class of the package is [`Glob`]. Use `Glob::glob()` to glob the
 filesystem:
 
 ```php
-use Webmozart\Glob\Glob;
+use CPSIT\Glob\Glob;
 
 $paths = Glob::glob('/path/to/dir/*.css'); 
 ```
@@ -64,7 +60,7 @@ You can also use [`GlobIterator`] to search the filesystem iteratively. However,
 the iterator is not guaranteed to return sorted results:
 
 ```php
-use Webmozart\Glob\Iterator\GlobIterator;
+use CPSIT\Glob\Iterator\GlobIterator;
 
 $iterator = new GlobIterator('/path/to/dir/*.css');
 
@@ -93,7 +89,7 @@ $paths = Glob::filter($paths, '/path/to/dir/*.css');
 The same can be achieved iteratively with [`GlobFilterIterator`]:
 
 ```php
-use Webmozart\Glob\Iterator\GlobFilterIterator;
+use CPSIT\Glob\Iterator\GlobFilterIterator;
 
 $iterator = new GlobFilterIterator('/path/to/dir/*.css', new ArrayIterator($paths));
 
@@ -126,7 +122,7 @@ If you want to allow users to pass relative globs, I recommend to turn the globs
 into absolute globs using the [Webmozart Path Utility]:
 
 ```php
-use Webmozart\Glob\Glob;
+use CPSIT\Glob\Glob;
 use Webmozart\PathUtil\Path;
 
 // If $glob is absolute, that glob is used without modification.

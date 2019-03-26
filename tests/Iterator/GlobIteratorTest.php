@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\Glob\Tests\Iterator;
+namespace CPSIT\Glob\Tests\Iterator;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\Glob\Glob;
-use Webmozart\Glob\Iterator\GlobIterator;
-use Webmozart\Glob\Test\TestUtil;
+use CPSIT\Glob\Glob;
+use CPSIT\Glob\Iterator\GlobIterator;
+use CPSIT\Glob\Test\TestUtil;
 
 /**
  * @since  1.0

@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\Glob\Iterator;
+namespace CPSIT\Glob\Iterator;
 
 use ArrayIterator;
 use EmptyIterator;
 use IteratorIterator;
 use RecursiveIteratorIterator;
-use Webmozart\Glob\Glob;
+use CPSIT\Glob\Glob;
 
 /**
  * Returns filesystem paths matching a glob.

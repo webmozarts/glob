@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\Glob\Tests;
+namespace CPSIT\Glob\Tests;
 
 /**
  * @since  1.0

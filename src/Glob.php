@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\Glob;
+namespace CPSIT\Glob;
 
 use InvalidArgumentException;
-use Webmozart\Glob\Iterator\GlobIterator;
+use CPSIT\Glob\Iterator\GlobIterator;
 use Webmozart\PathUtil\Path;
 
 /**

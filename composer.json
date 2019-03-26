@@ -1,5 +1,5 @@
 {
-    "name": "webmozart/glob",
+    "name": "cpsit/glob",
     "description": "A PHP implementation of Ant's glob.",
     "license": "MIT",
     "authors": [
@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Webmozart\\Glob\\": "src/"
+            "CPSIT\\Glob\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Webmozart\\Glob\\Tests\\": "tests/"
+            "CPSIT\\Glob\\Tests\\": "tests/"
         }
     }
 }
