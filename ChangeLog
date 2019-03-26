@@ -1,0 +1,6 @@
+2019-03-26         [RELEASE] Release of glob 5.0.0 (Dirk Wenzel)
+2019-03-26 4098415 [CI] setup unit tests (Dirk Wenzel)
+2019-03-26 08afe2f [TASK] vendor and package name changed (WIP) (Dirk Wenzel)
+2019-03-22 73b3536 [TASK] obsolete branch alias removed from composer.json (Dirk Wenzel)
+
+
