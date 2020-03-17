@@ -52,7 +52,7 @@ class GlobIterator extends IteratorIterator
                 // glob() does not support [^...] on Windows
                 ('\\' !== DIRECTORY_SEPARATOR || false === strpos($glob, '[^'))
             ) {
-                $results = glob($glob, GLOB_BRACE);
+                $results = glob($glob, \defined('GLOB_BRACE') ? GLOB_BRACE : 0);
 
                 // $results may be empty or false if $glob is invalid
                 if (empty($results)) {
