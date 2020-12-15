@@ -83,12 +83,12 @@ class GlobTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array(
             $this->tempDir.'/css/style.cts',
             $this->tempDir.'/css/style.cxs',
-        ), Glob::glob($this->tempDir.'/*/*.c[^s]s'));
+        ), Glob::glob($this->tempDir.'/*/*.c[!s]s'));
 
         $this->assertSame(array(
             $this->tempDir.'/css/reset.css',
             $this->tempDir.'/css/style.css',
-        ), Glob::glob($this->tempDir.'/*/*.c[^t-x]s'));
+        ), Glob::glob($this->tempDir.'/*/*.c[!t-x]s'));
 
         $this->assertSame(array(
             $this->tempDir.'/css/reset.css',
