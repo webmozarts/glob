@@ -1,80 +1,133 @@
-Changelog
-=========
+# Changelog
+All notable changes to this project will be documented in this file.
 
-* 4.1.0 (2015-12-29)
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
- * added flag `Glob::FILTER_VALUE` for `Glob::filter()`
- * added flag `Glob::FILTER_KEY` for `Glob::filter()`
+## [Unreleased]
 
-* 4.0.0 (2015-12-28)
+## [4.2.0] - 2020-01-14
+### Added
 
- * switched to a better-performing algorithm for `Glob::toRegEx()`
- * switched to a better-performing algorithm for `Glob::getStaticPrefix()`
- * removed `Glob::ESCAPE` flag - escaping is now always enabled
- * added argument `$delimiter` to `Glob::toRegEx()`
- * removed `Symbol` class
+* Support for PHP 8.x
 
-* 3.3.1 (2015-12-23)
+## [4.1.0] - 2015-12-29
 
- * checked return value of `glob()`
+### Added
+* added flag `Glob::FILTER_VALUE` for `Glob::filter()`
+* added flag `Glob::FILTER_KEY` for `Glob::filter()`
 
-* 3.3.0 (2015-12-23)
+## [4.0.0] - 2015-12-28
 
- * improved globbing performance by falling back to PHP's `glob()` function
-   whenever possible
- * added support for character ranges `[a-c]`
+### Added
 
-* 3.2.0 (2015-12-23)
+* added argument `$delimiter` to `Glob::toRegEx()`
 
- * added support for `?` which matches any character
- * added support for character classes `[abc]` which match any of the specified
-   characters
- * added support for inverted character classes `[^abc]` which match any but
-   the specified characters
+### Changed
 
-* 3.1.1 (2015-08-24)
+* switched to a better-performing algorithm for `Glob::toRegEx()`
+* switched to a better-performing algorithm for `Glob::getStaticPrefix()`
 
- * fixed minimum versions in composer.json
+### Removed
 
-* 3.1.0 (2015-08-21)
+* removed `Glob::ESCAPE` flag - escaping is now always enabled
+* removed `Symbol` class
 
- * added `TestUtil` class
- * fixed normalizing of slashes on Windows
+## [3.3.1] - 2015-12-23
 
-* 3.0.0 (2015-08-11)
+### Changed
 
- * `RecursiveDirectoryIterator` now inherits from `\RecursiveDirectoryIterator`
-   for performance reasons. Support for `seek()` was removed on PHP versions
-   < 5.5.23 or < 5.6.7
- * made `Glob` final
+* checked return value of `glob()`
 
-* 2.0.1 (2015-05-21)
+## [3.3.0] - 2015-12-23
 
- * upgraded to webmozart/path-util 2.0
+### Added
 
-* 2.0.0 (2015-04-06)
+* added support for character ranges `[a-c]`
 
- * restricted `**` to be used within two separators only: `/**/`. This improves
-   performance while maintaining equal expressiveness
- * added support for stream wrappers
+### Changed
 
-* 1.0.0 (2015-03-19)
+* improved globbing performance by falling back to PHP's `glob()` function
+  whenever possible
 
- * added support for sets: `{ab,cd}`
- 
-* 1.0.0-beta3 (2015-01-30)
+## [3.2.0] - 2015-12-23
 
- * fixed installation on Windows
+### Added
 
-* 1.0.0-beta2 (2015-01-22)
+* added support for `?` which matches any character
+* added support for character classes `[abc]` which match any of the specified
+  characters
+* added support for inverted character classes `[^abc]` which match any but
+  the specified characters
 
- * implemented Ant-like globbing: `*` does not match directory separators
-   anymore, but `**` does
- * escaping must now be explicitly enabled by passing the flag `Glob::ESCAPE`
-   to any of the `Glob` methods
- * fixed: replaced fatal error by `InvalidArgumentException` when globs are
-   not absolute
+## [3.1.1] - 2015-08-24
 
-* 1.0.0-beta (2015-01-12)
+### Fixed
 
- * first release
+* fixed minimum versions in composer.json
+
+## 3.1.0 - 2015-08-21
+
+### Added
+* added `TestUtil` class
+
+### Fixed
+
+* fixed normalizing of slashes on Windows
+
+## 3.0.0 - 2015-08-11
+
+### Changed
+
+* `RecursiveDirectoryIterator` now inherits from `\RecursiveDirectoryIterator`
+  for performance reasons. Support for `seek()` was removed on PHP versions
+  < 5.5.23 or < 5.6.7
+* made `Glob` final
+
+## 2.0.1 - 2015-05-21
+
+### Changed
+
+* upgraded to webmozart/path-util 2.0
+
+## 2.0.0 - 2015-04-06
+
+### Added
+
+* added support for stream wrappers
+
+### Changed
+
+* restricted `**` to be used within two separators only: `/**/`. This improves
+  performance while maintaining equal expressiveness
+
+
+## 1.0.0 - 2015-03-19
+
+### Added
+
+* added support for sets: `{ab,cd}`
+
+## 1.0.0-beta3 - 2015-01-30
+
+### Fixed
+
+* fixed installation on Windows
+
+## 1.0.0-beta2 - 2015-01-22
+
+### Added
+* implemented Ant-like globbing: `*` does not match directory separators
+  anymore, but `**` does
+* escaping must now be explicitly enabled by passing the flag `Glob::ESCAPE`
+  to any of the `Glob` methods
+
+### Fixed
+* fixed: replaced fatal error by `InvalidArgumentException` when globs are
+  not absolute
+
+## 1.0.0-beta - 2015-01-12
+
+### Added
+
+* first release
