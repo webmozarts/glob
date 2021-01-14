@@ -26,6 +26,11 @@
             "Webmozart\\Glob\\Tests\\": "tests/"
         }
     },
+    "config": {
+        "platform": {
+            "php": "7.3.0"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "4.1-dev"
