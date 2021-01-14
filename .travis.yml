@@ -12,16 +12,13 @@ cache:
 
 matrix:
   include:
-    - php: hhvm
-    - php: nightly
     - php: 7.2.5
       env: COVERAGE=yes
     - php: 7.2.5
       env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable'
+    - php: 7.3
+    - php: 7.4
     - php: 8.0
-  allow_failures:
-    - php: hhvm
-    - php: nightly
   fast_finish: true
 
 before_install:
