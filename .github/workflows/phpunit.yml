@@ -24,10 +24,6 @@ jobs:
           - "ubuntu-latest"
           - "windows-latest"
           - "macos-latest"
-        include:
-          - php-version: "8.0"
-            dependencies: "highest"
-            operating-system: "ubuntu-latest"
 
     steps:
       - name: "Checkout"
