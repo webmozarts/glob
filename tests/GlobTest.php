@@ -11,7 +11,6 @@
 
 namespace Webmozart\Glob\Tests;
 
-use PHPUnit_Framework_TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Glob;
 use Webmozart\Glob\Test\TestUtil;
@@ -21,11 +20,11 @@ use Webmozart\Glob\Test\TestUtil;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class GlobTest extends PHPUnit_Framework_TestCase
+class GlobTest extends \PHPUnit\Framework\TestCase
 {
     private $tempDir;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->tempDir = TestUtil::makeTempDir('webmozart-glob', __CLASS__);
 
@@ -35,7 +34,7 @@ class GlobTest extends PHPUnit_Framework_TestCase
         TestStreamWrapper::register('globtest', __DIR__.'/Fixtures');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $filesystem = new Filesystem();
         $filesystem->remove($this->tempDir);
@@ -84,12 +83,12 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(
             $this->tempDir.'/css/style.cts',
             $this->tempDir.'/css/style.cxs',
-        ), Glob::glob($this->tempDir.'/*/*.c[^s]s'));
+        ), Glob::glob($this->tempDir.'/*/*.c[!s]s'));
 
         $this->assertSame(array(
             $this->tempDir.'/css/reset.css',
             $this->tempDir.'/css/style.css',
-        ), Glob::glob($this->tempDir.'/*/*.c[^t-x]s'));
+        ), Glob::glob($this->tempDir.'/*/*.c[!t-x]s'));
 
         $this->assertSame(array(
             $this->tempDir.'/css/reset.css',
@@ -263,48 +262,38 @@ class GlobTest extends PHPUnit_Framework_TestCase
         ), Glob::glob($this->tempDir.'/css/style\\^.css'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testNativeGlobThrowsExceptionIfUnclosedBrace()
     {
         // native impl
+        $this->expectException(\InvalidArgumentException::class);
         $this->assertSame(array(), Glob::glob($this->tempDir.'/*.cs{t,s'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testCustomGlobThrowsExceptionIfUnclosedBrace()
     {
         // custom impl
+        $this->expectException(\InvalidArgumentException::class);
         $this->assertSame(array(), Glob::glob($this->tempDir.'/**/*.cs{t,s'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testNativeGlobThrowsExceptionIfUnclosedBracket()
     {
         // native impl
+        $this->expectException(\InvalidArgumentException::class);
         $this->assertSame(array(), Glob::glob($this->tempDir.'/*.cs[ts'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testCustomGlobThrowsExceptionIfUnclosedBracket()
     {
         // custom impl
+        $this->expectException(\InvalidArgumentException::class);
         $this->assertSame(array(), Glob::glob($this->tempDir.'/**/*.cs[ts'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage *.css
-     */
     public function testGlobFailsIfNotAbsolute()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('*.css');
         Glob::glob('*.css');
     }
 
@@ -721,12 +710,10 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, preg_match($regExp, '/foo/eaz.js~'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage *.css
-     */
     public function testToRegexFailsIfNotAbsolute()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('*.css');
         Glob::toRegEx('*.css');
     }
 
@@ -766,12 +753,10 @@ class GlobTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage *.css
-     */
     public function testGetStaticPrefixFailsIfNotAbsolute()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('*.css');
         Glob::getStaticPrefix('*.css');
     }
 
@@ -808,12 +793,10 @@ class GlobTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage *.css
-     */
     public function testGetBasePathFailsIfNotAbsolute()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('*.css');
         Glob::getBasePath('*.css');
     }
 
@@ -844,12 +827,10 @@ class GlobTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(Glob::match('/foo/bar\\baz.js~', '/foo/bar\\\\*.js~'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage *.css
-     */
     public function testMatchFailsIfNotAbsolute()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('*.css');
         Glob::match('/foo/bar.css', '*.css');
     }
 
@@ -903,12 +884,10 @@ class GlobTest extends PHPUnit_Framework_TestCase
         ), Glob::filter($paths, '/**/*\\*.js'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage *.css
-     */
     public function testFilterFailsIfNotAbsolute()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('*.css');
         Glob::filter(array('/foo/bar.css'), '*.css');
     }
 
@@ -962,20 +941,16 @@ class GlobTest extends PHPUnit_Framework_TestCase
         ), Glob::filter($paths, '/**/*\\*.js', Glob::FILTER_KEY));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage *.css
-     */
     public function testFilterKeysFailsIfNotAbsolute()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('*.css');
         Glob::filter(array('/foo/bar.css' => 42), '*.css', Glob::FILTER_KEY);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testFilterFailsIfInvalidFlags()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Glob::filter(array(42 => '/foo/bar.css'), '/foo/*.css', Glob::FILTER_KEY | Glob::FILTER_VALUE);
     }
 }

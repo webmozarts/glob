@@ -22,11 +22,11 @@ use Webmozart\Glob\Test\TestUtil;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
+class RecursiveDirectoryIteratorTest extends \PHPUnit\Framework\TestCase
 {
     private $tempDir;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->tempDir = TestUtil::makeTempDir('webmozart-glob', __CLASS__);
 
@@ -34,7 +34,7 @@ class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
         $filesystem->mirror(__DIR__.'/../Fixtures', $this->tempDir);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $filesystem = new Filesystem();
         $filesystem->remove($this->tempDir);
@@ -114,11 +114,9 @@ class RecursiveDirectoryIteratorTest extends PHPUnit_Framework_TestCase
         ), iterator_to_array($iterator));
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     */
     public function testFailIfNonExistingBaseDirectory()
     {
+        $this->expectException(\UnexpectedValueException::class);
         new RecursiveDirectoryIterator($this->tempDir.'/foobar');
     }
 

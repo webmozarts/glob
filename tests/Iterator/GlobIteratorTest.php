@@ -11,9 +11,7 @@
 
 namespace Webmozart\Glob\Tests\Iterator;
 
-use PHPUnit_Framework_TestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\Glob\Glob;
 use Webmozart\Glob\Iterator\GlobIterator;
 use Webmozart\Glob\Test\TestUtil;
 
@@ -22,13 +20,13 @@ use Webmozart\Glob\Test\TestUtil;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class GlobIteratorTest extends PHPUnit_Framework_TestCase
+class GlobIteratorTest extends \PHPUnit\Framework\TestCase
 {
     private $tempDir;
 
     private $tempFile;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->tempDir = TestUtil::makeTempDir('webmozart-glob', __CLASS__);
 
@@ -38,7 +36,7 @@ class GlobIteratorTest extends PHPUnit_Framework_TestCase
         $this->tempFile = tempnam(sys_get_temp_dir(), 'webmozart_GlobIteratorTest');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $filesystem = new Filesystem();
         $filesystem->remove($this->tempDir);
