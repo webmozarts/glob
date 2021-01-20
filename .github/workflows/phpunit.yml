@@ -63,8 +63,7 @@ jobs:
 
       - name: "Build Alpine image"
         if: ${{ matrix.operating-system == 'ubuntu-latest' }}
-        # todo: image per tag
-        run: docker build --file .github/workflows/alpine.dockerfile --tag testenv .
+        run: docker build --file .github/workflows/alpine.dockerfile --build-arg=${{ matrix.php-version }} --tag testenv .
 
       - name: "Test under Alpine"
         if: ${{ matrix.operating-system == 'ubuntu-latest' }}
