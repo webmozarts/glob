@@ -60,3 +60,15 @@ jobs:
 
       - name: "Tests"
         run: "vendor/bin/phpunit"
+
+      - name: "Build Alpine image"
+        if: ${{ matrix.operating-system == 'ubuntu-latest' }}
+        run: docker build
+          --file .github/workflows/alpine.dockerfile
+          --build-arg PHP_VERSION=${{ matrix.php-version }}
+          --tag testenv
+          .
+
+      - name: "Test under Alpine"
+        if: ${{ matrix.operating-system == 'ubuntu-latest' }}
+        run: docker run testenv vendor/bin/phpunit
