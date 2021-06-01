@@ -13,7 +13,7 @@
         "webmozart/path-util": "^2.2"
     },
     "require-dev": {
-        "symfony/filesystem": "^5.2",
+        "symfony/filesystem": "^5.3",
         "phpunit/phpunit": "^9.5"
     },
     "autoload": {
