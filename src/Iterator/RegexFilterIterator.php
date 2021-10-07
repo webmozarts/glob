@@ -94,6 +94,7 @@ class RegexFilterIterator extends FilterIterator
     /**
      * Rewind the iterator to the first position.
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         parent::rewind();
@@ -106,6 +107,7 @@ class RegexFilterIterator extends FilterIterator
      *
      * @return int The current position.
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         if (!$this->valid()) {
@@ -124,6 +126,7 @@ class RegexFilterIterator extends FilterIterator
      *
      * @see Iterator::next()
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         if ($this->valid()) {
@@ -137,6 +140,7 @@ class RegexFilterIterator extends FilterIterator
      *
      * @return bool Whether the path is accepted.
      */
+    #[\ReturnTypeWillChange]
     public function accept()
     {
         $path = ($this->mode & self::FILTER_VALUE) ? $this->current() : parent::key();
