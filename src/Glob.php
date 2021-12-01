@@ -13,7 +13,7 @@ namespace Webmozart\Glob;
 
 use InvalidArgumentException;
 use Webmozart\Glob\Iterator\GlobIterator;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Searches and matches file paths using Ant-like globs.
