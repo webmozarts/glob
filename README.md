@@ -114,19 +114,13 @@ $iterator = new GlobFilterIterator(
 
 Relative globs such as `*.css` are not supported. Usually, such globs refer to
 paths relative to the current working directory. This utility, however, does not
-want to make such assumptions. Hence you should always pass absolute globs.
-
-If you want to allow users to pass relative globs, I recommend to turn the globs
-into absolute globs using the [Webmozart Path Utility]:
+want to make such assumptions. Hence you should always pass absolute globs, so
+usage of `__DIR__` is encouraged:
 
 ```php
 use Webmozart\Glob\Glob;
-use Webmozart\PathUtil\Path;
 
-// If $glob is absolute, that glob is used without modification.
-// If $glob is relative, it is turned into an absolute path based on the current
-// working directory.
-$paths = Glob::glob(Path::makeAbsolute($glob, getcwd());
+$paths = Glob::glob(__DIR__ . '/*');
 ```
 
 ### Windows Compatibility

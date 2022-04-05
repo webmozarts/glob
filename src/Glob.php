@@ -13,7 +13,6 @@ namespace Webmozart\Glob;
 
 use InvalidArgumentException;
 use Webmozart\Glob\Iterator\GlobIterator;
-use Webmozart\PathUtil\Path;
 
 /**
  * Searches and matches file paths using Ant-like globs.
@@ -313,7 +312,7 @@ final class Glob
      */
     public static function toRegEx($glob, $flags = 0, $delimiter = '~')
     {
-        if (!Path::isAbsolute($glob) && false === strpos($glob, '://')) {
+        if (!Path::isAbsolute((string) $glob) && false === strpos($glob, '://')) {
             throw new InvalidArgumentException(sprintf(
                 'The glob "%s" is not absolute and not a URI.',
                 $glob
@@ -458,7 +457,7 @@ final class Glob
      */
     public static function getStaticPrefix($glob, $flags = 0)
     {
-        if (!Path::isAbsolute($glob) && false === strpos($glob, '://')) {
+        if (!Path::isAbsolute((string) $glob) && false === strpos($glob, '://')) {
             throw new InvalidArgumentException(sprintf(
                 'The glob "%s" is not absolute and not a URI.',
                 $glob
