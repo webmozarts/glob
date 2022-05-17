@@ -78,8 +78,8 @@ class GlobIterator extends IteratorIterator
                             RecursiveDirectoryIterator::CURRENT_AS_PATHNAME
                                 | RecursiveDirectoryIterator::SKIP_DOTS
                         ),
-                        RecursiveIteratorIterator::SELF_FIRST
-                            | ($skipErrors ? RecursiveIteratorIterator::SELF_FIRST : 0)
+                        RecursiveIteratorIterator::SELF_FIRST,
+                        ($skipErrors ? RecursiveIteratorIterator::CATCH_GET_CHILD : 0)
                     ),
                     GlobFilterIterator::FILTER_VALUE,
                     $flags
