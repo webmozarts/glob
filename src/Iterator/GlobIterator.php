@@ -33,9 +33,12 @@ class GlobIterator extends IteratorIterator
      *
      * @param string $glob  The glob pattern.
      * @param int    $flags A bitwise combination of the flag constants in
-     *                      {@link Glob}.
+     *               {@link Glob}.
+     * @param bool   $skip_errors Add the RecursiveIteratorIterator::CATCH_GET_CHILD
+     *               to internal RecursiveIteratorIterator and prevent throwing
+     *               Exception on errors like access denied.
      */
-    public function __construct($glob, $flags = 0)
+    public function __construct($glob, $flags = 0, $skip_errors = false)
     {
         $basePath = Glob::getBasePath($glob, $flags);
 
@@ -76,6 +79,7 @@ class GlobIterator extends IteratorIterator
                                 | RecursiveDirectoryIterator::SKIP_DOTS
                         ),
                         RecursiveIteratorIterator::SELF_FIRST
+                            | ($skip_errors ? RecursiveIteratorIterator::SELF_FIRST : 0)
                     ),
                     GlobFilterIterator::FILTER_VALUE,
                     $flags
