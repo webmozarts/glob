@@ -46,6 +46,12 @@ class GlobIteratorErrorTest extends \PHPUnit\Framework\TestCase
 
             return;
         }
+        $this->assertTrue(function_exists('posix_getuid'));
+        if (posix_getuid() === 0) {
+            $this->markTestSkipped('Current user is root, cannot test errors because root can read everything.');
+
+            return;
+        }
         $this->expectException(\UnexpectedValueException::class);
         chmod($this->tempDir.'/js', 0111);
         $iterator = new GlobIterator($this->tempDir.'/**/*.css');
@@ -56,6 +62,12 @@ class GlobIteratorErrorTest extends \PHPUnit\Framework\TestCase
     {
         if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
             $this->markTestSkipped('chmod tests only on Linux.');
+
+            return;
+        }
+        $this->assertTrue(function_exists('posix_getuid'));
+        if (posix_getuid() === 0) {
+            $this->markTestSkipped('Current user is root, cannot test errors because root can read everything.');
 
             return;
         }
