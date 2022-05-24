@@ -38,7 +38,7 @@ class GlobIterator extends IteratorIterator
      *               to internal RecursiveIteratorIterator and prevent throwing
      *               Exception on errors like access denied.
      */
-    public function __construct(string $glob, int $flags = 0, bool $skipErrors = false)
+    public function __construct($glob, $flags = 0, bool $skipErrors = false)
     {
         $basePath = Glob::getBasePath($glob, $flags);
 
