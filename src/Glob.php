@@ -270,6 +270,11 @@ final class Glob
                 return substr($staticPrefix, 0, $pos + 1);
             }
 
+            // If the prefix is a no-path custom stream, that's a valid base path.
+            if ($pos - 2 === strrpos($staticPrefix, '://')) {
+                return $staticPrefix;
+            }
+
             return substr($staticPrefix, 0, $pos);
         }
 

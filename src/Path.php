@@ -46,7 +46,7 @@ abstract class Path
         }
 
         // UNIX root "/" or "\" (Windows style)
-        if ('/' === $path[0] || '\\' === $path[0]) {
+        if ($path === '' || '/' === $path[0] || '\\' === $path[0]) {
             return true;
         }
 

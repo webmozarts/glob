@@ -769,7 +769,7 @@ class GlobTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider provideBasePaths
+     * @dataProvider provideBasePathsStream
      */
     public function testGetBasePathStream($glob, $basePath)
     {
@@ -791,6 +791,12 @@ class GlobTest extends \PHPUnit\Framework\TestCase
             array('/foo/baz\\\\*/bar', '/foo'),
             array('/foo/baz\\\\\\*/bar', '/foo/baz\\*'),
         );
+    }
+
+    public function provideBasePathsStream()
+    {
+        yield from $this->provideBasePaths();
+        yield ['', ''];
     }
 
     public function testGetBasePathFailsIfNotAbsolute()
