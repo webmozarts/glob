@@ -5,3 +5,4 @@ tests export-ignore
 .composer-auth.json export-ignore
 .styleci.yml export-ignore
 phpunit.xml.dist export-ignore
+composer.lock export-ignore
